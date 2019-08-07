@@ -1,0 +1,163 @@
+# Sends notifications when bots gets blocked.
+notifications:
+  # Do you want to enable notifications?
+  enabled: true
+
+  # Placeholders: %ip% %check% %total% %type%
+  # %total% %type% and %check% gets replaced dynamically by the check.
+  message: "&c&lAB: &e%ip% &f| &6%check% &f| &c%total% %type%"
+
+# The new condition system is in most of the checks, and it is a powerful option.
+#
+# This example means "The server needs 4 PPS and 1 CPS to activate the check".
+# conditions:
+#   - "4|PPS"
+#   - "1|CPS"
+#
+# PPS -> Pings per Second
+# CPS -> Connections per Second
+# JPS -> Joins per Second
+
+# Whitelists IPs to make them bypass checks. (Saves performance)
+whitelist:
+  # Do you want to enable this check?
+  enabled: true
+
+  # Conditions to activate the whitelist lockout.
+  # If this is reached only whitelisted players can join.
+  conditions:
+    - "75|JPS"
+
+  # Time the player has to be online to be whitelisted.
+  # Time in milliseconds.
+  time: 30000
+
+  # Message to show to the connections that fail the check.
+  kick_message: "&cYou are temporally blocked from this server!\n\n&7Reason: &fThe server is under attack. [Whitelist]\n&7Discord: &b&nhttps://discord.gg/cjt9bPA&r"
+
+# Blocks blacklisted IPs from the server.
+blacklist:
+  # Do you want to enable this check?
+  enabled: true
+
+  # Conditions to activate the check.
+  conditions:
+    - "2|CPS"
+
+  # Message to show to the connections that fail the check.
+  kick_message: "&cYou are temporally blocked from this server!\n\n&7Reason: &fBot algorithm detected. [Blacklist]\n&7Discord: &b&nhttps://discord.gg/cjt9bPA&r"
+
+# Checks if connections have abnormal behaviour.
+ratelimit:
+  # Do you want to enable this check?
+  enabled: true
+
+  # Conditions to blacklist IPs. (One connection should reach one of this values to get blacklisted)
+  conditions:
+    - "8|PPS"
+    - "3|CPS"
+
+  # Max online players from the same IP.
+  max_online: 3
+
+  # How much time you need to wait before reconnecting.
+  # Time in milliseconds
+  throttle: 800
+
+  # Message to show to the connections that fail the check.
+  kick_message: "&cYou are temporally blocked from this server!\n\n&7Reason: &fToo many connections. [RateLimit]\n&7Discord: &b&nhttps://discord.gg/cjt9bPA&r"
+
+# Checks if connections have bot-like nicknames.
+nickname:
+  # Do you want to enable this check?
+  enabled: true
+
+  # Conditions to activate the check.
+  conditions:
+    - "4|CPS"
+
+  # Checks if the nickname contains any of these strings.
+  contains:
+    - "mcspam"
+    - "mcstorm"
+
+  # Message to show to the connections that fail the check.
+  kick_message: "&cYou are temporally blocked from this server!\n\n&7Reason: &fBot algorithm detected. [NickName]\n&7Discord: &b&nhttps://discord.gg/cjt9bPA&r"
+
+# Asks connections to reconnect the first time they join.
+reconnect:
+  # Do you want to enable this check?
+  enabled: true
+
+  # Do you want to check if the connection pinged the server before?
+  ping: true
+
+  # Times that you have to reconnect to enter the server.
+  times: 1
+
+  # Conditions to activate the check.
+  conditions:
+    - "4|CPS"
+    - "1|JPS"
+
+  # Time to wait to reconnect for the first time.
+  # Time in milliseconds
+  throttle: 2000
+
+  # Message to show to the connections that fail the check.
+  kick_message: "&cAdd the server to the serverlist and refresh it!\n&cReconnect %times% more times to join!\n\n&7Reason: &fVerify that you are not a bot.\n&7Discord: &b&nhttps://discord.gg/cjt9bPA&r"
+
+# Checks if connections send the settings packet.
+settings:
+  # Do you want to enable this check?
+  enabled: true
+
+  # Conditions to activate the check.
+  conditions: []
+
+  # Message to show to the connections that fail the check.
+  kick_message: "&cYou are temporally blocked from this server!\n\n&7Reason: &fBot algorithm detected. [Settings]\n&7Discord: &b&nhttps://discord.gg/cjt9bPA&r"
+
+# Checks if connections chat too fast after login.
+fastchat:
+  # Do you want to enable this check?
+  enabled: true
+
+  # Conditions to activate the check.
+  conditions:
+    - "4|CPS"
+    - "2|JPS"
+
+  # Time until the check stops monitoring the player.
+  # Time in milliseconds
+  time: 750
+
+  # Message to show to the connections that fail the check.
+  kick_message: "&cYou are temporally blocked from this server!\n\n&7Reason: &fBot algorithm detected. [FastChat]\n&7Discord: &b&nhttps://discord.gg/cjt9bPA&r"
+
+# Checks if connections register with the same password.
+register:
+  # Do you want to enable this check?
+  enabled: true
+
+  # Conditions to activate the check.
+  conditions: []
+
+  # Message to show to the connections that fail the check.
+  kick_message: "&cYou are temporally blocked from this server!\n\n&7Reason: &fBot algorithm detected. [Register]\n&7Discord: &b&nhttps://discord.gg/cjt9bPA&r"
+
+# Checks if connections have too many different accounts.
+accounts:
+  # Do you want to enable this check?
+  enabled: true
+
+  # Max different accounts a player can have.
+  limit: 2
+
+  # Conditions to activate the check.
+  conditions:
+    - "8|CPS"
+    - "3|JPS"
+
+  # Message to show to the connections that fail the check.
+  kick_message: "&cYou are temporally blocked from this server!\n\n&7Reason: &fBot algorithm detected. [Accounts]\n&7Discord: &b&nhttps://discord.gg/cjt9bPA&r"

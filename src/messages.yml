@@ -1,0 +1,22 @@
+##############################
+#          Messages          #
+##############################
+
+reload: '&aPlugin AntiBot reloaded!'
+
+help: |-
+  &aAntiBot commands:
+  &e/ab notifications &7- &bActivates AntiBot notifications!
+  &e/ab stats &7- &bShows the stats of the plugin!
+  &e/ab reload &7- &bReloads the configuration and messages!
+  &e/ab blacklist <add/remove> <IP> &7- &bAdds or removes a IP from the blacklist!
+  &e/ab blacklist <save/load> &7- &bSaves or loads the blacklist file!
+  &e/ab whitelist <add/remove> <IP> &7- &bAdds or removes a IP from the whitelist!
+  &e/ab whitelist <save/load> &7- &bSaves or loads the whitelist file!
+
+unknowncommand: '&cInvalid argument! Use /ab help to see available commands!'
+
+nopermission: '&aThis server is running &eAntiBot by &b2LS!'
+
+# Placeholders: %totalpps% %totalcps% %totaljps% %totalbls% %totalwls%
+stats: '&aStats: &e%totalpps% PPS &f| &e%totalcps% CPS &f| &e%totaljps% JPS &f| &e%totalbls% BL &f| &e%totalwls% WL'
