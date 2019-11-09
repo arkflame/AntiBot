@@ -16,6 +16,7 @@ public class ModuleManager {
 	private AccountsModule accountsModule;
 	private BlacklistModule blacklistModule;
 	private FastChatModule fastChatModule;
+	private LogFilterModule logFilterModule;
 	private ReconnectModule reconnectModule;
 	private MessagesModule messagesModule;
 	private NicknameModule nicknameModule;
@@ -35,6 +36,7 @@ public class ModuleManager {
 		this.accountsModule = new AccountsModule(configurationUtil, this);
 		this.blacklistModule = new BlacklistModule(configurationUtil, this);
 		this.fastChatModule = new FastChatModule(configurationUtil, this);
+		this.logFilterModule = new LogFilterModule(configurationUtil);
 		this.reconnectModule = new ReconnectModule(configurationUtil, this);
 		this.messagesModule = new MessagesModule(configurationUtil, this);
 		this.nicknameModule = new NicknameModule(configurationUtil, this);
@@ -48,6 +50,7 @@ public class ModuleManager {
 	public final void reload() {
 		accountsModule.reload();
 		blacklistModule.reload();
+		logFilterModule.reload();
 		fastChatModule.reload();
 		reconnectModule.reload();
 		messagesModule.reload();
@@ -68,6 +71,10 @@ public class ModuleManager {
 
 	public final FastChatModule getFastChatModule() {
 		return fastChatModule;
+	}
+	
+	public final LogFilterModule getLogFilterModule() {
+		return logFilterModule;
 	}
 
 	public final ReconnectModule getReconnectModule() {
