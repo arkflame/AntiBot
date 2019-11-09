@@ -1,3 +1,12 @@
+# Hides messages from the console log.
+consolefilter:
+  # Do you want to enable the console filter?
+  enabled: true
+  
+  # Messages that you want to hide from the console.
+  messages:
+  - "InitialHandler"
+
 # Sends notifications when bots gets blocked.
 notifications:
   # Do you want to enable notifications?
