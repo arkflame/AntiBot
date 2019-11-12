@@ -40,10 +40,16 @@ public class AntiBot extends Plugin {
 		moduleManager.getWhitelistModule().loadWhitelist();
 		moduleManager.getBlacklistModule().loadBlacklist();
 		
-		if (moduleManager.getLogFilterModule().isCondition()) {
+		if (moduleManager.getConsoleFilterModule().isLog4JEnabled()) {
             		((Logger) LogManager.getRootLogger()).addFilter(new Log4JFilter(moduleManager));
-        	}
-	}
+        	} else if (moduleManager.getConsoleFilterModule().isLogEnabled()) {
+            		LogFilter filter = new LogFilter(moduleManager, this);
+            		filter.inject();
+
+            		for (Plugin plugin : getProxy().getPluginManager().getPlugins())
+                		filter.inject(plugin.getLogger());
+        		}
+		}
 
 	public void onDisable() {
 		moduleManager.getWhitelistModule().saveWhitelist();
