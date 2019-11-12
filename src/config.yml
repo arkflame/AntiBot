@@ -3,6 +3,12 @@ consolefilter:
   # Do you want to enable the console filter?
   enabled: true
   
+  # Enable log4J if you're using a custom fork of Bungeecord.
+  log4j: true
+  # Enable log if you're using Bungeecord.
+  # IMPORTANT: Don't enable both.
+  log: false
+  
   # Messages that you want to hide from the console.
   messages:
   - "InitialHandler"
