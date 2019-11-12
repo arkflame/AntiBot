@@ -7,7 +7,8 @@ import java.util.List;
 
 public class LogFilterModule {
     private final ConfigurationUtil configurationUtil;
-    private boolean logFilterEnabled = true;
+    private boolean log4JFilterEnabled = true;
+    private boolean logEnabled = false;
     private List<String> filterMessages;
 
     public LogFilterModule(ConfigurationUtil configurationUtil) {
@@ -19,7 +20,8 @@ public class LogFilterModule {
         final Configuration config = configurationUtil.getConfiguration("%datafolder%/config.yml");
 
         if (config != null) {
-            logFilterEnabled = config.getBoolean("consolefilter.enabled");
+            log4JEnabled = config.getBoolean("consolefilter.log4j");
+            logEnabled = config.getBoolean("consolefilter.log");
             filterMessages = config.getStringList("consolefilter.messages");
         }
     }
@@ -28,7 +30,11 @@ public class LogFilterModule {
         return filterMessages;
     }
 
-    public boolean isCondition() {
+    public boolean isLog4JEnabled() {
         return logFilterEnabled;
+    }
+    
+    public boolean isLogEnabled() {
+        return logEnabled;
     }
 }
