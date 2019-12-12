@@ -15,6 +15,7 @@ public class ModuleManager {
 	private String lastNickname = "AAAAAAAAAAAAAAAA";
 	private AccountsModule accountsModule;
 	private BlacklistModule blacklistModule;
+	private ConsoleFilterModule consoleFilterModule;
 	private FastChatModule fastChatModule;
 	private ReconnectModule reconnectModule;
 	private MessagesModule messagesModule;
@@ -34,6 +35,7 @@ public class ModuleManager {
 	public ModuleManager(final ConfigurationUtil configurationUtil) {
 		this.accountsModule = new AccountsModule(configurationUtil, this);
 		this.blacklistModule = new BlacklistModule(configurationUtil, this);
+		this.consoleFilterModule = new ConsoleFilterModule(configurationUtil);
 		this.fastChatModule = new FastChatModule(configurationUtil, this);
 		this.reconnectModule = new ReconnectModule(configurationUtil, this);
 		this.messagesModule = new MessagesModule(configurationUtil, this);
@@ -48,6 +50,7 @@ public class ModuleManager {
 	public final void reload() {
 		accountsModule.reload();
 		blacklistModule.reload();
+		consoleFilterModule.reload();
 		fastChatModule.reload();
 		reconnectModule.reload();
 		messagesModule.reload();
@@ -64,6 +67,10 @@ public class ModuleManager {
 
 	public final BlacklistModule getBlacklistModule() {
 		return blacklistModule;
+	}
+	
+	public final ConsoleFilterModule getConsoleFilterModule() {
+		return consoleFilterModule;
 	}
 
 	public final FastChatModule getFastChatModule() {
