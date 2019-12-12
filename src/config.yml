@@ -7,6 +7,17 @@ notifications:
   # %total% %type% and %check% gets replaced dynamically by the check.
   message: "&c&lAB: &e%ip% &f| &6%check% &f| &c%total% %type%"
 
+# Filter out messages from your console.
+consolefilter:
+  # Do you want to enable console filtering?
+  enabled: false
+  
+  # What messages should we filter out?
+  messages:
+    - "InitialHandler"
+    - "Bridge"
+    - "ServerConnector"
+
 # The new condition system is in most of the checks, and it is a powerful option.
 #
 # This example means "The server needs 4 PPS and 1 CPS to activate the check".
