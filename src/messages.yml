@@ -9,9 +9,9 @@ en:
   reload: "&c&lAB: &aFiles succesfully reloaded!"
   help: |-
     &aAntiBot&b %version% &aby&b LinsaFTW&a.
-    &e /ab notifications &7> &bActivates AntiBot notifications!
+    &e /ab notify &7> &bActivates AntiBot notifications!
     &e /ab stats &7> &bShows the stats of the plugin!
-    &e /ab reload &7> &bReloads the configuration and messages!
+    &e /ab reload &7> &bReloads the plugin configuration!
     &e /ab blacklist <add/remove> <IP> &7> &bAdds or removes a IP from the blacklist!
     &e /ab blacklist <save/load> &7> &bSaves or loads the blacklist file!
     &e /ab whitelist <add/remove> <IP> &7> &bAdds or removes a IP from the whitelist!
@@ -32,3 +32,30 @@ en:
     nickname: "%kick_blocked% &fBot algorithm detected. [NickName]\n&7Discord: &b&n%discord%&r"
     settings: "%kick_blocked% &fBot algorithm detected. [Settings]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cAdd the server to the serverlist and refresh it!\n&cRefresh and reconnect %reconnect_times% more times to join!\n\n&7Reason: &fVerify that you are not a bot.\n&7Discord: &b&n%discord%&r"
+es:
+  reload: "&c&lAB: &aArchivos recargados correctamente!"
+  help: |-
+    &aAntiBot&b %version% &apor&b LinsaFTW&a.
+    &e /ab notify &7> &bActiva las notificaciones de bots!
+    &e /ab stats &7> &bMuestra estadisticas del plugin!
+    &e /ab reload &7> &bRecarga la configuracion del plugin!
+    &e /ab blacklist <add/remove> <IP> &7> &bAgrega o quita una IP de la blacklist!
+    &e /ab blacklist <save/load> &7> &bGuarda o carga la blacklist!
+    &e /ab whitelist <add/remove> <IP> &7> &bAgrega o quita una IP de la whitelist!
+    &e /ab whitelist <save/load> &7> &bGuarda o carga la whitelist!
+  error:
+    command: "&cArgumento invalido! Usa /ab help para ver comandos!"
+    console: "&cNo puedes usar ese comando desde la consola!"
+  notification:
+    enabled: "&aHabilitaste las notificaciones!"
+    disabled: "&cDeshabilitaste las notificaciones!"
+  kick:
+    blocked: "&cEstas bloqueado temporalmente!\n\n&7Razon:"
+    accounts: "%kick_blocked% &fMuchas cuentas. [Accounts]\n&7Discord: &b&n%discord%&r"
+    whitelist: "%kick_blocked% &fServidor bajo ataque. [Whitelist]\n&7Discord: &b&n%discord%&r"
+    blacklist: "%kick_blocked% &fAlgoritmo de bots. [Blacklist]\n&7Discord: &b&n%discord%&r"
+    fastchat: "%kick_blocked% &fAlgoritmo de bots. [FastChat]\n&7Discord: &b&n%discord%&r"
+    ratelimit: "%kick_blocked% &fDemaciadas conexiones. [RateLimit]\n&7Discord: &b&n%discord%&r"
+    nickname: "%kick_blocked% &fAlgoritmo de bots. [NickName]\n&7Discord: &b&n%discord%&r"
+    settings: "%kick_blocked% &fAlgoritmo de bots. [Settings]\n&7Discord: &b&n%discord%&r"
+    reconnect: "&cAgrega el server a la lista y refrescala!\n&cRefresca y reconecta %reconnect_times% veces para entrar!\n\n&7Razon: &fVerifica que no eres un robot.\n&7Discord: &b&n%discord%&r"
