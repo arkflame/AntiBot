@@ -50,8 +50,8 @@ public class FastChatModule implements PunishModule {
 		final PlayerModule playerModule = moduleManager.getPlayerModule();
 		final BotPlayer botPlayer = playerModule.get(connection.getAddress().getHostString());
 
-		return System.currentTimeMillis() - botPlayer.getLastConnection() < time || botPlayer == null
-				|| !botPlayer.isSettings();
+		return (System.currentTimeMillis() - botPlayer.getLastConnection() < time || botPlayer == null
+				|| !botPlayer.isSettings());
 	}
 
 	@Override

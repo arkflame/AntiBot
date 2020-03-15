@@ -114,7 +114,7 @@ reconnect:
   ping: true
 
   # Times connections have to reconnect the server.
-  times: 2
+  times: 3
 
   conditions:
     pps: 0

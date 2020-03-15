@@ -32,13 +32,13 @@ public class PlayerDisconnectListener implements Listener {
 		final long currentTime = System.currentTimeMillis();
 
 		if ((proxiedPlayer.getLocale() != Locale.US || proxiedPlayer.getPing() < 500)
-				&& (!whitelistModule.isRequireSwitch() || botPlayer.isSwitched())
+				&& (!whitelistModule.isRequireSwitch() || botPlayer.getSwitchs() > 1)
 				&& currentTime - botPlayer.getLastConnection() >= whitelistModule.getTimeWhitelist()) {
 			whitelistModule.setWhitelisted(ip, true);
 		}
 
 		botPlayer.removePlayer(proxiedPlayer);
-		botPlayer.setSwitched(false);
+		botPlayer.clearSwitchs();
 		botPlayer.setLastConnection(currentTime);
 		notificationsModule.setNotifications(proxiedPlayer, false);
 		settingsModule.removePending(botPlayer);

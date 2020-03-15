@@ -46,7 +46,7 @@ public class AntibotCommand extends Command {
 
 		if (args.length > 0) {
 			switch (args[0].toLowerCase()) {
-				case "notifications": {
+				case "notify": {
 					if (proxiedPlayer != null) {
 						final NotificationsModule notificationsModule = moduleManager.getNotificationsModule();
 						final boolean hasNotifications = notificationsModule.hasNotifications(proxiedPlayer);

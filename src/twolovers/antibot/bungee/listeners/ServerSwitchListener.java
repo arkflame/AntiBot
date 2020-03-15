@@ -33,14 +33,14 @@ public class ServerSwitchListener implements Listener {
 		final int currentPPS = moduleManager.getCurrentPPS();
 		final int currentCPS = moduleManager.getCurrentCPS();
 		final int currentJPS = moduleManager.getCurrentJPS();
-		final boolean switched = botPlayer.isSwitched();
+		final boolean switched = botPlayer.getSwitchs() > 0;
 
 		if (settingsModule.meet(currentPPS, currentCPS, currentJPS) && switched && proxiedPlayer.getLocale() == null) {
 			new Punish(plugin, moduleManager, "en", settingsModule.getPunishCommands(), proxiedPlayer, event,
 					"Settings");
 		} else {
 			if (!switched)
-				botPlayer.setSwitched(true);
+				botPlayer.addSwitch();
 			else {
 				if (!botPlayer.isSettings()) {
 					new Punish(plugin, moduleManager, "en", settingsModule.getPunishCommands(), proxiedPlayer, event,

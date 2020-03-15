@@ -55,13 +55,16 @@ public class ReconnectModule implements PunishModule {
 		if (connection instanceof PendingConnection) {
 			final PlayerModule playerModule = moduleManager.getPlayerModule();
 			final BotPlayer botPlayer = playerModule.get(connection.getAddress().getHostString());
+			final String name = ((PendingConnection) connection).getName();
 			final int reconnects = botPlayer.getReconnects() + 1;
 			final long currentTimeMillis = System.currentTimeMillis();
 
-			if ((ping && (currentTimeMillis - botPlayer.getLastPing() > 2500
-					|| currentTimeMillis - botPlayer.getLastPing() < 550))
+			if (!botPlayer.getLastNickname().equals(name)
+					|| (ping && (currentTimeMillis - botPlayer.getLastPing() > 2500
+							|| currentTimeMillis - botPlayer.getLastPing() < 550))
 					|| currentTimeMillis - botPlayer.getLastConnection() < throttle) {
 				botPlayer.setReconnects(0);
+				botPlayer.setLastNickname(name);
 			} else {
 				botPlayer.setReconnects(reconnects);
 

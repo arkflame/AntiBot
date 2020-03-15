@@ -87,7 +87,7 @@ public class WhitelistModule implements PunishModule {
 
 	@Override
 	public final boolean check(final Connection connection) {
-		return whitelist.contains(connection.getAddress().getHostString());
+		return this.enabled && whitelist.contains(connection.getAddress().getHostString());
 	}
 
 	@Override

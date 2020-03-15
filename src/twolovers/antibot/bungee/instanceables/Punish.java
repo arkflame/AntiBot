@@ -6,6 +6,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PreLoginEvent;
+import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Cancellable;
 import net.md_5.bungee.api.plugin.Event;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -36,7 +37,11 @@ public class Punish {
 				proxiedPlayer.sendMessage(ChatMessageType.ACTION_BAR, notificationTextComponent);
 		}
 
-		if (!punishCommands.isEmpty()) {
+		if (event instanceof ProxyPingEvent) {
+			final ProxyPingEvent proxyPingEvent = (ProxyPingEvent) event;
+
+			proxyPingEvent.setResponse(null);
+		} else if (!punishCommands.isEmpty()) {
 			for (String command : punishCommands) {
 				command = placeholderModule.replacePlaceholders(locale, command, address, checkName);
 

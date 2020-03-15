@@ -9,10 +9,11 @@ public class BotPlayer {
     private final Collection<ProxiedPlayer> players = new HashSet<>();
     private final Collection<Integer> accounts = new HashSet<>();
     private final String hostString;
+    private String lastNickname = "";
     private long lastPing = 0, lastConnection = 0, lastTimeZeroPPS = System.currentTimeMillis(),
             lastTimeZeroCPS = System.currentTimeMillis(), lastTimeZeroJPS = System.currentTimeMillis();
-    private int pps = 0, cps = 0, jps = 0, reconnects = 0;
-    private boolean settings = false, switched = false;
+    private int pps = 0, cps = 0, jps = 0, reconnects = 0, switchs = 0;
+    private boolean settings = false;
 
     public BotPlayer(final String hostString) {
         this.hostString = hostString;
@@ -101,14 +102,6 @@ public class BotPlayer {
         this.players.remove(player);
     }
 
-    public boolean isSwitched() {
-        return switched;
-    }
-
-    public void setSwitched(final boolean switched) {
-        this.switched = switched;
-    }
-
     public void setSettings(final boolean settings) {
         this.settings = settings;
     }
@@ -121,11 +114,31 @@ public class BotPlayer {
         this.reconnects = reconnects;
     }
 
+    public int getSwitchs() {
+        return this.switchs;
+    }
+
+    public void addSwitch() {
+        this.switchs += 1;
+    }
+
     public String getHostAddress() {
         return hostString;
     }
 
     public int getTotalAccounts() {
         return accounts.size();
+    }
+
+    public void clearSwitchs() {
+        this.switchs = 0;
+    }
+
+    public String getLastNickname() {
+        return lastNickname;
+    }
+
+    public void setLastNickname(final String lastNickname) {
+        this.lastNickname = lastNickname;
     }
 }
