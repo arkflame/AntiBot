@@ -1,116 +1,73 @@
 package twolovers.antibot.bungee.listeners;
 
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.Connection;
+import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
-import twolovers.antibot.bungee.managers.ModuleManager;
-import twolovers.antibot.bungee.modules.*;
+import twolovers.antibot.bungee.instanceables.BotPlayer;
+import twolovers.antibot.bungee.instanceables.Punish;
+import twolovers.antibot.bungee.module.*;
 
 public class PreLoginListener implements Listener {
+	private final Plugin plugin;
 	private final ModuleManager moduleManager;
-	private final AccountsModule accountsModule;
-	private final RateLimitModule rateLimitModule;
-	private final NotificationsModule notificationsModule;
-	private final BlacklistModule blacklistModule;
-	private final WhitelistModule whitelistModule;
-	private final ReconnectModule reconnectModule;
-	private final NicknameModule nicknameModule;
 
-	public PreLoginListener(ModuleManager moduleManager) {
+	public PreLoginListener(final Plugin plugin, final ModuleManager moduleManager) {
+		this.plugin = plugin;
 		this.moduleManager = moduleManager;
-		this.accountsModule = moduleManager.getAccountsModule();
-		this.rateLimitModule = moduleManager.getRateLimitModule();
-		this.notificationsModule = moduleManager.getNotificationsModule();
-		this.blacklistModule = moduleManager.getBlacklistModule();
-		this.whitelistModule = moduleManager.getWhitelistModule();
-		this.reconnectModule = moduleManager.getReconnectModule();
-		this.nicknameModule = moduleManager.getNicknameModule();
 	}
 
 	@EventHandler(priority = -128)
 	public void onPreLogin(final PreLoginEvent event) {
 		if (!event.isCancelled()) {
-			final Connection connection = event.getConnection();
-			final String ip = event.getConnection().getAddress().getAddress().getHostAddress();
-			final String name = event.getConnection().getName();
-			final long currentTime = System.currentTimeMillis();
-			final long lastPing = moduleManager.getLastPing(ip);
-			final long lastConnection = moduleManager.getLastConnection(ip);
-			final boolean hasThrottle = currentTime - lastConnection < rateLimitModule.getRateLimitThrottle();
+			final AccountsModule accountsModule = moduleManager.getAccountsModule();
+			final BlacklistModule blacklistModule = moduleManager.getBlacklistModule();
+			final NicknameModule nicknameModule = moduleManager.getNicknameModule();
+			final PlayerModule playerModule = moduleManager.getPlayerModule();
+			final RateLimitModule rateLimitModule = moduleManager.getRateLimitModule();
+			final ReconnectModule reconnectModule = moduleManager.getReconnectModule();
+			final PendingConnection connection = event.getConnection();
+			final String name = connection.getName();
+			final String locale = "en", // Cant get locale on prelogin.
+					ip = connection.getAddress().getHostString();
+			final BotPlayer botPlayer = playerModule.get(ip);
 
-			moduleManager.addCPS(ip, 1);
+			botPlayer.setCPS(botPlayer.getCPS() + 1);
 
-			if (hasThrottle) {
-				event.setCancelReason(new TextComponent(rateLimitModule.getKickMessage()));
-				event.setCancelled(true);
+			final int currentPPS = moduleManager.getCurrentPPS();
+			final int currentCPS = moduleManager.getCurrentCPS() + 1;
+			final int currentJPS = moduleManager.getCurrentJPS();
 
-				notificationsModule.sendNotification("Ratelimit", "CPS", ip);
-			} else if (rateLimitModule.isCondition(ip)) {
-				event.setCancelReason(new TextComponent(rateLimitModule.getKickMessage()));
-				event.setCancelled(true);
+			moduleManager.setCurrentCPS(currentCPS);
+
+			if (blacklistModule.meet(currentPPS, currentCPS, currentJPS) && blacklistModule.check(connection))
+				new Punish(plugin, moduleManager, locale, blacklistModule.getPunishCommands(), connection, event,
+						"Blacklist");
+			else if (accountsModule.meet(currentPPS, currentCPS, currentJPS) && accountsModule.check(connection))
+				new Punish(plugin, moduleManager, locale, accountsModule.getPunishCommands(), connection, event,
+						"Accounts");
+			else if (reconnectModule.meet(currentPPS, currentCPS, currentJPS) && reconnectModule.check(connection)) {
+				new Punish(plugin, moduleManager, locale, reconnectModule.getPunishCommands(), connection, event,
+						"Reconnect");
+			} else if (rateLimitModule.meet(currentPPS, currentCPS, currentJPS) && rateLimitModule.check(connection)) {
+				new Punish(plugin, moduleManager, locale, rateLimitModule.getPunishCommands(), connection, event,
+						"Ratelimit");
 
 				blacklistModule.setBlacklisted(ip, true);
-				notificationsModule.sendNotification("Ratelimit", "CPS", ip);
-			} else if (!whitelistModule.isEnabled() || !whitelistModule.isWhitelisted(ip)) {
-				if (whitelistModule.isCondition()) {
-					event.setCancelReason(new TextComponent(whitelistModule.getKickMessage()));
-					event.setCancelled(true);
+			} else if (nicknameModule.meet(currentPPS, currentCPS, currentJPS) && nicknameModule.check(connection))
+				new Punish(plugin, moduleManager, locale, nicknameModule.getPunishCommands(), connection, event,
+						"Nickname");
+			else {
+				nicknameModule.setLastNickname(name);
 
-					notificationsModule.sendNotification("Whitelist", "CPS", ip);
-				} else if (blacklistModule.isCondition(ip)) {
-					event.setCancelReason(new TextComponent(blacklistModule.getKickMessage()));
-					event.setCancelled(true);
-
-					notificationsModule.sendNotification("Blacklist", "CPS", ip);
-				} else if (accountsModule.isCondition() && accountsModule.getAccountCount(ip) > accountsModule.getLimit()) {
-					event.setCancelReason(new TextComponent(accountsModule.getKickMessage()));
-					event.setCancelled(true);
-
-					blacklistModule.setBlacklisted(ip, true);
-					notificationsModule.sendNotification("Accounts", "CPS", ip);
-				} else if (reconnectModule.isCondition() && reconnectModule.getReconnects(ip) < reconnectModule.getReconnectTimes()) {
-					if (reconnectModule.isForceRejoinPingEnabled()) {
-						if (lastPing > lastConnection && currentTime - lastConnection > reconnectModule.getReconnectTime())
-							reconnectModule.addReconnect(ip, 1);
-					} else if (currentTime - lastConnection > reconnectModule.getReconnectTime())
-						reconnectModule.addReconnect(ip, 1);
-
-					event.setCancelReason(new TextComponent(reconnectModule.getKickMessage(ip)));
-					event.setCancelled(true);
-
-					notificationsModule.sendNotification("Reconnect", "CPS", ip);
-				} else if (nicknameModule.isCondition()) {
-					if (name.length() == moduleManager.getLastNickname().length()) {
-						event.setCancelReason(new TextComponent(nicknameModule.getKickMessage()));
-						event.setCancelled(true);
-
-						blacklistModule.setBlacklisted(ip, true);
-						notificationsModule.sendNotification("Nickname", "CPS", ip);
-					} else if (nicknameModule.cotainsString(name.toLowerCase())) {
-						event.setCancelReason(new TextComponent(nicknameModule.getKickMessage()));
-						event.setCancelled(true);
-
-						blacklistModule.setBlacklisted(ip, true);
-						notificationsModule.sendNotification("Nickname", "CPS", ip);
-					} else if (name.matches(nicknameModule.getPattern())) {
-						event.setCancelReason(new TextComponent(nicknameModule.getKickMessage()));
-						event.setCancelled(true);
-
-						blacklistModule.setBlacklisted(ip, true);
-						notificationsModule.sendNotification("Nickname", "CPS", ip);
-					}
-				} else {
-					moduleManager.setLastNickname(name);
-					reconnectModule.addReconnect(ip, 0);
+				if (botPlayer.getAccounts().size() < 1) {
+					playerModule.setOffline(botPlayer);
 				}
-
-				moduleManager.setLastConnection(ip, currentTime);
-				accountsModule.addAccount(ip, name);
 			}
 
-			moduleManager.setLastConnection(ip, currentTime);
+			botPlayer.setSettings(false);
+			botPlayer.setLastConnection(System.currentTimeMillis());
 		}
 	}
 }

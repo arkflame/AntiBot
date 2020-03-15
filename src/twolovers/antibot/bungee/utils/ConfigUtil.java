@@ -10,10 +10,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
-public class ConfigurationUtil {
+public class ConfigUtil {
 	final private Plugin plugin;
 
-	public ConfigurationUtil(final Plugin plugin) {
+	public ConfigUtil(final Plugin plugin) {
 		this.plugin = plugin;
 	}
 
@@ -45,10 +45,12 @@ public class ConfigurationUtil {
 
 				if (parentFile != null) parentFile.mkdirs();
 
-				if (inputStream != null) {
+				if (inputStream != null)
 					Files.copy(inputStream, configFile.toPath());
-					System.out.print(("[%pluginname%] File " + configFile + " has been created!").replace("%pluginname%", plugin.getDescription().getName()));
-				} else configFile.createNewFile();
+				else
+					configFile.createNewFile();
+
+				System.out.print(("[%pluginname%] File " + configFile + " has been created!").replace("%pluginname%", plugin.getDescription().getName()));
 			}
 		} catch (final IOException e) {
 			System.out.print(("[%pluginname%] Unable to create configuration file!").replace("%pluginname%", plugin.getDescription().getName()));

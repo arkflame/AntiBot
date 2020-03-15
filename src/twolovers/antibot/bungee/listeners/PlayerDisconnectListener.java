@@ -1,29 +1,50 @@
 package twolovers.antibot.bungee.listeners;
 
+import java.util.Locale;
+
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import twolovers.antibot.bungee.modules.NotificationsModule;
-import twolovers.antibot.bungee.modules.SettingsModule;
-import twolovers.antibot.bungee.managers.ModuleManager;
+import twolovers.antibot.bungee.instanceables.BotPlayer;
+import twolovers.antibot.bungee.module.ModuleManager;
+import twolovers.antibot.bungee.module.NotificationsModule;
+import twolovers.antibot.bungee.module.PlayerModule;
+import twolovers.antibot.bungee.module.SettingsModule;
+import twolovers.antibot.bungee.module.WhitelistModule;
 
 public class PlayerDisconnectListener implements Listener {
 	private final ModuleManager moduleManager;
-	private final SettingsModule settingsModule;
-	private final NotificationsModule notificationsModule;
 
 	public PlayerDisconnectListener(final ModuleManager moduleManager) {
 		this.moduleManager = moduleManager;
-		this.settingsModule = moduleManager.getSettingsModule();
-		this.notificationsModule = moduleManager.getNotificationsModule();
 	}
 
 	@EventHandler
 	public void onPlayerDisconnect(final PlayerDisconnectEvent event) {
-		final String ip = event.getPlayer().getAddress().getAddress().getHostAddress();
+		final NotificationsModule notificationsModule = moduleManager.getNotificationsModule();
+		final PlayerModule playerModule = moduleManager.getPlayerModule();
+		final SettingsModule settingsModule = moduleManager.getSettingsModule();
+		final WhitelistModule whitelistModule = moduleManager.getWhitelistModule();
+		final ProxiedPlayer proxiedPlayer = event.getPlayer();
+		final String ip = proxiedPlayer.getAddress().getHostString();
+		final BotPlayer botPlayer = playerModule.get(ip);
+		final long currentTime = System.currentTimeMillis();
 
-		moduleManager.getRateLimitModule().removeOnline(ip, 1);
-		settingsModule.setSwitched(ip, false);
-		notificationsModule.setNotifications(event.getPlayer(), false);
+		if ((proxiedPlayer.getLocale() != Locale.US || proxiedPlayer.getPing() < 500)
+				&& (!whitelistModule.isRequireSwitch() || botPlayer.isSwitched())
+				&& currentTime - botPlayer.getLastConnection() >= whitelistModule.getTimeWhitelist()) {
+			whitelistModule.setWhitelisted(ip, true);
+		}
+
+		botPlayer.removeAccount(proxiedPlayer);
+		botPlayer.setSwitched(false);
+		botPlayer.setLastConnection(currentTime);
+		notificationsModule.setNotifications(proxiedPlayer, false);
+		settingsModule.removePending(botPlayer);
+
+		if (botPlayer.getAccounts().size() < 1) {
+			playerModule.setOffline(botPlayer);
+		}
 	}
 }

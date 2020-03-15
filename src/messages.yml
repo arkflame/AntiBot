@@ -1,22 +1,33 @@
-##############################
-#          Messages          #
-##############################
-
-reload: '&aPlugin AntiBot reloaded!'
-
-help: |-
-  &aAntiBot commands:
-  &e/ab notifications &7- &bActivates AntiBot notifications!
-  &e/ab stats &7- &bShows the stats of the plugin!
-  &e/ab reload &7- &bReloads the configuration and messages!
-  &e/ab blacklist <add/remove> <IP> &7- &bAdds or removes a IP from the blacklist!
-  &e/ab blacklist <save/load> &7- &bSaves or loads the blacklist file!
-  &e/ab whitelist <add/remove> <IP> &7- &bAdds or removes a IP from the whitelist!
-  &e/ab whitelist <save/load> &7- &bSaves or loads the whitelist file!
-
-unknowncommand: '&cInvalid argument! Use /ab help to see available commands!'
-
-nopermission: '&aThis server is running &eAntiBot by &b2LS!'
-
-# Placeholders: %totalpps% %totalcps% %totaljps% %totalbls% %totalwls%
-stats: '&aStats: &e%totalpps% PPS &f| &e%totalcps% CPS &f| &e%totaljps% JPS &f| &e%totalbls% BL &f| &e%totalwls% WL'
+# Every message shown here is converted to a placeholder.
+# Example: %discord%
+# Placeholders: %version% %addresspps% %addresscps% %addressjps% %currentpps% %currentcps% %currentjps% %totalbls% %totalwls%
+discord: "https://discord.gg/cjt9bPA"
+stats: "&c&lAB: &e%currentpps% PPS &7> &e%currentcps% CPS &7> &e%currentjps% JPS &7> &e%totalbls% BLS &7> &e%totalwls% WLS"
+notification:
+  message: "&c&lAB: &e%address% &7> &6%check% &7> &c%currentpps% PPS &7> &c%currentcps% CPS &7> &c%currentjps% JPS"
+en:
+  reload: "&c&lAB: &aFiles succesfully reloaded!"
+  help: |-
+    &aAntiBot&b %version% &aby&b LinsaFTW&a.
+    &e /ab notifications &7> &bActivates AntiBot notifications!
+    &e /ab stats &7> &bShows the stats of the plugin!
+    &e /ab reload &7> &bReloads the configuration and messages!
+    &e /ab blacklist <add/remove> <IP> &7> &bAdds or removes a IP from the blacklist!
+    &e /ab blacklist <save/load> &7> &bSaves or loads the blacklist file!
+    &e /ab whitelist <add/remove> <IP> &7> &bAdds or removes a IP from the whitelist!
+    &e /ab whitelist <save/load> &7> &bSaves or loads the whitelist file!
+  error:
+    command: "&cInvalid argument! Use /ab help to see available commands!"
+    console: "&cYou can't run this command from the console!"
+  notification:
+    enabled: "&aYou enabled notifications!"
+    disabled: "&cYou disabled notifications!"
+  kick:
+    blocked: "&cYou are temporally blocked from this server!\n\n&7Reason:"
+    accounts: "%kick_blocked% &fToo many accounts. [RateLimit]\n&7Discord: &b&n%discord%&r"
+    whitelist: "%kick_blocked% &fThe server is under attack. [Whitelist]\n&7Discord: &b&n%discord%&r"
+    blacklist: "%kick_blocked% &fBot algorithm detected. [Blacklist]\n&7Discord: &b&n%discord%&r"
+    ratelimit: "%kick_blocked% &fToo many connections. [RateLimit]\n&7Discord: &b&n%discord%&r"
+    nickname: "%kick_blocked% &fBot algorithm detected. [NickName]\n&7Discord: &b&n%discord%&r"
+    settings: "%kick_blocked% &fBot algorithm detected. [Settings]\n&7Discord: &b&n%discord%&r"
+    reconnect: "&cAdd the server to the serverlist and refresh it!\n&cRefresh and reconnect %reconnect_times% more times to join!\n\n&7Reason: &fVerify that you are not a bot.\n&7Discord: &b&n%discord%&r"

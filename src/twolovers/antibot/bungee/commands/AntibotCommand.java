@@ -5,126 +5,156 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
-import twolovers.antibot.bungee.managers.ModuleManager;
-import twolovers.antibot.bungee.modules.*;
+import twolovers.antibot.bungee.AntiBot;
+import twolovers.antibot.bungee.module.BlacklistModule;
+import twolovers.antibot.bungee.module.ModuleManager;
+import twolovers.antibot.bungee.module.NotificationsModule;
+import twolovers.antibot.bungee.module.PlaceholderModule;
+import twolovers.antibot.bungee.module.WhitelistModule;
+import twolovers.antibot.bungee.utils.ConfigUtil;
 
 public class AntibotCommand extends Command {
+	private final AntiBot antiBot;
+	private final ConfigUtil configUtil;
 	private final ModuleManager moduleManager;
-	private final MessagesModule messagesModule;
-	private final NotificationsModule notificationsModule;
-	private final BlacklistModule blacklistModule;
-	private final WhitelistModule whitelistModule;
 
-	public AntibotCommand(String string, ModuleManager moduleManager) {
-		super(string);
+	public AntibotCommand(final AntiBot antiBot, final ConfigUtil configUtil, final ModuleManager moduleManager) {
+		super("antibot", "", "ab");
+		this.antiBot = antiBot;
+		this.configUtil = configUtil;
 		this.moduleManager = moduleManager;
-		this.messagesModule = moduleManager.getMessagesModule();
-		this.notificationsModule = moduleManager.getNotificationsModule();
-		this.blacklistModule = moduleManager.getBlacklistModule();
-		this.whitelistModule = moduleManager.getWhitelistModule();
 	}
 
-	public void execute(CommandSender commandSender, String[] args) {
-		final boolean hasAdminPermission = commandSender.hasPermission("antibot.admin");
-		final boolean hasNotificationPermission = commandSender.hasPermission("antibot.notifications");
+	@Override
+	public void execute(final CommandSender commandSender, final String[] args) {
+		final PlaceholderModule placeholderModule = moduleManager.getPlaceholderModule();
+		final BlacklistModule blacklistModule = moduleManager.getBlacklistModule();
+		final WhitelistModule whitelistModule = moduleManager.getWhitelistModule();
+		final ProxiedPlayer proxiedPlayer;
+		final String address;
+		final String locale;
 
-		if (args.length == 1 && args[0].equalsIgnoreCase("notifications") && hasNotificationPermission) {
-			if (!(commandSender instanceof ProxiedPlayer)) {
-				commandSender.sendMessage(new TextComponent(ChatColor.GREEN + "This cant be used from the console!"));
-				return;
-			}
-
-			final ProxiedPlayer proxiedPlayer = (ProxiedPlayer) commandSender;
-
-			if (!notificationsModule.isNotifications(proxiedPlayer)) {
-				proxiedPlayer.sendMessage(new TextComponent(ChatColor.GREEN + "You have enabled notifications!"));
-				notificationsModule.setNotifications(proxiedPlayer, true);
-
-				return;
-			} else {
-				proxiedPlayer.sendMessage(new TextComponent(ChatColor.GREEN + "You have disabled notifications!"));
-				notificationsModule.setNotifications(proxiedPlayer, false);
-
-				return;
-			}
+		if (commandSender instanceof ProxiedPlayer) {
+			proxiedPlayer = (ProxiedPlayer) commandSender;
+			address = proxiedPlayer.getAddress().getHostString();
+			locale = proxiedPlayer.getLocale().toLanguageTag();
+		} else {
+			proxiedPlayer = null;
+			address = "127.0.0.1";
+			locale = "en";
 		}
 
-		if (!hasAdminPermission) {
-			commandSender.sendMessage(new TextComponent(messagesModule.getNoPermission()));
-			return;
-		}
+		if (args.length > 0) {
+			switch (args[0].toLowerCase()) {
+				case "notifications": {
+					if (proxiedPlayer != null) {
+						final NotificationsModule notificationsModule = moduleManager.getNotificationsModule();
+						final boolean hasNotifications = notificationsModule.hasNotifications(proxiedPlayer);
 
-		if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
-			commandSender.sendMessage(new TextComponent(messagesModule.getHelp()));
-			return;
-		}
+						notificationsModule.setNotifications(proxiedPlayer, !hasNotifications);
 
-		if (args[0].equalsIgnoreCase("reload")) {
-			moduleManager.reload();
-			messagesModule.reload();
-			commandSender.sendMessage(new TextComponent(messagesModule.getReload()));
-			return;
-		}
-
-		if (args[0].equalsIgnoreCase("stats")) {
-			commandSender.sendMessage(new TextComponent(messagesModule.getStats()));
-			return;
-		}
-
-		if (args[0].equalsIgnoreCase("blacklist")) {
-			if (args.length == 2) {
-				if (args[1].equalsIgnoreCase("save")) {
-
-					blacklistModule.saveBlacklist();
-					commandSender.sendMessage(new TextComponent(ChatColor.GREEN + "The blacklist has been saved!"));
-					return;
-				} else if (args[1].equalsIgnoreCase("load")) {
-					blacklistModule.loadBlacklist();
-					commandSender.sendMessage(new TextComponent(ChatColor.GREEN + "The blacklist has been loaded!"));
-					return;
+						if (!hasNotifications)
+							commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+									"%notification_enabled%", address, "")));
+						else
+							commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+									"%notification_disabled%", address, "")));
+					} else {
+						commandSender.sendMessage(new TextComponent(
+								placeholderModule.replacePlaceholders(locale, "%error_console%", address, "")));
+					}
+					break;
 				}
-			} else if (args.length == 3) {
-				if (args[1].equalsIgnoreCase("add")) {
-					final String ip = args[2];
-					blacklistModule.setBlacklisted(ip, true);
-					commandSender.sendMessage(new TextComponent(ChatColor.GREEN + ip + " added to the blacklist!"));
-					return;
-				} else if (args[1].equalsIgnoreCase("remove")) {
-					final String ip = args[2];
-					blacklistModule.setBlacklisted(ip, false);
-					commandSender.sendMessage(new TextComponent(ChatColor.GREEN + ip + " removed from the blacklist!"));
-					return;
+				case "reload": {
+					antiBot.reload();
+					commandSender.sendMessage(
+							new TextComponent(placeholderModule.replacePlaceholders(locale, "%reload%", address, "")));
+					break;
+				}
+				case "stats": {
+					commandSender.sendMessage(
+							new TextComponent(placeholderModule.replacePlaceholders(locale, "%stats%", address, "")));
+					break;
+				}
+				case "blacklist": {
+					if (args.length == 2) {
+						if (args[1].equalsIgnoreCase("save")) {
+							blacklistModule.save(configUtil);
+							commandSender
+									.sendMessage(new TextComponent(ChatColor.GREEN + "The blacklist has been saved!"));
+						} else if (args[1].equalsIgnoreCase("load")) {
+							blacklistModule.load(configUtil);
+							commandSender
+									.sendMessage(new TextComponent(ChatColor.GREEN + "The blacklist has been loaded!"));
+						} else {
+							commandSender.sendMessage(new TextComponent(ChatColor.RED + "/blacklist <load/save>"));
+						}
+					} else if (args.length == 3) {
+						if (args[1].equalsIgnoreCase("add")) {
+							final String ip = args[2];
+							blacklistModule.setBlacklisted(ip, true);
+							commandSender
+									.sendMessage(new TextComponent(ChatColor.GREEN + ip + " added to the blacklist!"));
+						} else if (args[1].equalsIgnoreCase("remove")) {
+							final String ip = args[2];
+							blacklistModule.setBlacklisted(ip, false);
+							commandSender.sendMessage(
+									new TextComponent(ChatColor.GREEN + ip + " removed from the blacklist!"));
+						} else {
+							commandSender
+									.sendMessage(new TextComponent(ChatColor.RED + "/blacklist <add/remove> <ip>"));
+						}
+					} else {
+						commandSender.sendMessage(new TextComponent(ChatColor.RED + "/blacklist <load/save>\n"
+								+ ChatColor.RED + "/blacklist <add/remove> <ip>"));
+					}
+
+					break;
+				}
+				case "whitelist": {
+					if (args.length == 2) {
+						if (args[1].equalsIgnoreCase("save")) {
+							whitelistModule.save(configUtil);
+							commandSender
+									.sendMessage(new TextComponent(ChatColor.GREEN + "The whitelist has been saved!"));
+						} else if (args[1].equalsIgnoreCase("load")) {
+							whitelistModule.load(configUtil);
+							commandSender
+									.sendMessage(new TextComponent(ChatColor.GREEN + "The whitelist has been loaded!"));
+						} else {
+							commandSender.sendMessage(new TextComponent(ChatColor.RED + "/whitelist <load/save>"));
+						}
+					} else if (args.length == 3) {
+						if (args[1].equalsIgnoreCase("add")) {
+							final String ip = args[2];
+							whitelistModule.setWhitelisted(ip, true);
+							commandSender
+									.sendMessage(new TextComponent(ChatColor.GREEN + ip + " added to the whitelist!"));
+						} else if (args[1].equalsIgnoreCase("remove")) {
+							final String ip = args[2];
+							whitelistModule.setWhitelisted(ip, false);
+							commandSender.sendMessage(
+									new TextComponent(ChatColor.GREEN + ip + " removed from the whitelist!"));
+						} else {
+							commandSender
+									.sendMessage(new TextComponent(ChatColor.RED + "/whitelist <add/remove> <ip>"));
+						}
+					} else {
+						commandSender.sendMessage(new TextComponent(ChatColor.RED + "/whitelist <load/save>\n"
+								+ ChatColor.RED + "/whitelist <add/remove> <ip>"));
+					}
+
+					break;
+				}
+				default: {
+					commandSender.sendMessage(new TextComponent(
+							placeholderModule.replacePlaceholders(locale, "%error_command%", address, "")));
+					break;
 				}
 			}
+		} else {
+			commandSender.sendMessage(
+					new TextComponent(placeholderModule.replacePlaceholders(locale, "%help%", address, "")));
 		}
-
-		if (args[0].equalsIgnoreCase("whitelist")) {
-			if (args.length == 2) {
-				if (args[1].equalsIgnoreCase("save")) {
-					whitelistModule.saveWhitelist();
-					commandSender.sendMessage(new TextComponent(ChatColor.GREEN + "The whitelist has been saved!"));
-					return;
-				} else if (args[1].equalsIgnoreCase("load")) {
-					whitelistModule.loadWhitelist();
-					commandSender.sendMessage(new TextComponent(ChatColor.GREEN + "The whitelist has been loaded!"));
-					return;
-				}
-			} else if (args.length == 3) {
-				if (args[1].equalsIgnoreCase("add")) {
-					final String ip = args[2];
-					whitelistModule.setWhitelisted(ip, true);
-					commandSender.sendMessage(new TextComponent(ChatColor.GREEN + ip + " added to the whitelist!"));
-					return;
-				} else if (args[1].equalsIgnoreCase("remove")) {
-					final String ip = args[2];
-					whitelistModule.setWhitelisted(ip, false);
-					commandSender.sendMessage(new TextComponent(ChatColor.GREEN + ip + " removed from the whitelist!"));
-					return;
-				}
-			}
-		}
-
-
-		commandSender.sendMessage(new TextComponent(messagesModule.getUnknownCommand()));
 	}
 }

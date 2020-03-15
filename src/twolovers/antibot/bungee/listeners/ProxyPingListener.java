@@ -3,50 +3,61 @@ package twolovers.antibot.bungee.listeners;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
-import twolovers.antibot.bungee.managers.ModuleManager;
-import twolovers.antibot.bungee.modules.BlacklistModule;
-import twolovers.antibot.bungee.modules.NotificationsModule;
-import twolovers.antibot.bungee.modules.RateLimitModule;
+import twolovers.antibot.bungee.instanceables.BotPlayer;
+import twolovers.antibot.bungee.instanceables.Punish;
+import twolovers.antibot.bungee.module.BlacklistModule;
+import twolovers.antibot.bungee.module.ModuleManager;
+import twolovers.antibot.bungee.module.PlayerModule;
+import twolovers.antibot.bungee.module.RateLimitModule;
 
 public class ProxyPingListener implements Listener {
+	private final Plugin plugin;
 	private final ModuleManager moduleManager;
 	private final RateLimitModule rateLimitModule;
 	private final BlacklistModule blacklistModule;
-	private final NotificationsModule notificationsModule;
 
-	public ProxyPingListener(ModuleManager moduleManager) {
+	public ProxyPingListener(final Plugin plugin, final ModuleManager moduleManager) {
+		this.plugin = plugin;
 		this.moduleManager = moduleManager;
 		this.rateLimitModule = moduleManager.getRateLimitModule();
 		this.blacklistModule = moduleManager.getBlacklistModule();
-		this.notificationsModule = moduleManager.getNotificationsModule();
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onProxyPing(final ProxyPingEvent event) {
-		final Connection connection = event.getConnection();
-
 		if (event.getResponse() != null) {
-			final String ip = connection.getAddress().getAddress().getHostAddress();
+			final PlayerModule playerModule = moduleManager.getPlayerModule();
+			final Connection connection = event.getConnection();
+			final String ip = connection.getAddress().getHostString();
 			final long currentTimeMillis = System.currentTimeMillis();
+			final BotPlayer botPlayer = playerModule.get(ip);
 
-			moduleManager.addPPS(ip, 1);
+			botPlayer.setPPS(botPlayer.getPPS() + 1);
 
-			if (rateLimitModule.isCondition(ip)) {
-				if (connection.isConnected())
-					connection.disconnect();
+			final int currentPPS = moduleManager.getCurrentPPS() + 1;
+			final int currentCPS = moduleManager.getCurrentCPS();
+			final int currentJPS = moduleManager.getCurrentJPS();
+
+			moduleManager.setCurrentPPS(currentPPS);
+
+			if (rateLimitModule.meet(currentPPS, currentCPS, currentJPS) && rateLimitModule.check(connection)) {
+				new Punish(plugin, moduleManager, "en", rateLimitModule.getPunishCommands(), connection, event,
+						"Ratelimit");
 
 				blacklistModule.setBlacklisted(ip, true);
-				notificationsModule.sendNotification("RateLimit", "PPS", ip);
-			} else if (blacklistModule.isCondition(ip)) {
-				if (connection.isConnected())
-					connection.disconnect();
-
-				notificationsModule.sendNotification("Blacklist", "PPS", ip);
+			} else if (blacklistModule.meet(currentPPS, currentCPS, currentJPS) && blacklistModule.check(connection)) {
+				new Punish(plugin, moduleManager, "en", rateLimitModule.getPunishCommands(), connection, event,
+						"Blacklist");
+			} else {
+				if (botPlayer.getAccounts().size() < 1) {
+					playerModule.setOffline(botPlayer);
+				}
 			}
 
-			moduleManager.setLastPing(ip, currentTimeMillis);
+			botPlayer.setLastPing(currentTimeMillis);
 		}
 	}
 }
