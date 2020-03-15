@@ -2,7 +2,6 @@ package twolovers.antibot.bungee.module;
 
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.PendingConnection;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
 import twolovers.antibot.bungee.instanceables.Conditions;
@@ -56,9 +55,8 @@ public class AccountsModule implements PunishModule {
 		if (connection instanceof PendingConnection) {
 			final PlayerModule playerModule = moduleManager.getPlayerModule();
 			final BotPlayer botPlayer = playerModule.get(connection.getAddress().getHostString());
-			final Collection<ProxiedPlayer> accounts = botPlayer.getAccounts();
 
-			return accounts.size() + 1 >= limit;
+			return botPlayer.getTotalAccounts() >= limit;
 		}
 
 		return false;

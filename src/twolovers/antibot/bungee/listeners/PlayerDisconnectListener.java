@@ -37,13 +37,13 @@ public class PlayerDisconnectListener implements Listener {
 			whitelistModule.setWhitelisted(ip, true);
 		}
 
-		botPlayer.removeAccount(proxiedPlayer);
+		botPlayer.removePlayer(proxiedPlayer);
 		botPlayer.setSwitched(false);
 		botPlayer.setLastConnection(currentTime);
 		notificationsModule.setNotifications(proxiedPlayer, false);
 		settingsModule.removePending(botPlayer);
 
-		if (botPlayer.getAccounts().size() < 1) {
+		if (botPlayer.getPlayers().size() < 1) {
 			playerModule.setOffline(botPlayer);
 		}
 	}

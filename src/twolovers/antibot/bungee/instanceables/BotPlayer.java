@@ -6,7 +6,8 @@ import java.util.HashSet;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class BotPlayer {
-    private final Collection<ProxiedPlayer> accounts = new HashSet<>();
+    private final Collection<ProxiedPlayer> players = new HashSet<>();
+    private final Collection<Integer> accounts = new HashSet<>();
     private final String hostString;
     private long lastPing = 0, lastConnection = 0, lastTimeZeroPPS = System.currentTimeMillis(),
             lastTimeZeroCPS = System.currentTimeMillis(), lastTimeZeroJPS = System.currentTimeMillis();
@@ -85,16 +86,19 @@ public class BotPlayer {
         this.lastPing = lastPing;
     }
 
-    public Collection<ProxiedPlayer> getAccounts() {
-        return accounts;
+    public Collection<ProxiedPlayer> getPlayers() {
+        return players;
     }
 
-    public void addAccount(final ProxiedPlayer account) {
-        this.accounts.add(account);
+    public void addPlayer(final ProxiedPlayer player) {
+        if (!this.players.contains(player)) {
+            this.players.add(player);
+            this.accounts.add(player.getName().hashCode());
+        }
     }
 
-    public void removeAccount(final ProxiedPlayer account) {
-        this.accounts.remove(account);
+    public void removePlayer(final ProxiedPlayer player) {
+        this.players.remove(player);
     }
 
     public boolean isSwitched() {
@@ -119,5 +123,9 @@ public class BotPlayer {
 
     public String getHostAddress() {
         return hostString;
+    }
+
+    public int getTotalAccounts() {
+        return accounts.size();
     }
 }

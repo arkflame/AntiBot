@@ -118,7 +118,7 @@ public class ModuleManager {
 				if (botPlayer.isSettings()) {
 					pendingIterator.remove();
 				} else if (currentTime - botPlayer.getLastConnection() >= settingsModule.getDelay()) {
-					for (final ProxiedPlayer proxiedPlayer : botPlayer.getAccounts()) {
+					for (final ProxiedPlayer proxiedPlayer : botPlayer.getPlayers()) {
 						final String language = BungeeUtil.getLanguage(proxiedPlayer, "en");
 
 						if (proxiedPlayer.isConnected() && settingsModule.check(proxiedPlayer)) {

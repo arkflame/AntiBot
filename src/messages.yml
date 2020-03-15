@@ -24,9 +24,10 @@ en:
     disabled: "&cYou disabled notifications!"
   kick:
     blocked: "&cYou are temporally blocked from this server!\n\n&7Reason:"
-    accounts: "%kick_blocked% &fToo many accounts. [RateLimit]\n&7Discord: &b&n%discord%&r"
+    accounts: "%kick_blocked% &fToo many accounts. [Accounts]\n&7Discord: &b&n%discord%&r"
     whitelist: "%kick_blocked% &fThe server is under attack. [Whitelist]\n&7Discord: &b&n%discord%&r"
     blacklist: "%kick_blocked% &fBot algorithm detected. [Blacklist]\n&7Discord: &b&n%discord%&r"
+    fastchat: "%kick_blocked% &fBot algorithm detected. [FastChat]\n&7Discord: &b&n%discord%&r"
     ratelimit: "%kick_blocked% &fToo many connections. [RateLimit]\n&7Discord: &b&n%discord%&r"
     nickname: "%kick_blocked% &fBot algorithm detected. [NickName]\n&7Discord: &b&n%discord%&r"
     settings: "%kick_blocked% &fBot algorithm detected. [Settings]\n&7Discord: &b&n%discord%&r"

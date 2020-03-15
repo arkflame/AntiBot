@@ -52,7 +52,7 @@ public class ProxyPingListener implements Listener {
 				new Punish(plugin, moduleManager, "en", rateLimitModule.getPunishCommands(), connection, event,
 						"Blacklist");
 			} else {
-				if (botPlayer.getAccounts().size() < 1) {
+				if (botPlayer.getPlayers().size() < 1) {
 					playerModule.setOffline(botPlayer);
 				}
 			}

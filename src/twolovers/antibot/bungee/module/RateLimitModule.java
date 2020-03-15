@@ -61,7 +61,7 @@ public class RateLimitModule implements PunishModule {
 
 		return conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
 				moduleManager.getLastJPS()) || System.currentTimeMillis() - botPlayer.getLastConnection() < throttle
-				|| botPlayer.getAccounts().size() > maxOnline;
+				|| botPlayer.getPlayers().size() > maxOnline;
 	}
 
 	@Override

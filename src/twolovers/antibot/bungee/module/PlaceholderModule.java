@@ -29,9 +29,24 @@ public class PlaceholderModule implements Module {
 		final BotPlayer botPlayer = playerModule.get(address);
 
 		for (final String key : placeholders.keySet()) {
-			string = string.replace(key, placeholders.get(key));
-			string = string.replace(key.replace("%" + locale + "_", "%"), placeholders.get(key));
-			string = string.replace(key.replace("%" + lang + "_", "%"), placeholders.get(key));
+			final String value = placeholders.get(key);
+
+			if (string.contains(key)) {
+				string = replacePlaceholders(locale, string.replace(key, value), address, checkName);
+			} else {
+				final String keyLocaleReplaced = key.replace("%" + locale + "_", "%");
+
+				if (string.contains(keyLocaleReplaced)) {
+					string = replacePlaceholders(locale, string.replace(keyLocaleReplaced, value), address, checkName);
+				} else {
+					final String keyLangReplaced = key.replace("%" + lang + "_", "%");
+
+					if (string.contains(keyLangReplaced)) {
+						string = replacePlaceholders(locale, string.replace(keyLangReplaced, value), address,
+								checkName);
+					}
+				}
+			}
 		}
 
 		return ChatColor.translateAlternateColorCodes('&',

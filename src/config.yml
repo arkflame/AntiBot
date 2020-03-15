@@ -119,7 +119,7 @@ reconnect:
   conditions:
     pps: 0
     cps: 3
-    jps: 2
+    jps: 1
 
   # Time to wait to reconnect for the first time. (In milliseconds)
   throttle: 800
@@ -170,17 +170,17 @@ register:
   commands:
     - "disconnect %kick_register%"
 
-# Checks if there are too many different accounts from the same IP.
+# Checks if there are too many different nicknames from the same IP.
 accounts:
   enabled: true
 
-  # Max different accounts a player can login while the check is active.
+  # Max different nicknames a player can login while the check is active.
   limit: 2
 
   conditions:
     pps: 0
-    cps: 8
-    jps: 2
+    cps: 6
+    jps: 1
 
   commands:
     - "disconnect %kick_accounts%"

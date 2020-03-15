@@ -61,7 +61,7 @@ public class PreLoginListener implements Listener {
 			else {
 				nicknameModule.setLastNickname(name);
 
-				if (botPlayer.getAccounts().size() < 1) {
+				if (botPlayer.getPlayers().size() < 1) {
 					playerModule.setOffline(botPlayer);
 				}
 			}
