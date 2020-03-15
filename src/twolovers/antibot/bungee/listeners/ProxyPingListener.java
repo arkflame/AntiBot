@@ -1,6 +1,6 @@
 package twolovers.antibot.bungee.listeners;
 
-import net.md_5.bungee.api.connection.Connection;
+import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -30,7 +30,7 @@ public class ProxyPingListener implements Listener {
 	public void onProxyPing(final ProxyPingEvent event) {
 		if (event.getResponse() != null) {
 			final PlayerModule playerModule = moduleManager.getPlayerModule();
-			final Connection connection = event.getConnection();
+			final PendingConnection connection = event.getConnection();
 			final String ip = connection.getAddress().getHostString();
 			final long currentTimeMillis = System.currentTimeMillis();
 			final BotPlayer botPlayer = playerModule.get(ip);

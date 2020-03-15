@@ -25,8 +25,7 @@ public class ConfigUtil {
 		try {
 			return ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(file));
 		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
+			return new Configuration();
 		}
 	}
 
@@ -40,20 +39,24 @@ public class ConfigUtil {
 
 			if (!configFile.exists()) {
 				final String[] files = file.split("/");
-				final InputStream inputStream = plugin.getClass().getClassLoader().getResourceAsStream(files[files.length - 1]);
+				final InputStream inputStream = plugin.getClass().getClassLoader()
+						.getResourceAsStream(files[files.length - 1]);
 				final File parentFile = configFile.getParentFile();
 
-				if (parentFile != null) parentFile.mkdirs();
+				if (parentFile != null)
+					parentFile.mkdirs();
 
 				if (inputStream != null)
 					Files.copy(inputStream, configFile.toPath());
 				else
 					configFile.createNewFile();
 
-				System.out.print(("[%pluginname%] File " + configFile + " has been created!").replace("%pluginname%", plugin.getDescription().getName()));
+				System.out.print(("[%pluginname%] File " + configFile + " has been created!").replace("%pluginname%",
+						plugin.getDescription().getName()));
 			}
 		} catch (final IOException e) {
-			System.out.print(("[%pluginname%] Unable to create configuration file!").replace("%pluginname%", plugin.getDescription().getName()));
+			System.out.print(("[%pluginname%] Unable to create configuration file!").replace("%pluginname%",
+					plugin.getDescription().getName()));
 		}
 	}
 
@@ -62,9 +65,11 @@ public class ConfigUtil {
 			try {
 				final File dataFolder = plugin.getDataFolder();
 
-				ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration, new File(file.replace("%datafolder%", dataFolder.toPath().toString())));
+				ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration,
+						new File(file.replace("%datafolder%", dataFolder.toPath().toString())));
 			} catch (final IOException e) {
-				System.out.print(("[%pluginname%] Unable to save configuration file!").replace("%pluginname%", plugin.getDescription().getName()));
+				System.out.print(("[%pluginname%] Unable to save configuration file!").replace("%pluginname%",
+						plugin.getDescription().getName()));
 			}
 		});
 	}
@@ -73,7 +78,8 @@ public class ConfigUtil {
 		plugin.getProxy().getScheduler().runAsync(plugin, () -> {
 			final File file1 = new File(file);
 
-			if (file1.exists()) file1.delete();
+			if (file1.exists())
+				file1.delete();
 		});
 	}
 }

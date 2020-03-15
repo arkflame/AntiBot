@@ -32,13 +32,11 @@ public class PreLoginListener implements Listener {
 			final String locale = "en", // Cant get locale on prelogin.
 					ip = connection.getAddress().getHostString();
 			final BotPlayer botPlayer = playerModule.get(ip);
-
-			botPlayer.setCPS(botPlayer.getCPS() + 1);
-
 			final int currentPPS = moduleManager.getCurrentPPS();
 			final int currentCPS = moduleManager.getCurrentCPS() + 1;
 			final int currentJPS = moduleManager.getCurrentJPS();
 
+			botPlayer.setCPS(botPlayer.getCPS() + 1);
 			moduleManager.setCurrentCPS(currentCPS);
 
 			if (blacklistModule.meet(currentPPS, currentCPS, currentJPS) && blacklistModule.check(connection))

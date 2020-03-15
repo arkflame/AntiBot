@@ -55,12 +55,19 @@ public class RateLimitModule implements PunishModule {
 	public boolean check(final Connection connection) {
 		final PlayerModule playerModule = moduleManager.getPlayerModule();
 		final BotPlayer botPlayer = playerModule.get(connection.getAddress().getHostString());
+		final long lastConnection;
 		final int pps = botPlayer.getPPS();
 		final int cps = botPlayer.getCPS();
 		final int jps = botPlayer.getJPS();
 
+		if (cps > 0) {
+			lastConnection = botPlayer.getLastConnection();
+		} else {
+			lastConnection = 0;
+		}
+
 		return conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
-				moduleManager.getLastJPS()) || System.currentTimeMillis() - botPlayer.getLastConnection() < throttle
+				moduleManager.getLastJPS()) || System.currentTimeMillis() - lastConnection < throttle
 				|| botPlayer.getPlayers().size() > maxOnline;
 	}
 
