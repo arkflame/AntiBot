@@ -14,6 +14,7 @@ public class WhitelistModule implements PunishModule {
 	private Collection<String> whitelist = new HashSet<>();
 	private Collection<String> punishCommands = new HashSet<>();
 	private Conditions conditions;
+	private long lastLockout = 0;
 	private int timeWhitelist, timeLockout;
 	private boolean enabled, requireSwitch;
 
@@ -73,15 +74,15 @@ public class WhitelistModule implements PunishModule {
 		final Configuration whitelistYml = configUtil.getConfiguration("%datafolder%/whitelist.yml");
 
 		if (whitelistYml != null) {
-			whitelistYml.set("", whitelist.toArray());
+			whitelistYml.set("", whitelist);
 			configUtil.saveConfiguration(whitelistYml, "%datafolder%/whitelist.yml");
 		}
 	}
 
 	@Override
 	public final boolean meet(int pps, int cps, int jps) {
-		return this.enabled && conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
-				moduleManager.getLastJPS());
+		return this.enabled && (conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
+				moduleManager.getLastJPS()) || System.currentTimeMillis() - this.lastLockout < this.timeLockout);
 	}
 
 	@Override
@@ -98,11 +99,13 @@ public class WhitelistModule implements PunishModule {
 		return requireSwitch;
 	}
 
-	public int getTimeLockout() {
-		return timeLockout;
-	}
-
 	public int getTimeWhitelist() {
 		return timeWhitelist;
+	}
+
+	public void setLastLockout(final long lastLockout) {
+		if (System.currentTimeMillis() - this.lastLockout >= this.timeLockout) {
+			this.lastLockout = lastLockout;
+		}
 	}
 }
