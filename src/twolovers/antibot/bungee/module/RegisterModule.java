@@ -62,7 +62,8 @@ public class RegisterModule implements PunishModule {
 	public final boolean check(final Connection connection, final String command) {
 		final String ip = connection.getAddress().getHostString();
 
-		return !ip.equals(lastRegisterIp) && command.equals(lastRegisterCommand);
+		return command.startsWith("/reg") && command.split(" ").length > 1 && !ip.equals(lastRegisterIp)
+				&& command.equals(lastRegisterCommand);
 	}
 
 	@Override

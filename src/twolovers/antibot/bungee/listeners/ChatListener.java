@@ -54,15 +54,14 @@ public class ChatListener implements Listener {
 							&& fastChatModule.check(proxiedPlayer)) {
 						new Punish(plugin, moduleManager, lang, fastChatModule.getPunishCommands(), proxiedPlayer,
 								event, "FastChat");
-					} else if (message.startsWith("/reg") && message.split(" ").length > 1) {
-						if (registerModule.meet(currentPPS, currentCPS, currentJPS)
-								&& registerModule.check(proxiedPlayer, message)) {
-							new Punish(plugin, moduleManager, lang, registerModule.getPunishCommands(), proxiedPlayer,
-									event, "Register");
-						} else {
-							registerModule.setLastRegisterCommand(proxiedPlayer.getAddress().getHostString(), message);
-						}
+					} else if (registerModule.meet(currentPPS, currentCPS, currentJPS)
+							&& registerModule.check(proxiedPlayer, message)) {
+						new Punish(plugin, moduleManager, lang, registerModule.getPunishCommands(), proxiedPlayer,
+								event, "Register");
+					} else {
+						registerModule.setLastRegisterCommand(proxiedPlayer.getAddress().getHostString(), message);
 					}
+
 				}
 			}
 		}

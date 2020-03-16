@@ -1,5 +1,6 @@
 package twolovers.antibot.bungee.module;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -113,22 +114,25 @@ public class ModuleManager {
 			final Iterator<BotPlayer> pendingIterator = settingsModule.getPending().iterator();
 
 			while (pendingIterator.hasNext()) {
-				final BotPlayer botPlayer = pendingIterator.next();
+				try {
+					final BotPlayer botPlayer = pendingIterator.next();
 
-				if (botPlayer.isSettings()) {
-					pendingIterator.remove();
-				} else if (currentTime - botPlayer.getLastConnection() >= settingsModule.getDelay()) {
-					for (final ProxiedPlayer proxiedPlayer : botPlayer.getPlayers()) {
-						final String language = BungeeUtil.getLanguage(proxiedPlayer, "en");
+					if (botPlayer.isSettings()) {
+						pendingIterator.remove();
+					} else if (currentTime - botPlayer.getLastConnection() >= settingsModule.getDelay()) {
+						pendingIterator.remove();
 
-						if (proxiedPlayer.isConnected() && settingsModule.check(proxiedPlayer)) {
-							new Punish(plugin, this, language, registerModule.getPunishCommands(), proxiedPlayer, null,
-									"Settings");
+						for (final ProxiedPlayer proxiedPlayer : botPlayer.getPlayers()) {
+							final String language = BungeeUtil.getLanguage(proxiedPlayer, "en");
+
+							if (proxiedPlayer.isConnected() && settingsModule.check(proxiedPlayer)) {
+								new Punish(plugin, this, language, registerModule.getPunishCommands(), proxiedPlayer,
+										null, "Settings");
+							}
 						}
-
 					}
-
-					pendingIterator.remove();
+				} catch (final ConcurrentModificationException ignored) {
+					// If a exception happens just ignore and remove in the next second.
 				}
 			}
 		}
@@ -136,11 +140,15 @@ public class ModuleManager {
 		final Iterator<BotPlayer> offlineIterator = playerModule.getOfflinePlayers().iterator();
 
 		while (offlineIterator.hasNext()) {
-			final BotPlayer botPlayer = offlineIterator.next();
+			try {
+				final BotPlayer botPlayer = offlineIterator.next();
 
-			if (currentTime - botPlayer.getLastConnection() > playerModule.getCacheTime()) {
-				playerModule.remove(botPlayer);
-				offlineIterator.remove();
+				if (currentTime - botPlayer.getLastConnection() > playerModule.getCacheTime()) {
+					playerModule.remove(botPlayer);
+					offlineIterator.remove();
+				}
+			} catch (final ConcurrentModificationException ignored) {
+				// If a exception happens just ignore and remove in the next second.
 			}
 		}
 
