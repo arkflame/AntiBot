@@ -127,8 +127,8 @@ reconnect:
   commands:
     - "disconnect %kick_reconnect%"
 
-# Blocks connections that switch servers and didnt send the Settings packet.
-# WARNING: Disable if you have false positives with Multi-Lobby plugins.
+# Blocks connections that didnt send the Settings packet.
+# WARNING: Disable if you have false positives with Multi-Lobby and Minechat. (Not recommended)
 settings:
   enabled: true
 

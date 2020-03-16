@@ -49,7 +49,7 @@ public class ProxyPingListener implements Listener {
 
 				blacklistModule.setBlacklisted(ip, true);
 			} else if (blacklistModule.meet(currentPPS, currentCPS, currentJPS) && blacklistModule.check(connection)) {
-				new Punish(plugin, moduleManager, "en", rateLimitModule.getPunishCommands(), connection, event,
+				new Punish(plugin, moduleManager, "en", blacklistModule.getPunishCommands(), connection, event,
 						"Blacklist");
 			} else {
 				if (botPlayer.getPlayers().size() < 1) {
