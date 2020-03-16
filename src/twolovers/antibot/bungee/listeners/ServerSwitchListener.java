@@ -42,7 +42,7 @@ public class ServerSwitchListener implements Listener {
 			if (!switched)
 				botPlayer.addSwitch();
 			else {
-				if (!botPlayer.isSettings()) {
+				if (settingsModule.meet(currentPPS, currentCPS, currentJPS) && !botPlayer.isSettings()) {
 					new Punish(plugin, moduleManager, "en", settingsModule.getPunishCommands(), proxiedPlayer, event,
 							"Settings");
 				}
