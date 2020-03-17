@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class ReconnectModule implements PunishModule {
+	private final String name = "reconnect";
 	private final ModuleManager moduleManager;
 	private Collection<String> punishCommands = new HashSet<>();
 	private Conditions conditions;
@@ -25,11 +26,15 @@ public class ReconnectModule implements PunishModule {
 	}
 
 	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
 		if (configYml != null) {
-			final String name = getName();
 			final int pps = configYml.getInt(name + ".conditions.pps", 0);
 			final int cps = configYml.getInt(name + ".conditions.cps", 0);
 			final int jps = configYml.getInt(name + ".conditions.jps", 0);
@@ -78,11 +83,6 @@ public class ReconnectModule implements PunishModule {
 	@Override
 	public Collection<String> getPunishCommands() {
 		return punishCommands;
-	}
-
-	@Override
-	public String getName() {
-		return "reconnect";
 	}
 
 	int getTimes() {

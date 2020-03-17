@@ -11,6 +11,7 @@ import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.shared.interfaces.PunishModule;
 
 public class RegisterModule implements PunishModule {
+	private final String name = "register";
 	private final ModuleManager moduleManager;
 	private Collection<String> punishCommands = new HashSet<>();
 	private Conditions conditions;
@@ -21,12 +22,16 @@ public class RegisterModule implements PunishModule {
 		this.moduleManager = moduleManager;
 	}
 
+	@Override
+	public final String getName() {
+		return name;
+	}
+
 	@EventHandler
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
 		if (configYml != null) {
-			final String name = getName();
 			final int pps = configYml.getInt(name + ".conditions.pps", 0);
 			final int cps = configYml.getInt(name + ".conditions.cps", 0);
 			final int jps = configYml.getInt(name + ".conditions.jps", 0);
@@ -41,11 +46,6 @@ public class RegisterModule implements PunishModule {
 	public final void setLastRegisterCommand(final String ip, final String command) {
 		this.lastRegisterIp = ip;
 		this.lastRegisterCommand = command;
-	}
-
-	@Override
-	public final String getName() {
-		return "register";
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package twolovers.antibot.bungee.commands;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -55,25 +57,25 @@ public class AntibotCommand extends Command {
 
 						if (!hasNotifications)
 							commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
-									"%notification_enabled%", address, "")));
+									"%notification_enabled%", address, "", new AtomicInteger(1))));
 						else
 							commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
-									"%notification_disabled%", address, "")));
+									"%notification_disabled%", address, "", new AtomicInteger(1))));
 					} else {
-						commandSender.sendMessage(new TextComponent(
-								placeholderModule.replacePlaceholders(locale, "%error_console%", address, "")));
+						commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+								"%error_console%", address, "", new AtomicInteger(1))));
 					}
 					break;
 				}
 				case "reload": {
 					antiBot.reload();
-					commandSender.sendMessage(
-							new TextComponent(placeholderModule.replacePlaceholders(locale, "%reload%", address, "")));
+					commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+							"%reload%", address, "", new AtomicInteger(1))));
 					break;
 				}
 				case "stats": {
-					commandSender.sendMessage(
-							new TextComponent(placeholderModule.replacePlaceholders(locale, "%stats%", address, "")));
+					commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale, "%stats%",
+							address, "", new AtomicInteger(1))));
 					break;
 				}
 				case "blacklist": {
@@ -147,14 +149,14 @@ public class AntibotCommand extends Command {
 					break;
 				}
 				default: {
-					commandSender.sendMessage(new TextComponent(
-							placeholderModule.replacePlaceholders(locale, "%error_command%", address, "")));
+					commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+							"%error_command%", address, "", new AtomicInteger(1))));
 					break;
 				}
 			}
 		} else {
-			commandSender.sendMessage(
-					new TextComponent(placeholderModule.replacePlaceholders(locale, "%help%", address, "")));
+			commandSender.sendMessage(new TextComponent(
+					placeholderModule.replacePlaceholders(locale, "%help%", address, "", new AtomicInteger(1))));
 		}
 	}
 }

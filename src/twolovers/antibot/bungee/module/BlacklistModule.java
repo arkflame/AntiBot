@@ -6,10 +6,12 @@ import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.shared.interfaces.PunishModule;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
 public class BlacklistModule implements PunishModule {
+	private final String name = "blacklist";
 	private final ModuleManager moduleManager;
 	private Collection<String> blacklist = new HashSet<>();
 	private Collection<String> punishCommands = new HashSet<>();
@@ -22,7 +24,7 @@ public class BlacklistModule implements PunishModule {
 
 	@Override
 	public String getName() {
-		return "blacklist";
+		return name;
 	}
 
 	@Override
@@ -30,7 +32,6 @@ public class BlacklistModule implements PunishModule {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
 		if (configYml != null) {
-			final String name = getName();
 			final int pps = configYml.getInt(name + ".conditions.pps", 0);
 			final int cps = configYml.getInt(name + ".conditions.cps", 0);
 			final int jps = configYml.getInt(name + ".conditions.jps", 0);
@@ -60,7 +61,7 @@ public class BlacklistModule implements PunishModule {
 		final Configuration blacklistYml = configUtil.getConfiguration("%datafolder%/blacklist.yml");
 
 		if (blacklistYml != null) {
-			blacklistYml.set("", blacklist);
+			blacklistYml.set("", new ArrayList(blacklist));
 			configUtil.saveConfiguration(blacklistYml, "%datafolder%/blacklist.yml");
 		}
 	}

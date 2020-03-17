@@ -44,29 +44,23 @@ public class PreLoginListener implements Listener {
 				moduleManager.setCurrentCPS(currentCPS);
 
 				if (whitelistModule.meet(currentPPS, currentCPS, currentJPS)) {
-					new Punish(plugin, moduleManager, locale, blacklistModule.getPunishCommands(), connection, event,
-							"Whitelist");
+					new Punish(plugin, moduleManager, locale, blacklistModule, connection, event);
 
 					whitelistModule.setLastLockout(currentTimeMillis);
 				} else if (blacklistModule.meet(currentPPS, currentCPS, currentJPS)
 						&& blacklistModule.check(connection))
-					new Punish(plugin, moduleManager, locale, blacklistModule.getPunishCommands(), connection, event,
-							"Blacklist");
+					new Punish(plugin, moduleManager, locale, blacklistModule, connection, event);
 				else if (accountsModule.meet(currentPPS, currentCPS, currentJPS) && accountsModule.check(connection))
-					new Punish(plugin, moduleManager, locale, accountsModule.getPunishCommands(), connection, event,
-							"Accounts");
+					new Punish(plugin, moduleManager, locale, accountsModule, connection, event);
 				else if (reconnectModule.meet(currentPPS, currentCPS, currentJPS)
 						&& reconnectModule.check(connection)) {
-					new Punish(plugin, moduleManager, locale, reconnectModule.getPunishCommands(), connection, event,
-							"Reconnect");
+					new Punish(plugin, moduleManager, locale, reconnectModule, connection, event);
 				} else if (rateLimitModule.meet(currentPPS, currentCPS, currentJPS)
 						&& rateLimitModule.check(connection)) {
-					new Punish(plugin, moduleManager, locale, rateLimitModule.getPunishCommands(), connection, event,
-							"Ratelimit");
+					new Punish(plugin, moduleManager, locale, rateLimitModule, connection, event);
 					blacklistModule.setBlacklisted(ip, true);
 				} else if (nicknameModule.meet(currentPPS, currentCPS, currentJPS) && nicknameModule.check(connection))
-					new Punish(plugin, moduleManager, locale, nicknameModule.getPunishCommands(), connection, event,
-							"Nickname");
+					new Punish(plugin, moduleManager, locale, nicknameModule, connection, event);
 				else {
 					botPlayer.setLastNickname(name);
 					nicknameModule.setLastNickname(name);
@@ -76,9 +70,13 @@ public class PreLoginListener implements Listener {
 					}
 				}
 
-				botPlayer.setSettings(false);
+				if (!botPlayer.getLastNickname().equals(name)) {
+					botPlayer.setSettings(false);
+				}
+
 				botPlayer.setLastConnection(currentTimeMillis);
 			} else {
+				final String name = connection.getName();
 				final String locale = "en", // Cant get locale on prelogin.
 						ip = connection.getAddress().getHostString();
 				final BotPlayer botPlayer = playerModule.get(ip);
@@ -91,12 +89,14 @@ public class PreLoginListener implements Listener {
 				moduleManager.setCurrentCPS(currentCPS);
 
 				if (rateLimitModule.meet(currentPPS, currentCPS, currentJPS) && rateLimitModule.check(connection)) {
-					new Punish(plugin, moduleManager, locale, rateLimitModule.getPunishCommands(), connection, event,
-							"Ratelimit");
+					new Punish(plugin, moduleManager, locale, rateLimitModule, connection, event);
 					blacklistModule.setBlacklisted(ip, true);
 				}
 
-				botPlayer.setSettings(false);
+				if (!botPlayer.getLastNickname().equals(name)) {
+					botPlayer.setSettings(false);
+				}
+
 				botPlayer.setLastConnection(currentTimeMillis);
 			}
 		}

@@ -11,6 +11,7 @@ import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.shared.interfaces.PunishModule;
 
 public class RateLimitModule implements PunishModule {
+	private final String name = "ratelimit";
 	private final ModuleManager moduleManager;
 	private Collection<String> punishCommands = new HashSet<>();
 	private Conditions conditions;
@@ -24,7 +25,7 @@ public class RateLimitModule implements PunishModule {
 
 	@Override
 	public String getName() {
-		return "ratelimit";
+		return name;
 	}
 
 	@Override
@@ -32,7 +33,6 @@ public class RateLimitModule implements PunishModule {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
 		if (configYml != null) {
-			final String name = getName();
 			final int pps = configYml.getInt(name + ".conditions.pps", 0);
 			final int cps = configYml.getInt(name + ".conditions.cps", 0);
 			final int jps = configYml.getInt(name + ".conditions.jps", 0);
@@ -55,20 +55,14 @@ public class RateLimitModule implements PunishModule {
 	public boolean check(final Connection connection) {
 		final PlayerModule playerModule = moduleManager.getPlayerModule();
 		final BotPlayer botPlayer = playerModule.get(connection.getAddress().getHostString());
-		final long lastConnection;
+		final long lastConnection = botPlayer.getLastConnection();
 		final int pps = botPlayer.getPPS();
 		final int cps = botPlayer.getCPS();
 		final int jps = botPlayer.getJPS();
+		final boolean isThrottle = (cps == 0 && pps >= 0) ? false
+				: System.currentTimeMillis() - lastConnection < throttle;
 
-		if (cps > 0) {
-			lastConnection = botPlayer.getLastConnection();
-		} else {
-			lastConnection = 0;
-		}
-
-		return conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
-				moduleManager.getLastJPS()) || System.currentTimeMillis() - lastConnection < throttle
-				|| botPlayer.getPlayers().size() > maxOnline;
+		return conditions.meet(pps, cps, jps, pps, cps, jps) || isThrottle || botPlayer.getPlayers().size() > maxOnline;
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.regex.Pattern;
 
 public class NicknameModule implements PunishModule {
+	private final String name = "nickname";
 	private final ModuleManager moduleManager;
 	private Collection<String> punishCommands = new HashSet<>();
 	private Collection<String> blacklist = new HashSet<>();
@@ -27,7 +28,7 @@ public class NicknameModule implements PunishModule {
 
 	@Override
 	public String getName() {
-		return "nickname";
+		return name;
 	}
 
 	@Override
@@ -35,7 +36,6 @@ public class NicknameModule implements PunishModule {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
 		if (configYml != null) {
-			final String name = getName();
 			final int pps = configYml.getInt(name + ".conditions.pps", 0);
 			final int cps = configYml.getInt(name + ".conditions.cps", 0);
 			final int jps = configYml.getInt(name + ".conditions.jps", 0);

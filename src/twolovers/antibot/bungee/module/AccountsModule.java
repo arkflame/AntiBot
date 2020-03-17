@@ -11,6 +11,7 @@ import twolovers.antibot.shared.interfaces.PunishModule;
 import java.util.*;
 
 public class AccountsModule implements PunishModule {
+	private final String name = "accounts";
 	private final ModuleManager moduleManager;
 	private Collection<String> punishCommands = new HashSet<>();
 	private Conditions conditions;
@@ -23,7 +24,7 @@ public class AccountsModule implements PunishModule {
 
 	@Override
 	public String getName() {
-		return "accounts";
+		return name;
 	}
 
 	@Override
@@ -31,7 +32,6 @@ public class AccountsModule implements PunishModule {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
 		if (configYml != null) {
-			final String name = getName();
 			final int pps = configYml.getInt(name + ".conditions.pps", 0);
 			final int cps = configYml.getInt(name + ".conditions.cps", 0);
 			final int jps = configYml.getInt(name + ".conditions.jps", 0);

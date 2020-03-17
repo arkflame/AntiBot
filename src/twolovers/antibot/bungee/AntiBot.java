@@ -3,13 +3,16 @@ package twolovers.antibot.bungee;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
-import net.md_5.bungee.api.scheduler.TaskScheduler;
 import twolovers.antibot.bungee.commands.AntibotCommand;
-import twolovers.antibot.bungee.listeners.*;
+import twolovers.antibot.bungee.listeners.ChatListener;
+import twolovers.antibot.bungee.listeners.PlayerDisconnectListener;
+import twolovers.antibot.bungee.listeners.PostLoginListener;
+import twolovers.antibot.bungee.listeners.PreLoginListener;
+import twolovers.antibot.bungee.listeners.ProxyPingListener;
+import twolovers.antibot.bungee.listeners.ServerSwitchListener;
+import twolovers.antibot.bungee.listeners.SettingsChangedListener;
 import twolovers.antibot.bungee.module.ModuleManager;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-
-import java.util.concurrent.TimeUnit;
 
 public class AntiBot extends Plugin {
 	private ModuleManager moduleManager;
@@ -22,7 +25,6 @@ public class AntiBot extends Plugin {
 
 	public void reload() {
 		final ProxyServer proxy = this.getProxy();
-		final TaskScheduler scheduler = proxy.getScheduler();
 		final PluginManager pluginManager = proxy.getPluginManager();
 
 		configUtil.createConfiguration("%datafolder%/config.yml");
@@ -33,8 +35,22 @@ public class AntiBot extends Plugin {
 		moduleManager = new ModuleManager(this, configUtil);
 		moduleManager.reload();
 
-		scheduler.cancel(this);
-		scheduler.schedule(this, moduleManager::update, 1, 1, TimeUnit.SECONDS);
+		/* Create a thread to update the ModuleManager each second.
+		 Workaround for a strange error using the BukkitScheduler. */
+		final Thread thread = new Thread() {
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						moduleManager.update();
+						Thread.sleep(1000L);
+					} catch (final Exception ignored) {
+					}
+				}
+			}
+		};
+
+		thread.start();
 
 		pluginManager.unregisterListeners(this);
 		pluginManager.registerListener(this, new ChatListener(this, moduleManager));

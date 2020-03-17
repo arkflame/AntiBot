@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class SettingsModule implements PunishModule {
+	private final String name = "settings";
 	private final ModuleManager moduleManager;
 	private final Collection<String> punishCommands = new HashSet<>();
 	private final Collection<BotPlayer> pending = new HashSet<>();
@@ -23,11 +24,15 @@ public class SettingsModule implements PunishModule {
 	}
 
 	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
 		if (configYml != null) {
-			final String name = getName();
 			final int pps = configYml.getInt(name + ".conditions.pps", 0);
 			final int cps = configYml.getInt(name + ".conditions.cps", 0);
 			final int jps = configYml.getInt(name + ".conditions.jps", 0);
@@ -38,11 +43,6 @@ public class SettingsModule implements PunishModule {
 			this.conditions = new Conditions(pps, cps, jps, false);
 			this.delay = configYml.getInt(name + ".delay", 5000);
 		}
-	}
-
-	@Override
-	public String getName() {
-		return "settings";
 	}
 
 	@Override

@@ -13,21 +13,25 @@ import net.md_5.bungee.api.plugin.Plugin;
 import twolovers.antibot.bungee.module.ModuleManager;
 import twolovers.antibot.bungee.module.NotificationsModule;
 import twolovers.antibot.bungee.module.PlaceholderModule;
+import twolovers.antibot.shared.interfaces.PunishModule;
 
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 public class Punish {
 	public Punish(final Plugin plugin, final ModuleManager moduleManager, final String locale,
-			final Collection<String> punishCommands, final Connection connection, final Event event,
-			final String checkName) {
+			final PunishModule punishModule, final Connection connection, final Event event) {
 		final PlaceholderModule placeholderModule = moduleManager.getPlaceholderModule();
 		final NotificationsModule notificationsModule = moduleManager.getNotificationsModule();
-		final String address = connection.getAddress().getHostString();
+		final Collection<String> punishCommands = punishModule.getPunishCommands();
+		final String punishModuleName = punishModule.getName(),
+				checkName = punishModuleName.substring(0, 1).toUpperCase() + punishModuleName.substring(1),
+				address = connection.getAddress().getHostString();
 
 		if (notificationsModule.isEnabled()) {
 			final String notification = placeholderModule.replacePlaceholders(locale, "%notification_message%", address,
-					checkName);
+					checkName, new AtomicInteger(0));
 			final TextComponent notificationTextComponent = new TextComponent(notification);
 
 			if (notificationsModule.isConsole())
@@ -43,7 +47,8 @@ public class Punish {
 			proxyPingEvent.setResponse(null);
 		} else if (!punishCommands.isEmpty()) {
 			for (String command : punishCommands) {
-				command = placeholderModule.replacePlaceholders(locale, command, address, checkName);
+				command = placeholderModule.replacePlaceholders(locale, command, address, checkName,
+						new AtomicInteger(0));
 
 				if (command.startsWith("disconnect")) {
 					if (event instanceof PreLoginEvent) {

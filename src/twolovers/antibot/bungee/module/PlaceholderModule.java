@@ -2,6 +2,7 @@ package twolovers.antibot.bungee.module;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -11,6 +12,7 @@ import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.shared.interfaces.Module;
 
 public class PlaceholderModule implements Module {
+	private final String name = "placeholder";
 	private final Plugin plugin;
 	private final ModuleManager moduleManager;
 	private final Map<String, String> placeholders;
@@ -22,28 +24,47 @@ public class PlaceholderModule implements Module {
 		this.placeholders = new HashMap<>();
 	}
 
-	public String replacePlaceholders(final String locale, String string, final String address,
-			final String checkName) {
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	public String replacePlaceholders(final String locale, String string, final String address, final String checkName,
+			final AtomicInteger counter) {
 		final ReconnectModule reconnectModule = moduleManager.getReconnectModule();
 		final PlayerModule playerModule = moduleManager.getPlayerModule();
 		final BotPlayer botPlayer = playerModule.get(address);
+		final int count = counter.getAndIncrement();
 
-		for (final String key : placeholders.keySet()) {
-			final String value = placeholders.get(key);
+		if (count >= 50) {
+			if (count == 50) {
+				plugin.getLogger().warning(
+						"A StackOverflow ocurred while replacing placeholders because a message was translated incorrectly. This is probably due to messages.yml being corrupt or modified wrongly.");
+			}
 
-			if (string.contains(key)) {
-				string = replacePlaceholders(locale, string.replace(key, value), address, checkName);
-			} else {
-				final String keyLocaleReplaced = key.replace("%" + locale + "_", "%");
+			return string;
+		} else {
+			for (final String key : placeholders.keySet()) {
+				final String value = placeholders.get(key);
 
-				if (string.contains(keyLocaleReplaced)) {
-					string = replacePlaceholders(locale, string.replace(keyLocaleReplaced, value), address, checkName);
+				if (string.contains(key)) {
+					string = replacePlaceholders(locale, string.replace(key, value), address, checkName, counter);
+					break;
 				} else {
-					final String keyLangReplaced = key.replace("%" + lang + "_", "%");
+					final String keyLocaleReplaced = key.replace("%" + locale + "_", "%");
 
-					if (string.contains(keyLangReplaced)) {
-						string = replacePlaceholders(locale, string.replace(keyLangReplaced, value), address,
-								checkName);
+					if (string.contains(keyLocaleReplaced)) {
+						string = replacePlaceholders(locale, string.replace(keyLocaleReplaced, value), address,
+								checkName, counter);
+						break;
+					} else {
+						final String keyLangReplaced = key.replace("%" + lang + "_", "%");
+
+						if (string.contains(keyLangReplaced)) {
+							string = replacePlaceholders(locale, string.replace(keyLangReplaced, value), address,
+									checkName, counter);
+							break;
+						}
 					}
 				}
 			}
@@ -61,11 +82,6 @@ public class PlaceholderModule implements Module {
 						.replace("%totalwls%", String.valueOf(moduleManager.getWhitelistModule().getSize()))
 						.replace("%address%", address).replace("%reconnect_times%",
 								String.valueOf(reconnectModule.getTimes() - botPlayer.getReconnects())));
-	}
-
-	@Override
-	public String getName() {
-		return "placeholder";
 	}
 
 	@Override

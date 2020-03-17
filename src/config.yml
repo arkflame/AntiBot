@@ -133,7 +133,7 @@ settings:
   enabled: true
 
   # Delay after joining to check if player sent Settings packet. (In milliseconds)
-  delay: 5000
+  delay: 10000
 
   conditions:
     pps: 0

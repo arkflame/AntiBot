@@ -16,9 +16,6 @@ public class PostLoginListener implements Listener {
 
 	public PostLoginListener(final Plugin plugin, final ModuleManager moduleManager) {
 		this.moduleManager = moduleManager;
-		this.moduleManager.getSettingsModule();
-		moduleManager.getRateLimitModule();
-		this.moduleManager.getBlacklistModule();
 	}
 
 	@EventHandler(priority = -128)

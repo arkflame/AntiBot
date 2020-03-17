@@ -41,8 +41,7 @@ public class ChatListener implements Listener {
 
 				if (locale == null) {
 					if (fastChatModule.meet(currentPPS, currentCPS, currentJPS)) {
-						new Punish(plugin, moduleManager, "en", fastChatModule.getPunishCommands(), proxiedPlayer,
-								event, "FastChat");
+						new Punish(plugin, moduleManager, "en", fastChatModule, proxiedPlayer, event);
 
 						moduleManager.getBlacklistModule().setBlacklisted(proxiedPlayer.getAddress().getHostString(),
 								true);
@@ -52,12 +51,10 @@ public class ChatListener implements Listener {
 
 					if (fastChatModule.meet(currentPPS, currentCPS, currentJPS)
 							&& fastChatModule.check(proxiedPlayer)) {
-						new Punish(plugin, moduleManager, lang, fastChatModule.getPunishCommands(), proxiedPlayer,
-								event, "FastChat");
+						new Punish(plugin, moduleManager, lang, fastChatModule, proxiedPlayer, event);
 					} else if (registerModule.meet(currentPPS, currentCPS, currentJPS)
 							&& registerModule.check(proxiedPlayer, message)) {
-						new Punish(plugin, moduleManager, lang, registerModule.getPunishCommands(), proxiedPlayer,
-								event, "Register");
+						new Punish(plugin, moduleManager, lang, registerModule, proxiedPlayer, event);
 					} else {
 						registerModule.setLastRegisterCommand(proxiedPlayer.getAddress().getHostString(), message);
 					}

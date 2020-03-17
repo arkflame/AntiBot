@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class FastChatModule implements PunishModule {
+	private final String name = "fastchat";
 	private final ModuleManager moduleManager;
 	private Collection<String> punishCommands = new HashSet<>();
 	private Conditions conditions;
@@ -22,11 +23,15 @@ public class FastChatModule implements PunishModule {
 	}
 
 	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
 		if (configYml != null) {
-			final String name = getName();
 			final int pps = configYml.getInt(name + ".conditions.pps", 0);
 			final int cps = configYml.getInt(name + ".conditions.cps", 0);
 			final int jps = configYml.getInt(name + ".conditions.jps", 0);
@@ -50,17 +55,12 @@ public class FastChatModule implements PunishModule {
 		final PlayerModule playerModule = moduleManager.getPlayerModule();
 		final BotPlayer botPlayer = playerModule.get(connection.getAddress().getHostString());
 
-		return (System.currentTimeMillis() - botPlayer.getLastConnection() < time || botPlayer == null
+		return (botPlayer == null || System.currentTimeMillis() - botPlayer.getLastConnection() < time
 				|| !botPlayer.isSettings());
 	}
 
 	@Override
 	public Collection<String> getPunishCommands() {
 		return punishCommands;
-	}
-
-	@Override
-	public String getName() {
-		return "fastchat";
 	}
 }

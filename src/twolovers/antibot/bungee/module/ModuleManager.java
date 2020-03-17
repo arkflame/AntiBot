@@ -126,8 +126,7 @@ public class ModuleManager {
 							final String language = BungeeUtil.getLanguage(proxiedPlayer, "en");
 
 							if (proxiedPlayer.isConnected() && settingsModule.check(proxiedPlayer)) {
-								new Punish(plugin, this, language, settingsModule.getPunishCommands(), proxiedPlayer,
-										null, "Settings");
+								new Punish(plugin, this, language, settingsModule, proxiedPlayer, null);
 							}
 						}
 					}
