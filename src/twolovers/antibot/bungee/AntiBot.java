@@ -43,7 +43,7 @@ public class AntiBot extends Plugin {
 				while (true) {
 					try {
 						moduleManager.update();
-						Thread.sleep(1000L);
+						sleep(1000L);
 					} catch (final Exception ignored) {
 					}
 				}

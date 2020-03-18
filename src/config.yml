@@ -119,7 +119,7 @@ reconnect:
   conditions:
     pps: 0
     cps: 3
-    jps: 1
+    jps: 0
 
   # Time to wait to reconnect for the first time. (In milliseconds)
   throttle: 800

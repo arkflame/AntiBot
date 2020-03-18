@@ -75,7 +75,7 @@ public class WhitelistModule implements PunishModule {
 		final Configuration whitelistYml = configUtil.getConfiguration("%datafolder%/whitelist.yml");
 
 		if (whitelistYml != null) {
-			whitelistYml.set("", new ArrayList(whitelist));
+			whitelistYml.set("", new ArrayList<>(whitelist));
 			configUtil.saveConfiguration(whitelistYml, "%datafolder%/whitelist.yml");
 		}
 	}

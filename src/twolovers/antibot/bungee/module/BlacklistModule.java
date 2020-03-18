@@ -61,7 +61,7 @@ public class BlacklistModule implements PunishModule {
 		final Configuration blacklistYml = configUtil.getConfiguration("%datafolder%/blacklist.yml");
 
 		if (blacklistYml != null) {
-			blacklistYml.set("", new ArrayList(blacklist));
+			blacklistYml.set("", new ArrayList<>(blacklist));
 			configUtil.saveConfiguration(blacklistYml, "%datafolder%/blacklist.yml");
 		}
 	}

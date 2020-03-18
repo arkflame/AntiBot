@@ -5,7 +5,6 @@ import java.util.HashSet;
 
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.config.Configuration;
-import net.md_5.bungee.event.EventHandler;
 import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.shared.interfaces.PunishModule;
@@ -27,7 +26,7 @@ public class RegisterModule implements PunishModule {
 		return name;
 	}
 
-	@EventHandler
+	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
