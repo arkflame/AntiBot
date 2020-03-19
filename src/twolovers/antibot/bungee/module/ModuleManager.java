@@ -1,6 +1,5 @@
 package twolovers.antibot.bungee.module;
 
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -120,8 +119,6 @@ public class ModuleManager {
 					if (botPlayer.isSettings()) {
 						pendingIterator.remove();
 					} else if (currentTime - botPlayer.getLastConnection() >= settingsModule.getDelay()) {
-						pendingIterator.remove();
-
 						for (final ProxiedPlayer proxiedPlayer : botPlayer.getPlayers()) {
 							final String language = BungeeUtil.getLanguage(proxiedPlayer, "en");
 
@@ -129,8 +126,10 @@ public class ModuleManager {
 								new Punish(plugin, this, language, settingsModule, proxiedPlayer, null);
 							}
 						}
+
+						pendingIterator.remove();
 					}
-				} catch (final ConcurrentModificationException ignored) {
+				} catch (final Exception ignored) {
 					// If a exception happens just ignore and remove in the next second.
 				}
 			}
@@ -146,7 +145,7 @@ public class ModuleManager {
 					playerModule.remove(botPlayer);
 					offlineIterator.remove();
 				}
-			} catch (final ConcurrentModificationException ignored) {
+			} catch (final Exception ignored) {
 				// If a exception happens just ignore and remove in the next second.
 			}
 		}

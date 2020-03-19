@@ -13,7 +13,7 @@ public class BotPlayer {
     private long lastPing = 0, lastConnection = 0, lastTimeZeroPPS = System.currentTimeMillis(),
             lastTimeZeroCPS = System.currentTimeMillis(), lastTimeZeroJPS = System.currentTimeMillis();
     private int pps = 0, cps = 0, jps = 0, reconnects = 0, switchs = 0;
-    private boolean settings = false;
+    private boolean settings = true;
 
     public BotPlayer(final String hostString) {
         this.hostString = hostString;
