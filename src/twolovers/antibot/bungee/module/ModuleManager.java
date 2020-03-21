@@ -1,7 +1,6 @@
 package twolovers.antibot.bungee.module;
 
-import java.util.Iterator;
-
+import java.util.HashSet;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
@@ -109,15 +108,11 @@ public class ModuleManager {
 	public void update() {
 		final long currentTime = System.currentTimeMillis();
 
-		if (settingsModule.meet(this.currentPPS, this.currentCPS, this.currentJPS)) {
-			final Iterator<BotPlayer> pendingIterator = settingsModule.getPending().iterator();
-
-			while (pendingIterator.hasNext()) {
-				try {
-					final BotPlayer botPlayer = pendingIterator.next();
-
+		try {
+			if (settingsModule.meet(this.currentPPS, this.currentCPS, this.currentJPS)) {
+				for (final BotPlayer botPlayer : new HashSet<>(settingsModule.getPending())) {
 					if (botPlayer.isSettings()) {
-						pendingIterator.remove();
+						settingsModule.removePending(botPlayer);
 					} else if (currentTime - botPlayer.getLastConnection() >= settingsModule.getDelay()) {
 						for (final ProxiedPlayer proxiedPlayer : botPlayer.getPlayers()) {
 							final String language = BungeeUtil.getLanguage(proxiedPlayer, "en");
@@ -127,27 +122,22 @@ public class ModuleManager {
 							}
 						}
 
-						pendingIterator.remove();
+						settingsModule.removePending(botPlayer);
 					}
-				} catch (final Exception ignored) {
-					// If a exception happens just ignore and remove in the next second.
 				}
 			}
+		} catch (final Exception exception) {
+			exception.printStackTrace();
 		}
 
-		final Iterator<BotPlayer> offlineIterator = playerModule.getOfflinePlayers().iterator();
-
-		while (offlineIterator.hasNext()) {
-			try {
-				final BotPlayer botPlayer = offlineIterator.next();
-
+		try {
+			for (final BotPlayer botPlayer : new HashSet<>(playerModule.getOfflinePlayers())) {
 				if (currentTime - botPlayer.getLastConnection() > playerModule.getCacheTime()) {
 					playerModule.remove(botPlayer);
-					offlineIterator.remove();
 				}
-			} catch (final Exception ignored) {
-				// If a exception happens just ignore and remove in the next second.
 			}
+		} catch (final Exception exception) {
+			exception.printStackTrace();
 		}
 
 		this.lastPPS = currentPPS;

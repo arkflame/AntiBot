@@ -19,6 +19,7 @@ en:
   error:
     command: "&cInvalid argument! Use /ab help to see available commands!"
     console: "&cYou can't run this command from the console!"
+    permission: "&cInsufficent permissions!"
   notification:
     enabled: "&aYou enabled notifications!"
     disabled: "&cYou disabled notifications!"
@@ -47,6 +48,7 @@ es:
   error:
     command: "&cArgumento invalido! Usa /ab help para ver comandos!"
     console: "&cNo puedes usar ese comando desde la consola!"
+    permission: "&cPermisos insuficientes!"
   notification:
     enabled: "&aHabilitaste las notificaciones!"
     disabled: "&cDeshabilitaste las notificaciones!"

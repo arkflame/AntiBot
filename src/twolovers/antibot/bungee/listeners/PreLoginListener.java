@@ -72,6 +72,7 @@ public class PreLoginListener implements Listener {
 
 				if (!botPlayer.getLastNickname().equals(name)) {
 					botPlayer.setSettings(false);
+					botPlayer.resetSwitchs();
 				}
 
 				botPlayer.setLastConnection(currentTimeMillis);

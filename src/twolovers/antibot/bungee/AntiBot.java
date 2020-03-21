@@ -45,9 +45,7 @@ public class AntiBot extends Plugin {
 						moduleManager.update();
 						sleep(1000L);
 					} catch (final Exception exception) {
-						if (this.isInterrupted() || !this.isAlive()) {
-							this.start();
-						}
+						exception.printStackTrace();
 					}
 				}
 			}

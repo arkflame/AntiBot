@@ -7,7 +7,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class BotPlayer {
     private final Collection<ProxiedPlayer> players = new HashSet<>();
-    private final Collection<Integer> accounts = new HashSet<>();
+    private final Collection<String> accounts = new HashSet<>();
     private final String hostString;
     private String lastNickname = "";
     private long lastPing = 0, lastConnection = 0, lastTimeZeroPPS = System.currentTimeMillis(),
@@ -94,7 +94,7 @@ public class BotPlayer {
     public void addPlayer(final ProxiedPlayer player) {
         if (!this.players.contains(player)) {
             this.players.add(player);
-            this.accounts.add(player.getName().hashCode());
+            this.accounts.add(player.getName());
         }
     }
 
@@ -120,6 +120,10 @@ public class BotPlayer {
 
     public void addSwitch() {
         this.switchs += 1;
+    }
+
+    public void resetSwitchs() {
+        this.switchs = 0;
     }
 
     public String getHostAddress() {

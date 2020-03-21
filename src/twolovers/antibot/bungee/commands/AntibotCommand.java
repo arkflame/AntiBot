@@ -46,21 +46,28 @@ public class AntibotCommand extends Command {
 			locale = "en";
 		}
 
-		if (args.length > 0) {
+		if (args.length > 0 && !args[0].equals("help")) {
 			switch (args[0].toLowerCase()) {
 				case "notify": {
 					if (proxiedPlayer != null) {
-						final NotificationsModule notificationsModule = moduleManager.getNotificationsModule();
-						final boolean hasNotifications = notificationsModule.hasNotifications(proxiedPlayer);
+						if (commandSender.hasPermission("antibot.notify")
+								|| commandSender.hasPermission("antibot.admin")) {
+							final NotificationsModule notificationsModule = moduleManager.getNotificationsModule();
+							final boolean hasNotifications = notificationsModule.hasNotifications(proxiedPlayer);
 
-						notificationsModule.setNotifications(proxiedPlayer, !hasNotifications);
+							notificationsModule.setNotifications(proxiedPlayer, !hasNotifications);
 
-						if (!hasNotifications)
-							commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
-									"%notification_enabled%", address, "", new AtomicInteger(1))));
-						else
-							commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
-									"%notification_disabled%", address, "", new AtomicInteger(1))));
+							if (!hasNotifications)
+								commandSender
+										.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+												"%notification_enabled%", address, "", new AtomicInteger(1))));
+							else
+								commandSender
+										.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+												"%notification_disabled%", address, "", new AtomicInteger(1))));
+						}
+						commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+								"%error_permission%", address, "", new AtomicInteger(1))));
 					} else {
 						commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
 								"%error_console%", address, "", new AtomicInteger(1))));
@@ -68,83 +75,99 @@ public class AntibotCommand extends Command {
 					break;
 				}
 				case "reload": {
-					antiBot.reload();
-					commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
-							"%reload%", address, "", new AtomicInteger(1))));
+					if (commandSender.hasPermission("antibot.admin")) {
+						antiBot.reload();
+						commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+								"%reload%", address, "", new AtomicInteger(1))));
+					} else
+						commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+								"%error_permission%", address, "", new AtomicInteger(1))));
 					break;
 				}
 				case "stats": {
-					commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale, "%stats%",
-							address, "", new AtomicInteger(1))));
+					if (commandSender.hasPermission("antibot.admin")) {
+						commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+								"%stats%", address, "", new AtomicInteger(1))));
+					} else
+						commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+								"%error_permission%", address, "", new AtomicInteger(1))));
 					break;
 				}
 				case "blacklist": {
-					if (args.length == 2) {
-						if (args[1].equalsIgnoreCase("save")) {
-							blacklistModule.save(configUtil);
-							commandSender
-									.sendMessage(new TextComponent(ChatColor.GREEN + "The blacklist has been saved!"));
-						} else if (args[1].equalsIgnoreCase("load")) {
-							blacklistModule.load(configUtil);
-							commandSender
-									.sendMessage(new TextComponent(ChatColor.GREEN + "The blacklist has been loaded!"));
+					if (commandSender.hasPermission("antibot.admin")) {
+						if (args.length == 2) {
+							if (args[1].equalsIgnoreCase("save")) {
+								blacklistModule.save(configUtil);
+								commandSender.sendMessage(
+										new TextComponent(ChatColor.GREEN + "The blacklist has been saved!"));
+							} else if (args[1].equalsIgnoreCase("load")) {
+								blacklistModule.load(configUtil);
+								commandSender.sendMessage(
+										new TextComponent(ChatColor.GREEN + "The blacklist has been loaded!"));
+							} else {
+								commandSender.sendMessage(new TextComponent(ChatColor.RED + "/blacklist <load/save>"));
+							}
+						} else if (args.length == 3) {
+							if (args[1].equalsIgnoreCase("add")) {
+								final String ip = args[2];
+								blacklistModule.setBlacklisted(ip, true);
+								commandSender.sendMessage(
+										new TextComponent(ChatColor.GREEN + ip + " added to the blacklist!"));
+							} else if (args[1].equalsIgnoreCase("remove")) {
+								final String ip = args[2];
+								blacklistModule.setBlacklisted(ip, false);
+								commandSender.sendMessage(
+										new TextComponent(ChatColor.GREEN + ip + " removed from the blacklist!"));
+							} else {
+								commandSender
+										.sendMessage(new TextComponent(ChatColor.RED + "/blacklist <add/remove> <ip>"));
+							}
 						} else {
-							commandSender.sendMessage(new TextComponent(ChatColor.RED + "/blacklist <load/save>"));
+							commandSender.sendMessage(new TextComponent(ChatColor.RED + "/blacklist <load/save>\n"
+									+ ChatColor.RED + "/blacklist <add/remove> <ip>"));
 						}
-					} else if (args.length == 3) {
-						if (args[1].equalsIgnoreCase("add")) {
-							final String ip = args[2];
-							blacklistModule.setBlacklisted(ip, true);
-							commandSender
-									.sendMessage(new TextComponent(ChatColor.GREEN + ip + " added to the blacklist!"));
-						} else if (args[1].equalsIgnoreCase("remove")) {
-							final String ip = args[2];
-							blacklistModule.setBlacklisted(ip, false);
-							commandSender.sendMessage(
-									new TextComponent(ChatColor.GREEN + ip + " removed from the blacklist!"));
-						} else {
-							commandSender
-									.sendMessage(new TextComponent(ChatColor.RED + "/blacklist <add/remove> <ip>"));
-						}
-					} else {
-						commandSender.sendMessage(new TextComponent(ChatColor.RED + "/blacklist <load/save>\n"
-								+ ChatColor.RED + "/blacklist <add/remove> <ip>"));
-					}
+					} else
+						commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+								"%error_permission%", address, "", new AtomicInteger(1))));
 
 					break;
 				}
 				case "whitelist": {
-					if (args.length == 2) {
-						if (args[1].equalsIgnoreCase("save")) {
-							whitelistModule.save(configUtil);
-							commandSender
-									.sendMessage(new TextComponent(ChatColor.GREEN + "The whitelist has been saved!"));
-						} else if (args[1].equalsIgnoreCase("load")) {
-							whitelistModule.load(configUtil);
-							commandSender
-									.sendMessage(new TextComponent(ChatColor.GREEN + "The whitelist has been loaded!"));
+					if (commandSender.hasPermission("antibot.admin")) {
+						if (args.length == 2) {
+							if (args[1].equalsIgnoreCase("save")) {
+								whitelistModule.save(configUtil);
+								commandSender.sendMessage(
+										new TextComponent(ChatColor.GREEN + "The whitelist has been saved!"));
+							} else if (args[1].equalsIgnoreCase("load")) {
+								whitelistModule.load(configUtil);
+								commandSender.sendMessage(
+										new TextComponent(ChatColor.GREEN + "The whitelist has been loaded!"));
+							} else {
+								commandSender.sendMessage(new TextComponent(ChatColor.RED + "/whitelist <load/save>"));
+							}
+						} else if (args.length == 3) {
+							if (args[1].equalsIgnoreCase("add")) {
+								final String ip = args[2];
+								whitelistModule.setWhitelisted(ip, true);
+								commandSender.sendMessage(
+										new TextComponent(ChatColor.GREEN + ip + " added to the whitelist!"));
+							} else if (args[1].equalsIgnoreCase("remove")) {
+								final String ip = args[2];
+								whitelistModule.setWhitelisted(ip, false);
+								commandSender.sendMessage(
+										new TextComponent(ChatColor.GREEN + ip + " removed from the whitelist!"));
+							} else {
+								commandSender
+										.sendMessage(new TextComponent(ChatColor.RED + "/whitelist <add/remove> <ip>"));
+							}
 						} else {
-							commandSender.sendMessage(new TextComponent(ChatColor.RED + "/whitelist <load/save>"));
+							commandSender.sendMessage(new TextComponent(ChatColor.RED + "/whitelist <load/save>\n"
+									+ ChatColor.RED + "/whitelist <add/remove> <ip>"));
 						}
-					} else if (args.length == 3) {
-						if (args[1].equalsIgnoreCase("add")) {
-							final String ip = args[2];
-							whitelistModule.setWhitelisted(ip, true);
-							commandSender
-									.sendMessage(new TextComponent(ChatColor.GREEN + ip + " added to the whitelist!"));
-						} else if (args[1].equalsIgnoreCase("remove")) {
-							final String ip = args[2];
-							whitelistModule.setWhitelisted(ip, false);
-							commandSender.sendMessage(
-									new TextComponent(ChatColor.GREEN + ip + " removed from the whitelist!"));
-						} else {
-							commandSender
-									.sendMessage(new TextComponent(ChatColor.RED + "/whitelist <add/remove> <ip>"));
-						}
-					} else {
-						commandSender.sendMessage(new TextComponent(ChatColor.RED + "/whitelist <load/save>\n"
-								+ ChatColor.RED + "/whitelist <add/remove> <ip>"));
-					}
+					} else
+						commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+								"%error_permission%", address, "", new AtomicInteger(1))));
 
 					break;
 				}

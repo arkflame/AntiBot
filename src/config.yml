@@ -33,7 +33,7 @@ notifications:
 # Module that handles player data stored to detect bots.
 player:
   # Time to wait before removing disconnected players from the cache. (In milliseconds)
-  cache_time: 15000
+  cache_time: 20000
 
 # Adds real players to a list on disconnect so they can bypass the checks.
 # If conditions are achieved Lockout will activate and only Whitelisted will be able to join.
