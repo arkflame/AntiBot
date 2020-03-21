@@ -21,7 +21,7 @@ public class AntibotCommand extends Command {
 	private final ModuleManager moduleManager;
 
 	public AntibotCommand(final AntiBot antiBot, final ConfigUtil configUtil, final ModuleManager moduleManager) {
-		super("antibot", "", "ab");
+		super("antibot", "antibot.admin", "ab");
 		this.antiBot = antiBot;
 		this.configUtil = configUtil;
 		this.moduleManager = moduleManager;
