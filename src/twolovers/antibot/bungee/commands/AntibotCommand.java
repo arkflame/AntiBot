@@ -110,14 +110,20 @@ public class AntibotCommand extends Command {
 						} else if (args.length == 3) {
 							if (args[1].equalsIgnoreCase("add")) {
 								final String ip = args[2];
-								blacklistModule.setBlacklisted(ip, true);
-								commandSender.sendMessage(
-										new TextComponent(ChatColor.GREEN + ip + " added to the blacklist!"));
+								if (!blacklistModule.blacklist.contains(ip)) {
+									blacklistModule.setBlacklisted(ip, true);
+									commandSender.sendMessage(
+											new TextComponent(ChatColor.GREEN + ip + " added to the blacklist!"));
+								} else commandSender.sendMessage(
+										new TextComponent(ChatColor.RED + ip + " is already blacklisted!"));
 							} else if (args[1].equalsIgnoreCase("remove")) {
 								final String ip = args[2];
-								blacklistModule.setBlacklisted(ip, false);
-								commandSender.sendMessage(
-										new TextComponent(ChatColor.GREEN + ip + " removed from the blacklist!"));
+								if (blacklistModule.blacklist.contains(ip)) {
+									blacklistModule.setBlacklisted(ip, false);
+									commandSender.sendMessage(
+											new TextComponent(ChatColor.GREEN + ip + " removed from the blacklist!"));
+								} else commandSender.sendMessage(
+										new TextComponent(ChatColor.RED + ip + " is not blacklisted!"));
 							} else {
 								commandSender
 										.sendMessage(new TextComponent(ChatColor.RED + "/blacklist <add/remove> <ip>"));
@@ -149,14 +155,20 @@ public class AntibotCommand extends Command {
 						} else if (args.length == 3) {
 							if (args[1].equalsIgnoreCase("add")) {
 								final String ip = args[2];
-								whitelistModule.setWhitelisted(ip, true);
-								commandSender.sendMessage(
-										new TextComponent(ChatColor.GREEN + ip + " added to the whitelist!"));
+								if (!whitelistModule.whitelist.contains(ip)) {
+									whitelistModule.setWhitelisted(ip, true);
+									commandSender.sendMessage(
+											new TextComponent(ChatColor.GREEN + ip + " added to the whitelist!"));
+								} else commandSender.sendMessage(
+											new TextComponent(ChatColor.RED + ip + " is already whitelisted!"));
 							} else if (args[1].equalsIgnoreCase("remove")) {
 								final String ip = args[2];
-								whitelistModule.setWhitelisted(ip, false);
-								commandSender.sendMessage(
-										new TextComponent(ChatColor.GREEN + ip + " removed from the whitelist!"));
+								if (whitelistModule.whitelist.contains(ip)) {
+									whitelistModule.setWhitelisted(ip, false);
+									commandSender.sendMessage(
+											new TextComponent(ChatColor.GREEN + ip + " removed from the whitelist!"));
+								} else commandSender.sendMessage(
+											new TextComponent(ChatColor.RED + ip + " is not whitelisted!"));
 							} else {
 								commandSender
 										.sendMessage(new TextComponent(ChatColor.RED + "/whitelist <add/remove> <ip>"));
