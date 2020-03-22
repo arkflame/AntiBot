@@ -13,7 +13,7 @@ import java.util.HashSet;
 public class BlacklistModule implements PunishModule {
 	private final String name = "blacklist";
 	private final ModuleManager moduleManager;
-	private Collection<String> blacklist = new HashSet<>();
+	public Collection<String> blacklist = new HashSet<>();
 	private Collection<String> punishCommands = new HashSet<>();
 	private Conditions conditions;
 	private boolean enabled = true;
