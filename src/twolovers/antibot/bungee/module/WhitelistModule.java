@@ -13,7 +13,7 @@ import twolovers.antibot.shared.interfaces.PunishModule;
 public class WhitelistModule implements PunishModule {
 	private final String name = "whitelist";
 	private final ModuleManager moduleManager;
-	public final Collection<String> whitelist = new HashSet<>();
+	private final Collection<String> whitelist = new HashSet<>();
 	private final Collection<String> punishCommands = new HashSet<>();
 	private Conditions conditions;
 	private long lastLockout = 0;
@@ -69,6 +69,10 @@ public class WhitelistModule implements PunishModule {
 
 	final int getSize() {
 		return whitelist.size();
+	}
+	
+	public final Collection<String> getWhitelist() {
+		return this.whitelist;
 	}
 
 	public final void save(final ConfigUtil configUtil) {
