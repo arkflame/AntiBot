@@ -71,8 +71,8 @@ public class WhitelistModule implements PunishModule {
 		return whitelist.size();
 	}
 	
-	public final Collection<String> getWhitelist() {
-		return this.whitelist;
+	public final boolean isWhitelisted(final String ip) {
+		return this.whitelist.contains(ip);
 	}
 
 	public final void save(final ConfigUtil configUtil) {
