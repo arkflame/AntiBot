@@ -114,7 +114,7 @@ public class AntibotCommand extends Command {
 
 							if (args[1].equalsIgnoreCase("add")) {
 								if (matcher.matches()) {
-									if (!blacklistModule.getBlacklist().contains(ip)) {
+									if (!blacklistModule.isBlacklisted(ip)) {
 										blacklistModule.setBlacklisted(ip, true);
 										commandSender.sendMessage(new TextComponent(ChatColor.GREEN + ip + " added to the blacklist!"));
 									} else commandSender.sendMessage(new TextComponent(ChatColor.RED + ip + " is already blacklisted!"));
@@ -157,7 +157,7 @@ public class AntibotCommand extends Command {
 
 							if (args[1].equalsIgnoreCase("add")) {
 								if (matcher.matches()) {
-									if (!whitelistModule.getWhitelist().contains(ip)) {
+									if (!whitelistModule.isWhitelisted(ip)) {
 										blacklistModule.setBlacklisted(ip, false);
 										whitelistModule.setWhitelisted(ip, true);
 										commandSender.sendMessage(new TextComponent(ChatColor.GREEN + ip + " added to the whitelist!"));
