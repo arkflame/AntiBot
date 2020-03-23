@@ -19,6 +19,7 @@ public class AntibotCommand extends Command {
 	private final AntiBot antiBot;
 	private final ConfigUtil configUtil;
 	private final ModuleManager moduleManager;
+	private final Pattern ipPattern = Pattern.compile("([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})");
 
 	public AntibotCommand(final AntiBot antiBot, final ConfigUtil configUtil, final ModuleManager moduleManager) {
 		super("antibot", "", "ab");
@@ -35,8 +36,6 @@ public class AntibotCommand extends Command {
 		final ProxiedPlayer proxiedPlayer;
 		final String address;
 		final String locale;
-		
-		Pattern pattern = Pattern.compile("([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})");
 
 		if (commandSender instanceof ProxiedPlayer) {
 			proxiedPlayer = (ProxiedPlayer) commandSender;
@@ -111,8 +110,7 @@ public class AntibotCommand extends Command {
 							}
 						} else if (args.length == 3) {
 							final String ip = args[2];
-
-							Matcher matcher = pattern.matcher(ip);
+							final Matcher matcher = ipPattern.matcher(ip);
 
 							if (args[1].equalsIgnoreCase("add")) {
 								if (matcher.matches()) {
@@ -155,8 +153,7 @@ public class AntibotCommand extends Command {
 							}
 						} else if (args.length == 3) {
 							final String ip = args[2];
-
-							Matcher matcher = pattern.matcher(ip);
+							final Matcher matcher = ipPattern.matcher(ip);
 
 							if (args[1].equalsIgnoreCase("add")) {
 								if (matcher.matches()) {
