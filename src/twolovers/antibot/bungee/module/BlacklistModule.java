@@ -57,8 +57,8 @@ public class BlacklistModule implements PunishModule {
 		return blacklist.size();
 	}
 	
-	public final Collection<String> getBlacklist() {
-		return this.blacklist;
+	public final boolean isBlacklisted(final String ip) {
+		return this.blacklist.contains(ip);
 	}
 
 	public void save(final ConfigUtil configUtil) {
