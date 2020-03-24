@@ -55,8 +55,13 @@ public class PlayerModule implements Module {
     }
 
     public void remove(final BotPlayer botPlayer) {
-        this.players.remove(botPlayer.getHostAddress());
-        this.offlinePlayers.remove(botPlayer);
+        final String hostAddress = botPlayer.getHostAddress();
+
+        if (this.players.containsKey(hostAddress))
+            this.players.remove(hostAddress);
+
+        if (this.offlinePlayers.contains(botPlayer))
+            this.offlinePlayers.remove(botPlayer);
     }
 
     public long getCacheTime() {

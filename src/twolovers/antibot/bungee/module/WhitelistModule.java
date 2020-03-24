@@ -109,4 +109,8 @@ public class WhitelistModule implements PunishModule {
 			this.lastLockout = lastLockout;
 		}
 	}
+
+	public boolean isWhitelisted(final String ip) {
+		return this.whitelist.contains(ip);
+	}
 }

@@ -90,4 +90,8 @@ public class BlacklistModule implements PunishModule {
 	public Collection<String> getPunishCommands() {
 		return punishCommands;
 	}
+
+	public boolean isBlacklisted(String ip) {
+		return this.blacklist.contains(ip);
+	}
 }

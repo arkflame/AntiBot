@@ -1,6 +1,7 @@
 package twolovers.antibot.bungee.module;
 
-import java.util.HashSet;
+import java.util.Iterator;
+
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
@@ -108,11 +109,15 @@ public class ModuleManager {
 	public void update() {
 		final long currentTime = System.currentTimeMillis();
 
-		try {
-			if (settingsModule.meet(this.currentPPS, this.currentCPS, this.currentJPS)) {
-				for (final BotPlayer botPlayer : new HashSet<>(settingsModule.getPending())) {
+		if (settingsModule.meet(this.currentPPS, this.currentCPS, this.currentJPS)) {
+			final Iterator<BotPlayer> pendingIterator = settingsModule.getPending().iterator();
+
+			while (pendingIterator.hasNext()) {
+				try {
+					final BotPlayer botPlayer = pendingIterator.next();
+
 					if (botPlayer.isSettings()) {
-						settingsModule.removePending(botPlayer);
+						pendingIterator.remove();
 					} else if (currentTime - botPlayer.getLastConnection() >= settingsModule.getDelay()) {
 						for (final ProxiedPlayer proxiedPlayer : botPlayer.getPlayers()) {
 							final String language = BungeeUtil.getLanguage(proxiedPlayer, "en");
@@ -122,22 +127,27 @@ public class ModuleManager {
 							}
 						}
 
-						settingsModule.removePending(botPlayer);
+						pendingIterator.remove();
 					}
+				} catch (final Exception exception) {
+					exception.printStackTrace();
 				}
 			}
-		} catch (final Exception exception) {
-			exception.printStackTrace();
 		}
 
-		try {
-			for (final BotPlayer botPlayer : new HashSet<>(playerModule.getOfflinePlayers())) {
+		final Iterator<BotPlayer> offlineIterator = playerModule.getOfflinePlayers().iterator();
+
+		while (offlineIterator.hasNext()) {
+			final BotPlayer botPlayer = offlineIterator.next();
+
+			try {
 				if (currentTime - botPlayer.getLastConnection() > playerModule.getCacheTime()) {
+					offlineIterator.remove();
 					playerModule.remove(botPlayer);
 				}
+			} catch (final Exception exception) {
+				exception.printStackTrace();
 			}
-		} catch (final Exception exception) {
-			exception.printStackTrace();
 		}
 
 		this.lastPPS = currentPPS;

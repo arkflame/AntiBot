@@ -1,6 +1,8 @@
 package twolovers.antibot.bungee.commands;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -19,6 +21,7 @@ public class AntibotCommand extends Command {
 	private final AntiBot antiBot;
 	private final ConfigUtil configUtil;
 	private final ModuleManager moduleManager;
+	private final Pattern ipPattern = Pattern.compile("([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})");
 
 	public AntibotCommand(final AntiBot antiBot, final ConfigUtil configUtil, final ModuleManager moduleManager) {
 		super("antibot", "", "ab");
@@ -108,16 +111,39 @@ public class AntibotCommand extends Command {
 								commandSender.sendMessage(new TextComponent(ChatColor.RED + "/blacklist <load/save>"));
 							}
 						} else if (args.length == 3) {
+							final String ip = args[2];
+							final Matcher matcher = ipPattern.matcher(ip);
+
 							if (args[1].equalsIgnoreCase("add")) {
-								final String ip = args[2];
 								blacklistModule.setBlacklisted(ip, true);
 								commandSender.sendMessage(
 										new TextComponent(ChatColor.GREEN + ip + " added to the blacklist!"));
+								if (matcher.matches()) {
+									if (!blacklistModule.isBlacklisted(ip)) {
+										blacklistModule.setBlacklisted(ip, true);
+										commandSender.sendMessage(
+												new TextComponent(ChatColor.GREEN + ip + " added to the blacklist!"));
+									} else
+										commandSender.sendMessage(
+												new TextComponent(ChatColor.RED + ip + " is already blacklisted!"));
+								} else
+									commandSender.sendMessage(
+											new TextComponent(ChatColor.RED + "Enter a valid ip address!"));
 							} else if (args[1].equalsIgnoreCase("remove")) {
-								final String ip = args[2];
 								blacklistModule.setBlacklisted(ip, false);
 								commandSender.sendMessage(
 										new TextComponent(ChatColor.GREEN + ip + " removed from the blacklist!"));
+								if (matcher.matches()) {
+									if (blacklistModule.isBlacklisted(ip)) {
+										blacklistModule.setBlacklisted(ip, false);
+										commandSender.sendMessage(new TextComponent(
+												ChatColor.GREEN + ip + " removed from the blacklist!"));
+									} else
+										commandSender.sendMessage(
+												new TextComponent(ChatColor.RED + ip + " isn't blacklisted!"));
+								} else
+									commandSender.sendMessage(
+											new TextComponent(ChatColor.RED + "Enter a valid ip address!"));
 							} else {
 								commandSender
 										.sendMessage(new TextComponent(ChatColor.RED + "/blacklist <add/remove> <ip>"));
@@ -147,16 +173,34 @@ public class AntibotCommand extends Command {
 								commandSender.sendMessage(new TextComponent(ChatColor.RED + "/whitelist <load/save>"));
 							}
 						} else if (args.length == 3) {
+							final String ip = args[2];
+							final Matcher matcher = ipPattern.matcher(ip);
+
 							if (args[1].equalsIgnoreCase("add")) {
-								final String ip = args[2];
-								whitelistModule.setWhitelisted(ip, true);
-								commandSender.sendMessage(
-										new TextComponent(ChatColor.GREEN + ip + " added to the whitelist!"));
+								if (matcher.matches()) {
+									if (!whitelistModule.isWhitelisted(ip)) {
+										blacklistModule.setBlacklisted(ip, false);
+										whitelistModule.setWhitelisted(ip, true);
+										commandSender.sendMessage(
+												new TextComponent(ChatColor.GREEN + ip + " added to the whitelist!"));
+									} else
+										commandSender.sendMessage(
+												new TextComponent(ChatColor.RED + ip + " is already whitelisted!"));
+								} else
+									commandSender.sendMessage(
+											new TextComponent(ChatColor.RED + "Enter a valid ip address!"));
 							} else if (args[1].equalsIgnoreCase("remove")) {
-								final String ip = args[2];
-								whitelistModule.setWhitelisted(ip, false);
-								commandSender.sendMessage(
-										new TextComponent(ChatColor.GREEN + ip + " removed from the whitelist!"));
+								if (matcher.matches()) {
+									if (whitelistModule.isWhitelisted(ip)) {
+										whitelistModule.setWhitelisted(ip, false);
+										commandSender.sendMessage(new TextComponent(
+												ChatColor.GREEN + ip + " removed from the whitelist!"));
+									} else
+										commandSender.sendMessage(
+												new TextComponent(ChatColor.RED + ip + " isn't whitelisted!"));
+								} else
+									commandSender.sendMessage(
+											new TextComponent(ChatColor.RED + "Enter a valid ip address!"));
 							} else {
 								commandSender
 										.sendMessage(new TextComponent(ChatColor.RED + "/whitelist <add/remove> <ip>"));
