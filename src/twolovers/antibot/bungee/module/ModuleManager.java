@@ -112,41 +112,45 @@ public class ModuleManager {
 		if (settingsModule.meet(this.currentPPS, this.currentCPS, this.currentJPS)) {
 			final Iterator<BotPlayer> pendingIterator = settingsModule.getPending().iterator();
 
-			while (pendingIterator.hasNext()) {
-				try {
-					final BotPlayer botPlayer = pendingIterator.next();
+			synchronized (pendingIterator) {
+				while (pendingIterator.hasNext()) {
+					try {
+						final BotPlayer botPlayer = pendingIterator.next();
 
-					if (botPlayer.isSettings()) {
-						pendingIterator.remove();
-					} else if (currentTime - botPlayer.getLastConnection() >= settingsModule.getDelay()) {
-						for (final ProxiedPlayer proxiedPlayer : botPlayer.getPlayers()) {
-							final String language = BungeeUtil.getLanguage(proxiedPlayer, "en");
+						if (botPlayer.isSettings()) {
+							pendingIterator.remove();
+						} else if (currentTime - botPlayer.getLastConnection() >= settingsModule.getDelay()) {
+							for (final ProxiedPlayer proxiedPlayer : botPlayer.getPlayers()) {
+								final String language = BungeeUtil.getLanguage(proxiedPlayer, "en");
 
-							if (proxiedPlayer.isConnected() && settingsModule.check(proxiedPlayer)) {
-								new Punish(plugin, this, language, settingsModule, proxiedPlayer, null);
+								if (proxiedPlayer.isConnected() && settingsModule.check(proxiedPlayer)) {
+									new Punish(plugin, this, language, settingsModule, proxiedPlayer, null);
+								}
 							}
-						}
 
-						pendingIterator.remove();
+							pendingIterator.remove();
+						}
+					} catch (final Exception exception) {
+						exception.printStackTrace();
 					}
-				} catch (final Exception exception) {
-					exception.printStackTrace();
 				}
 			}
 		}
 
 		final Iterator<BotPlayer> offlineIterator = playerModule.getOfflinePlayers().iterator();
 
-		while (offlineIterator.hasNext()) {
-			final BotPlayer botPlayer = offlineIterator.next();
+		synchronized (offlineIterator) {
+			while (offlineIterator.hasNext()) {
+				final BotPlayer botPlayer = offlineIterator.next();
 
-			try {
-				if (currentTime - botPlayer.getLastConnection() > playerModule.getCacheTime()) {
-					offlineIterator.remove();
-					playerModule.remove(botPlayer);
+				try {
+					if (currentTime - botPlayer.getLastConnection() > playerModule.getCacheTime()) {
+						offlineIterator.remove();
+						playerModule.remove(botPlayer);
+					}
+				} catch (final Exception exception) {
+					exception.printStackTrace();
 				}
-			} catch (final Exception exception) {
-				exception.printStackTrace();
 			}
 		}
 

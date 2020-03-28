@@ -68,9 +68,9 @@ public class AntibotCommand extends Command {
 								commandSender
 										.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
 												"%notification_disabled%", address, "", new AtomicInteger(1))));
-						}
-						commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
-								"%error_permission%", address, "", new AtomicInteger(1))));
+						} else
+							commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
+									"%error_permission%", address, "", new AtomicInteger(1))));
 					} else {
 						commandSender.sendMessage(new TextComponent(placeholderModule.replacePlaceholders(locale,
 								"%error_console%", address, "", new AtomicInteger(1))));
