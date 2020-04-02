@@ -2,6 +2,7 @@ package twolovers.antibot.bungee.instanceables;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -51,18 +52,19 @@ public class Punish {
 						new AtomicInteger(0));
 
 				if (command.startsWith("disconnect")) {
+					final BaseComponent[] disconnectMessage = TextComponent
+							.fromLegacyText(command.replace("disconnect ", ""));
+
 					if (event instanceof PreLoginEvent) {
 						final PreLoginEvent preLoginEvent = (PreLoginEvent) event;
 
-						preLoginEvent.setCancelReason(new TextComponent(command.replace("disconnect ", "")));
+						preLoginEvent.setCancelReason(disconnectMessage);
 						preLoginEvent.setCancelled(true);
-					} else {
-						if (event instanceof Cancellable) {
-							((Cancellable) event).setCancelled(true);
-						}
-
-						connection.disconnect(new TextComponent(command.replace("disconnect ", "")));
+					} else if (event instanceof Cancellable) {
+						((Cancellable) event).setCancelled(true);
 					}
+
+					connection.disconnect(disconnectMessage);
 				} else {
 					final ProxyServer proxyServer = plugin.getProxy();
 

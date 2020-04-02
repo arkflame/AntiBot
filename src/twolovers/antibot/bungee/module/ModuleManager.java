@@ -131,7 +131,6 @@ public class ModuleManager {
 							pendingIterator.remove();
 						}
 					} catch (final Exception exception) {
-						exception.printStackTrace();
 					}
 				}
 			}
@@ -149,7 +148,6 @@ public class ModuleManager {
 						playerModule.remove(botPlayer);
 					}
 				} catch (final Exception exception) {
-					exception.printStackTrace();
 				}
 			}
 		}

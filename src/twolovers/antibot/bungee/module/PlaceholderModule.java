@@ -72,6 +72,9 @@ public class PlaceholderModule implements Module {
 
 		return ChatColor.translateAlternateColorCodes('&',
 				string.replace("%check%", checkName).replace("%version%", plugin.getDescription().getVersion())
+						.replace("%lastpps%", String.valueOf(moduleManager.getLastPPS()))
+						.replace("%lastcps%", String.valueOf(moduleManager.getLastCPS()))
+						.replace("%lastjps%", String.valueOf(moduleManager.getLastJPS()))
 						.replace("%currentpps%", String.valueOf(moduleManager.getCurrentPPS()))
 						.replace("%currentcps%", String.valueOf(moduleManager.getCurrentCPS()))
 						.replace("%currentjps%", String.valueOf(moduleManager.getCurrentJPS()))

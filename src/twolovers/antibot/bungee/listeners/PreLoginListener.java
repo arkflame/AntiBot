@@ -18,9 +18,11 @@ public class PreLoginListener implements Listener {
 		this.moduleManager = moduleManager;
 	}
 
-	@EventHandler(priority = -128)
+	@EventHandler(priority = Byte.MIN_VALUE)
 	public void onPreLogin(final PreLoginEvent event) {
 		if (!event.isCancelled()) {
+			event.registerIntent(this.plugin);
+
 			final AccountsModule accountsModule = moduleManager.getAccountsModule();
 			final BlacklistModule blacklistModule = moduleManager.getBlacklistModule();
 			final NicknameModule nicknameModule = moduleManager.getNicknameModule();
@@ -70,12 +72,9 @@ public class PreLoginListener implements Listener {
 					}
 				}
 
-				if (!botPlayer.getLastNickname().equals(name)) {
-					botPlayer.setSettings(false);
-					botPlayer.resetSwitchs();
-				}
-
 				botPlayer.setLastConnection(currentTimeMillis);
+				botPlayer.setSettings(false);
+				botPlayer.resetSwitchs();
 			} else {
 				final String name = connection.getName();
 				final String locale = "en", // Cant get locale on prelogin.
@@ -100,6 +99,8 @@ public class PreLoginListener implements Listener {
 
 				botPlayer.setLastConnection(currentTimeMillis);
 			}
+
+			event.completeIntent(this.plugin);
 		}
 	}
 }

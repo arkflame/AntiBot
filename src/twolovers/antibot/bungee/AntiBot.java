@@ -21,22 +21,8 @@ public class AntiBot extends Plugin {
 	public void onEnable() {
 		this.configUtil = new ConfigUtil(this);
 		this.reload();
-	}
 
-	public void reload() {
-		final ProxyServer proxy = this.getProxy();
-		final PluginManager pluginManager = proxy.getPluginManager();
-
-		configUtil.createConfiguration("%datafolder%/config.yml");
-		configUtil.createConfiguration("%datafolder%/messages.yml");
-		configUtil.createConfiguration("%datafolder%/blacklist.yml");
-		configUtil.createConfiguration("%datafolder%/whitelist.yml");
-
-		moduleManager = new ModuleManager(this, configUtil);
-		moduleManager.reload();
-
-		/* Create a thread to update the ModuleManager each second.
-		 Workaround for a strange error using the BukkitScheduler. */
+		// Thread that repeats itself each second
 		final Thread thread = new Thread() {
 			@Override
 			public void run() {
@@ -52,6 +38,19 @@ public class AntiBot extends Plugin {
 		};
 
 		thread.start();
+	}
+
+	public void reload() {
+		final ProxyServer proxy = this.getProxy();
+		final PluginManager pluginManager = proxy.getPluginManager();
+
+		configUtil.createConfiguration("%datafolder%/config.yml");
+		configUtil.createConfiguration("%datafolder%/messages.yml");
+		configUtil.createConfiguration("%datafolder%/blacklist.yml");
+		configUtil.createConfiguration("%datafolder%/whitelist.yml");
+
+		moduleManager = new ModuleManager(this, configUtil);
+		moduleManager.reload();
 
 		pluginManager.unregisterListeners(this);
 		pluginManager.registerListener(this, new ChatListener(this, moduleManager));
