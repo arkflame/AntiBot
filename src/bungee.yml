@@ -1,5 +1,5 @@
 name: AntiBot
-version: 0.4.9
+version: 0.5.0
 main: twolovers.antibot.bungee.AntiBot
 description: AntiBot plugin for BungeeCord
 author: 2LS

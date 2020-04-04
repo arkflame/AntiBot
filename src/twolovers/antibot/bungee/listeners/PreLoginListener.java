@@ -76,7 +76,6 @@ public class PreLoginListener implements Listener {
 				botPlayer.setSettings(false);
 				botPlayer.resetSwitchs();
 			} else {
-				final String name = connection.getName();
 				final String locale = "en", // Cant get locale on prelogin.
 						ip = connection.getAddress().getHostString();
 				final BotPlayer botPlayer = playerModule.get(ip);
@@ -93,11 +92,9 @@ public class PreLoginListener implements Listener {
 					blacklistModule.setBlacklisted(ip, true);
 				}
 
-				if (!botPlayer.getLastNickname().equals(name)) {
-					botPlayer.setSettings(false);
-				}
-
 				botPlayer.setLastConnection(currentTimeMillis);
+				botPlayer.setSettings(false);
+				botPlayer.resetSwitchs();
 			}
 
 			event.completeIntent(this.plugin);
