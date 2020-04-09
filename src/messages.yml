@@ -4,7 +4,7 @@
 # %currentpps% %currentcps% %currentjps% %totalbls% %totalwls%
 #
 
-discord: "https://discord.gg/cjt9bPA"
+discord: "https://discord.gg/gF36AT3"
 stats: "&c&lAB: &e%currentpps% PPS &7> &e%currentcps% CPS &7> &e%currentjps% JPS &7> &e%totalbls% BLS &7> &e%totalwls% WLS"
 notification:
   message: "&c&lAB: &e%address% &7> &6%check% &7> &c%currentpps% PPS &7> &c%currentcps% CPS &7> &c%currentjps% JPS"
