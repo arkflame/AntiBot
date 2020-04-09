@@ -29,7 +29,7 @@ public class AntiBot extends Plugin {
 				while (true) {
 					try {
 						moduleManager.update();
-						sleep(1000L);
+						Thread.sleep(1000L);
 					} catch (final Exception exception) {
 						exception.printStackTrace();
 					}
