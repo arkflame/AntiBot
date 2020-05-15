@@ -12,7 +12,7 @@ public class BotPlayer {
     private String lastNickname = "";
     private long lastPing = 0, lastConnection = 0, lastTimeZeroPPS = System.currentTimeMillis(),
             lastTimeZeroCPS = System.currentTimeMillis(), lastTimeZeroJPS = System.currentTimeMillis();
-    private int pps = 0, cps = 0, jps = 0, reconnects = 0, switchs = 0;
+    private int pps = 0, cps = 0, jps = 0, repings = 0, reconnects = 0, switchs = 0;
     private boolean settings = true;
 
     public BotPlayer(final String hostString) {
@@ -106,6 +106,14 @@ public class BotPlayer {
         this.settings = settings;
     }
 
+    public int getRepings() {
+        return this.repings;
+    }
+
+    public void setRepings(final int repings) {
+        this.repings = repings;
+    }
+
     public int getReconnects() {
         return this.reconnects;
     }
@@ -134,15 +142,15 @@ public class BotPlayer {
         return accounts.size();
     }
 
-    public void clearSwitchs() {
-        this.switchs = 0;
-    }
-
     public String getLastNickname() {
         return lastNickname;
     }
 
-    public void setLastNickname(final String lastNickname) {
-        this.lastNickname = lastNickname;
+    public void setLastNickname(final String nickname) {
+        if (nickname == null) {
+            this.lastNickname = "";
+        } else {
+            this.lastNickname = nickname;
+        }
     }
 }

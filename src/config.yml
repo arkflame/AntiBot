@@ -110,11 +110,10 @@ nickname:
 reconnect:
   enabled: true
 
-  # Asks to ping before reconnecting to increase protection.
-  ping: true
-
-  # Times connections have to reconnect the server.
-  times: 3
+  # Declares the amount of times a player has to connect and ping the server to be allowed.
+  times:
+    ping: 1
+    connect: 3
 
   conditions:
     pps: 0

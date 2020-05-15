@@ -27,7 +27,7 @@ public class PlayerDisconnectListener implements Listener {
 		final SettingsModule settingsModule = moduleManager.getSettingsModule();
 		final WhitelistModule whitelistModule = moduleManager.getWhitelistModule();
 		final ProxiedPlayer proxiedPlayer = event.getPlayer();
-		final String name = proxiedPlayer.getName(), ip = proxiedPlayer.getAddress().getHostString();
+		final String ip = proxiedPlayer.getAddress().getHostString();
 		final BotPlayer botPlayer = playerModule.get(ip);
 		final long currentTime = System.currentTimeMillis();
 
@@ -38,16 +38,13 @@ public class PlayerDisconnectListener implements Listener {
 		}
 
 		botPlayer.removePlayer(proxiedPlayer);
-		botPlayer.clearSwitchs();
+		botPlayer.resetSwitchs();
 		botPlayer.setLastConnection(currentTime);
 		notificationsModule.setNotifications(proxiedPlayer, false);
 		settingsModule.removePending(botPlayer);
 
-		if (name.equals(botPlayer.getLastNickname())) {
-			botPlayer.setSettings(false);
-		}
-
 		if (botPlayer.getPlayers().size() < 1) {
+			botPlayer.setSettings(false);
 			playerModule.setOffline(botPlayer);
 		}
 	}

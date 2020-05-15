@@ -1,5 +1,7 @@
 package twolovers.antibot.bungee.module;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -110,45 +112,31 @@ public class ModuleManager {
 		final long currentTime = System.currentTimeMillis();
 
 		if (settingsModule.meet(this.currentPPS, this.currentCPS, this.currentJPS)) {
-			final Iterator<BotPlayer> pendingIterator = settingsModule.getPending().iterator();
+			final Collection<BotPlayer> pendingPlayers = settingsModule.getPending();
+			final long settingsDelay = settingsModule.getDelay();
 
-			synchronized (pendingIterator) {
-				while (pendingIterator.hasNext()) {
-					try {
-						final BotPlayer botPlayer = pendingIterator.next();
+			for (final BotPlayer botPlayer : new HashSet<>(pendingPlayers)) {
+				if (botPlayer == null || botPlayer.isSettings()) {
+					settingsModule.removePending(botPlayer);
+				} else if (currentTime - botPlayer.getLastConnection() >= settingsDelay) {
+					for (final ProxiedPlayer proxiedPlayer : botPlayer.getPlayers()) {
+						final String language = BungeeUtil.getLanguage(proxiedPlayer, "en");
 
-						if (botPlayer.isSettings()) {
-							pendingIterator.remove();
-						} else if (currentTime - botPlayer.getLastConnection() >= settingsModule.getDelay()) {
-							for (final ProxiedPlayer proxiedPlayer : botPlayer.getPlayers()) {
-								final String language = BungeeUtil.getLanguage(proxiedPlayer, "en");
-
-								if (proxiedPlayer.isConnected() && settingsModule.check(proxiedPlayer)) {
-									new Punish(plugin, this, language, settingsModule, proxiedPlayer, null);
-								}
-							}
-
-							pendingIterator.remove();
+						if (proxiedPlayer.isConnected() && settingsModule.check(proxiedPlayer)) {
+							new Punish(plugin, this, language, settingsModule, proxiedPlayer, null);
+							settingsModule.removePending(botPlayer);
 						}
-					} catch (final Exception exception) {
 					}
 				}
 			}
 		}
 
-		final Iterator<BotPlayer> offlineIterator = playerModule.getOfflinePlayers().iterator();
+		final Collection<BotPlayer> offlinePlayers = playerModule.getOfflinePlayers();
+		final long cacheTime = playerModule.getCacheTime();
 
-		synchronized (offlineIterator) {
-			while (offlineIterator.hasNext()) {
-				final BotPlayer botPlayer = offlineIterator.next();
-
-				try {
-					if (currentTime - botPlayer.getLastConnection() > playerModule.getCacheTime()) {
-						offlineIterator.remove();
-						playerModule.remove(botPlayer);
-					}
-				} catch (final Exception exception) {
-				}
+		for (final BotPlayer botPlayer : new HashSet<>(offlinePlayers)) {
+			if (botPlayer == null || currentTime - botPlayer.getLastConnection() > cacheTime) {
+				playerModule.remove(botPlayer);
 			}
 		}
 

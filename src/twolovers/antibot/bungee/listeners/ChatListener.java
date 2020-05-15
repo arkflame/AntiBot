@@ -58,7 +58,6 @@ public class ChatListener implements Listener {
 					} else {
 						registerModule.setLastRegisterCommand(proxiedPlayer.getAddress().getHostString(), message);
 					}
-
 				}
 			}
 		}

@@ -35,11 +35,13 @@ public class Punish {
 					checkName, new AtomicInteger(0));
 			final TextComponent notificationTextComponent = new TextComponent(notification);
 
-			if (notificationsModule.isConsole())
+			if (notificationsModule.isConsole()) {
 				plugin.getLogger().log(Level.INFO, notification);
+			}
 
-			for (final ProxiedPlayer proxiedPlayer : notificationsModule.getNotificationPlayers())
+			for (final ProxiedPlayer proxiedPlayer : notificationsModule.getNotificationPlayers()) {
 				proxiedPlayer.sendMessage(ChatMessageType.ACTION_BAR, notificationTextComponent);
+			}
 		}
 
 		if (event instanceof ProxyPingEvent) {

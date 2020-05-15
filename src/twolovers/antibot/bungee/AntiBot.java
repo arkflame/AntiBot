@@ -6,6 +6,7 @@ import net.md_5.bungee.api.plugin.PluginManager;
 import twolovers.antibot.bungee.commands.AntibotCommand;
 import twolovers.antibot.bungee.listeners.ChatListener;
 import twolovers.antibot.bungee.listeners.PlayerDisconnectListener;
+import twolovers.antibot.bungee.listeners.PlayerHandshakeListener;
 import twolovers.antibot.bungee.listeners.PostLoginListener;
 import twolovers.antibot.bungee.listeners.PreLoginListener;
 import twolovers.antibot.bungee.listeners.ProxyPingListener;
@@ -26,12 +27,16 @@ public class AntiBot extends Plugin {
 		final Thread thread = new Thread() {
 			@Override
 			public void run() {
-				while (true) {
-					try {
-						moduleManager.update();
-						Thread.sleep(1000L);
-					} catch (final Exception exception) {
-						exception.printStackTrace();
+				final Thread thread = this;
+
+				synchronized (thread) {
+					while (!isInterrupted()) {
+						try {
+							moduleManager.update();
+							thread.wait(1000);
+						} catch (InterruptedException ex) {
+							thread.start();
+						}
 					}
 				}
 			}
@@ -55,6 +60,7 @@ public class AntiBot extends Plugin {
 		pluginManager.unregisterListeners(this);
 		pluginManager.registerListener(this, new ChatListener(this, moduleManager));
 		pluginManager.registerListener(this, new PlayerDisconnectListener(moduleManager));
+		pluginManager.registerListener(this, new PlayerHandshakeListener(this, moduleManager));
 		pluginManager.registerListener(this, new PostLoginListener(this, moduleManager));
 		pluginManager.registerListener(this, new PreLoginListener(this, moduleManager));
 		pluginManager.registerListener(this, new ProxyPingListener(this, moduleManager));

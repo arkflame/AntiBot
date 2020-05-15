@@ -53,6 +53,7 @@ public class ProxyPingListener implements Listener {
 				}
 			}
 
+			botPlayer.setRepings(botPlayer.getRepings() + 1);
 			botPlayer.setLastPing(currentTimeMillis);
 		}
 	}

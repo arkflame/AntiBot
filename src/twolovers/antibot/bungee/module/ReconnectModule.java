@@ -17,8 +17,7 @@ public class ReconnectModule implements PunishModule {
 	private Collection<String> punishCommands = new HashSet<>();
 	private Conditions conditions;
 	private boolean enabled;
-	private boolean ping;
-	private int times;
+	private int timesPing, timesConnect;
 	private long throttle;
 
 	ReconnectModule(final ModuleManager moduleManager) {
@@ -43,8 +42,8 @@ public class ReconnectModule implements PunishModule {
 			this.punishCommands.clear();
 			this.punishCommands.addAll(configYml.getStringList(name + ".commands"));
 			this.conditions = new Conditions(pps, cps, jps, false);
-			this.ping = configYml.getBoolean(name + ".ping", true);
-			this.times = configYml.getInt(name + ".times", 1);
+			this.timesPing = configYml.getInt(name + ".times.ping", 2);
+			this.timesConnect = configYml.getInt(name + ".times.connect", 3);
 			this.throttle = configYml.getLong(name + ".throttle", 1000);
 		}
 	}
@@ -60,20 +59,17 @@ public class ReconnectModule implements PunishModule {
 		if (connection instanceof PendingConnection) {
 			final PlayerModule playerModule = moduleManager.getPlayerModule();
 			final BotPlayer botPlayer = playerModule.get(connection.getAddress().getHostString());
-			final String name = ((PendingConnection) connection).getName();
-			final int reconnects = botPlayer.getReconnects() + 1;
+			final String name = ((PendingConnection) connection).getName(), lastNickname = botPlayer.getLastNickname();
+			final int repings = botPlayer.getRepings(), reconnects = botPlayer.getReconnects() + 1;
 			final long currentTimeMillis = System.currentTimeMillis();
 
-			if (!botPlayer.getLastNickname().equals(name)
-					|| (ping && (currentTimeMillis - botPlayer.getLastPing() > 2500
-							|| currentTimeMillis - botPlayer.getLastPing() < 550))
+			if (!lastNickname.equals(name) || (timesPing > 0 && (currentTimeMillis - botPlayer.getLastPing() < 550))
 					|| currentTimeMillis - botPlayer.getLastConnection() < throttle) {
 				botPlayer.setReconnects(0);
+				botPlayer.setRepings(0);
 				botPlayer.setLastNickname(name);
 			} else {
-				botPlayer.setReconnects(reconnects);
-
-				return reconnects < times;
+				return (reconnects < timesConnect || repings < timesPing);
 			}
 		}
 
@@ -85,7 +81,7 @@ public class ReconnectModule implements PunishModule {
 		return punishCommands;
 	}
 
-	int getTimes() {
-		return times;
+	int getTimesConnect() {
+		return timesConnect;
 	}
 }

@@ -1,5 +1,6 @@
 package twolovers.antibot.bungee.commands;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

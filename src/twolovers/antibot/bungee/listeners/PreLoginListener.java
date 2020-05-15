@@ -21,83 +21,83 @@ public class PreLoginListener implements Listener {
 	@EventHandler(priority = Byte.MIN_VALUE)
 	public void onPreLogin(final PreLoginEvent event) {
 		if (!event.isCancelled()) {
-			event.registerIntent(this.plugin);
+			try {
+				final AccountsModule accountsModule = moduleManager.getAccountsModule();
+				final BlacklistModule blacklistModule = moduleManager.getBlacklistModule();
+				final NicknameModule nicknameModule = moduleManager.getNicknameModule();
+				final PlayerModule playerModule = moduleManager.getPlayerModule();
+				final RateLimitModule rateLimitModule = moduleManager.getRateLimitModule();
+				final ReconnectModule reconnectModule = moduleManager.getReconnectModule();
+				final WhitelistModule whitelistModule = moduleManager.getWhitelistModule();
+				final PendingConnection connection = event.getConnection();
 
-			final AccountsModule accountsModule = moduleManager.getAccountsModule();
-			final BlacklistModule blacklistModule = moduleManager.getBlacklistModule();
-			final NicknameModule nicknameModule = moduleManager.getNicknameModule();
-			final PlayerModule playerModule = moduleManager.getPlayerModule();
-			final RateLimitModule rateLimitModule = moduleManager.getRateLimitModule();
-			final ReconnectModule reconnectModule = moduleManager.getReconnectModule();
-			final WhitelistModule whitelistModule = moduleManager.getWhitelistModule();
-			final PendingConnection connection = event.getConnection();
+				if (!whitelistModule.check(connection)) {
+					final String name = connection.getName();
+					final String locale = "en", // Cant get locale on prelogin.
+							ip = connection.getAddress().getHostString();
+					final BotPlayer botPlayer = playerModule.get(ip);
+					final long currentTimeMillis = System.currentTimeMillis();
+					final int currentPPS = moduleManager.getCurrentPPS();
+					final int currentCPS = moduleManager.getCurrentCPS() + 1;
+					final int currentJPS = moduleManager.getCurrentJPS();
 
-			if (!moduleManager.getWhitelistModule().check(connection)) {
-				final String name = connection.getName();
-				final String locale = "en", // Cant get locale on prelogin.
-						ip = connection.getAddress().getHostString();
-				final BotPlayer botPlayer = playerModule.get(ip);
-				final long currentTimeMillis = System.currentTimeMillis();
-				final int currentPPS = moduleManager.getCurrentPPS();
-				final int currentCPS = moduleManager.getCurrentCPS() + 1;
-				final int currentJPS = moduleManager.getCurrentJPS();
-
-				botPlayer.setCPS(botPlayer.getCPS() + 1);
-				moduleManager.setCurrentCPS(currentCPS);
-
-				if (whitelistModule.meet(currentPPS, currentCPS, currentJPS)) {
-					new Punish(plugin, moduleManager, locale, blacklistModule, connection, event);
-
-					whitelistModule.setLastLockout(currentTimeMillis);
-				} else if (blacklistModule.meet(currentPPS, currentCPS, currentJPS)
-						&& blacklistModule.check(connection))
-					new Punish(plugin, moduleManager, locale, blacklistModule, connection, event);
-				else if (accountsModule.meet(currentPPS, currentCPS, currentJPS) && accountsModule.check(connection))
-					new Punish(plugin, moduleManager, locale, accountsModule, connection, event);
-				else if (reconnectModule.meet(currentPPS, currentCPS, currentJPS)
-						&& reconnectModule.check(connection)) {
-					new Punish(plugin, moduleManager, locale, reconnectModule, connection, event);
-				} else if (rateLimitModule.meet(currentPPS, currentCPS, currentJPS)
-						&& rateLimitModule.check(connection)) {
-					new Punish(plugin, moduleManager, locale, rateLimitModule, connection, event);
-					blacklistModule.setBlacklisted(ip, true);
-				} else if (nicknameModule.meet(currentPPS, currentCPS, currentJPS) && nicknameModule.check(connection))
-					new Punish(plugin, moduleManager, locale, nicknameModule, connection, event);
-				else {
 					botPlayer.setLastNickname(name);
-					nicknameModule.setLastNickname(name);
+					botPlayer.setCPS(botPlayer.getCPS() + 1);
+					moduleManager.setCurrentCPS(currentCPS);
 
-					if (botPlayer.getPlayers().size() < 1) {
-						playerModule.setOffline(botPlayer);
+					if (whitelistModule.meet(currentPPS, currentCPS, currentJPS)) {
+						new Punish(plugin, moduleManager, locale, blacklistModule, connection, event);
+
+						whitelistModule.setLastLockout(currentTimeMillis);
+					} else if (blacklistModule.meet(currentPPS, currentCPS, currentJPS)
+							&& blacklistModule.check(connection))
+						new Punish(plugin, moduleManager, locale, blacklistModule, connection, event);
+					else if (accountsModule.meet(currentPPS, currentCPS, currentJPS)
+							&& accountsModule.check(connection))
+						new Punish(plugin, moduleManager, locale, accountsModule, connection, event);
+					else if (reconnectModule.meet(currentPPS, currentCPS, currentJPS)
+							&& reconnectModule.check(connection)) {
+						botPlayer.setReconnects(botPlayer.getReconnects() + 1);
+
+						new Punish(plugin, moduleManager, locale, reconnectModule, connection, event);
+					} else if (rateLimitModule.meet(currentPPS, currentCPS, currentJPS)
+							&& rateLimitModule.check(connection)) {
+						new Punish(plugin, moduleManager, locale, rateLimitModule, connection, event);
+						blacklistModule.setBlacklisted(ip, true);
+					} else if (nicknameModule.meet(currentPPS, currentCPS, currentJPS)
+							&& nicknameModule.check(connection))
+						new Punish(plugin, moduleManager, locale, nicknameModule, connection, event);
+					else {
+						nicknameModule.setLastNickname(name);
+
+						if (botPlayer.getPlayers().size() < 1) {
+							playerModule.setOffline(botPlayer);
+						}
 					}
+
+					botPlayer.setLastConnection(currentTimeMillis);
+				} else {
+					final String locale = "en", // Cant get locale on prelogin.
+							ip = connection.getAddress().getHostString();
+					final BotPlayer botPlayer = playerModule.get(ip);
+					final long currentTimeMillis = System.currentTimeMillis();
+					final int currentPPS = moduleManager.getCurrentPPS();
+					final int currentCPS = moduleManager.getCurrentCPS() + 1;
+					final int currentJPS = moduleManager.getCurrentJPS();
+
+					botPlayer.setCPS(botPlayer.getCPS() + 1);
+					moduleManager.setCurrentCPS(currentCPS);
+
+					if (rateLimitModule.meet(currentPPS, currentCPS, currentJPS) && rateLimitModule.check(connection)) {
+						new Punish(plugin, moduleManager, locale, rateLimitModule, connection, event);
+						blacklistModule.setBlacklisted(ip, true);
+					}
+
+					botPlayer.setLastConnection(currentTimeMillis);
 				}
-
-				botPlayer.setLastConnection(currentTimeMillis);
-				botPlayer.setSettings(false);
-				botPlayer.resetSwitchs();
-			} else {
-				final String locale = "en", // Cant get locale on prelogin.
-						ip = connection.getAddress().getHostString();
-				final BotPlayer botPlayer = playerModule.get(ip);
-				final long currentTimeMillis = System.currentTimeMillis();
-				final int currentPPS = moduleManager.getCurrentPPS();
-				final int currentCPS = moduleManager.getCurrentCPS() + 1;
-				final int currentJPS = moduleManager.getCurrentJPS();
-
-				botPlayer.setCPS(botPlayer.getCPS() + 1);
-				moduleManager.setCurrentCPS(currentCPS);
-
-				if (rateLimitModule.meet(currentPPS, currentCPS, currentJPS) && rateLimitModule.check(connection)) {
-					new Punish(plugin, moduleManager, locale, rateLimitModule, connection, event);
-					blacklistModule.setBlacklisted(ip, true);
-				}
-
-				botPlayer.setLastConnection(currentTimeMillis);
-				botPlayer.setSettings(false);
-				botPlayer.resetSwitchs();
+			} catch (final Exception e) {
+				e.printStackTrace();
 			}
-
-			event.completeIntent(this.plugin);
 		}
 	}
 }

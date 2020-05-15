@@ -70,6 +70,9 @@ public class PlaceholderModule implements Module {
 			}
 		}
 
+		final int reconnects = botPlayer.getReconnects(), timesConnect = reconnectModule.getTimesConnect(),
+				reconnectTimes = reconnects > timesConnect ? 0 : timesConnect - reconnects;
+
 		return ChatColor.translateAlternateColorCodes('&',
 				string.replace("%check%", checkName).replace("%version%", plugin.getDescription().getVersion())
 						.replace("%lastpps%", String.valueOf(moduleManager.getLastPPS()))
@@ -83,8 +86,7 @@ public class PlaceholderModule implements Module {
 						.replace("%addressjps%", String.valueOf(botPlayer.getJPS()))
 						.replace("%totalbls%", String.valueOf(moduleManager.getBlacklistModule().getSize()))
 						.replace("%totalwls%", String.valueOf(moduleManager.getWhitelistModule().getSize()))
-						.replace("%address%", address).replace("%reconnect_times%",
-								String.valueOf(reconnectModule.getTimes() - botPlayer.getReconnects())));
+						.replace("%address%", address).replace("%reconnect_times%", String.valueOf(reconnectTimes)));
 	}
 
 	@Override

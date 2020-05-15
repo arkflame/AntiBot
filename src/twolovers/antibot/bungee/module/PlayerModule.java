@@ -43,11 +43,15 @@ public class PlayerModule implements Module {
     }
 
     public final void setOnline(final BotPlayer botPlayer) {
-        this.offlinePlayers.remove(botPlayer);
+        if (this.offlinePlayers.contains(botPlayer)) {
+            this.offlinePlayers.remove(botPlayer);
+        }
     }
 
     public final void setOffline(final BotPlayer botPlayer) {
-        this.offlinePlayers.add(botPlayer);
+        if (!this.offlinePlayers.contains(botPlayer)) {
+            this.offlinePlayers.add(botPlayer);
+        }
     }
 
     public Collection<BotPlayer> getOfflinePlayers() {
@@ -57,11 +61,8 @@ public class PlayerModule implements Module {
     public void remove(final BotPlayer botPlayer) {
         final String hostAddress = botPlayer.getHostAddress();
 
-        if (this.players.containsKey(hostAddress))
-            this.players.remove(hostAddress);
-
-        if (this.offlinePlayers.contains(botPlayer))
-            this.offlinePlayers.remove(botPlayer);
+        this.players.remove(hostAddress);
+        this.offlinePlayers.remove(botPlayer);
     }
 
     public long getCacheTime() {
