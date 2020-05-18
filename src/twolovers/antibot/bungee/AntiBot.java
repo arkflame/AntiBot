@@ -1,5 +1,7 @@
 package twolovers.antibot.bungee;
 
+import java.util.logging.Logger;
+
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -20,6 +22,8 @@ public class AntiBot extends Plugin {
 	private ConfigUtil configUtil;
 
 	public void onEnable() {
+		final Logger logger = this.getLogger();
+
 		this.configUtil = new ConfigUtil(this);
 		this.reload();
 
@@ -33,8 +37,14 @@ public class AntiBot extends Plugin {
 					while (!isInterrupted()) {
 						try {
 							moduleManager.update();
+						} catch (final Exception ex1) {
+							logger.warning("AntiBot catched a generic exception! (AntiBot.java)");
+						}
+
+						try {
 							thread.wait(1000);
-						} catch (InterruptedException ex) {
+						} catch (final InterruptedException ex2) {
+							logger.warning("AntiBot catched a interrupted exception! (AntiBot.java)");
 							thread.start();
 						}
 					}

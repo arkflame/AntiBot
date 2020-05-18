@@ -1,8 +1,7 @@
 package twolovers.antibot.bungee.module;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -109,35 +108,48 @@ public class ModuleManager {
 	}
 
 	public void update() {
+		final Logger logger = plugin.getLogger();
 		final long currentTime = System.currentTimeMillis();
 
 		if (settingsModule.meet(this.currentPPS, this.currentCPS, this.currentJPS)) {
-			final Collection<BotPlayer> pendingPlayers = settingsModule.getPending();
+			final Iterator<BotPlayer> pendingPlayersIterator = settingsModule.getPending().iterator();
 			final long settingsDelay = settingsModule.getDelay();
 
-			for (final BotPlayer botPlayer : new HashSet<>(pendingPlayers)) {
-				if (botPlayer == null || botPlayer.isSettings()) {
-					settingsModule.removePending(botPlayer);
-				} else if (currentTime - botPlayer.getLastConnection() >= settingsDelay) {
-					for (final ProxiedPlayer proxiedPlayer : botPlayer.getPlayers()) {
-						final String language = BungeeUtil.getLanguage(proxiedPlayer, "en");
+			try {
+				while (pendingPlayersIterator.hasNext()) {
+					final BotPlayer botPlayer = pendingPlayersIterator.next();
 
-						if (proxiedPlayer.isConnected() && settingsModule.check(proxiedPlayer)) {
-							new Punish(plugin, this, language, settingsModule, proxiedPlayer, null);
-							settingsModule.removePending(botPlayer);
+					if (botPlayer == null || botPlayer.isSettings()) {
+						pendingPlayersIterator.remove();
+					} else if (currentTime - botPlayer.getLastConnection() >= settingsDelay) {
+						for (final ProxiedPlayer proxiedPlayer : botPlayer.getPlayers()) {
+							final String language = BungeeUtil.getLanguage(proxiedPlayer, "en");
+
+							if (proxiedPlayer.isConnected() && settingsModule.check(proxiedPlayer)) {
+								new Punish(plugin, this, language, settingsModule, proxiedPlayer, null);
+								pendingPlayersIterator.remove();
+							}
 						}
 					}
 				}
+			} catch (final Exception ex) {
+				logger.warning("AntiBot catched a generic exception! (ModuleManager.java)");
 			}
 		}
 
-		final Collection<BotPlayer> offlinePlayers = playerModule.getOfflinePlayers();
+		final Iterator<BotPlayer> offlinePlayersIterator = playerModule.getOfflinePlayers().iterator();
 		final long cacheTime = playerModule.getCacheTime();
 
-		for (final BotPlayer botPlayer : new HashSet<>(offlinePlayers)) {
-			if (botPlayer == null || currentTime - botPlayer.getLastConnection() > cacheTime) {
-				playerModule.remove(botPlayer);
+		try {
+			while (offlinePlayersIterator.hasNext()) {
+				final BotPlayer botPlayer = offlinePlayersIterator.next();
+
+				if (botPlayer == null || currentTime - botPlayer.getLastConnection() > cacheTime) {
+					offlinePlayersIterator.remove();
+				}
 			}
+		} catch (final Exception ex) {
+			logger.warning("AntiBot catched a generic exception! (ModuleManager.java)");
 		}
 
 		this.lastPPS = currentPPS;
