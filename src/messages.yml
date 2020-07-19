@@ -95,6 +95,7 @@ de:
     settings: "%kick_blocked% &fBot-Algorithmus erkannt. [Settings]\n&7Discord: &b&n%discord%&r"
     register: "%kick_blocked% &fBot-Algorithmus erkannt. [Register]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cFüge den Server zur Serverliste hinzu und aktualisiere ihn!\n&cAktualisieren und erneut verbinden %reconnect_times% mal mehr beitreten!\n\n&7Grund: &fsicherstellen dass Sie kein Bot sind.\n&7Discord: &b&n%discord%&r"
+
 it:
   reload: "&c&lAB: &aFile ricaricati con successo!"
   help: |-
