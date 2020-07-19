@@ -9,7 +9,7 @@ stats: "&c&lAB: &e%currentpps% PPS &7> &e%currentcps% CPS &7> &e%currentjps% JPS
 notification:
   message: "&c&lAB: &e%address% &7> &6%check% &7> &c%currentpps% PPS &7> &c%currentcps% CPS &7> &c%currentjps% JPS"
 en:
-  reload: "&c&lAB: &aFiles succesfully reloaded!"
+  reload: "&c&lAB: &aFiles successfully reloaded!"
   help: |-
     &aAntiBot&b %version% &aby&b LinsaFTW&a.
     &e /ab notify &7> &bActivates AntiBot notifications!
