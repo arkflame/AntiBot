@@ -18,12 +18,14 @@ import twolovers.antibot.bungee.module.ModuleManager;
 import twolovers.antibot.bungee.utils.ConfigUtil;
 
 public class AntiBot extends Plugin {
+	private static AntiBot antiBot;
 	private ModuleManager moduleManager;
 	private ConfigUtil configUtil;
 
 	public void onEnable() {
 		final Logger logger = this.getLogger();
 
+		AntiBot.antiBot = this;
 		this.configUtil = new ConfigUtil(this);
 		this.reload();
 
@@ -83,5 +85,13 @@ public class AntiBot extends Plugin {
 	public void onDisable() {
 		moduleManager.getWhitelistModule().save(configUtil);
 		moduleManager.getBlacklistModule().save(configUtil);
+	}
+
+	public ModuleManager getModuleManager() {
+		return moduleManager;
+	}
+
+	public static AntiBot getInstance() {
+		return antiBot;
 	}
 }

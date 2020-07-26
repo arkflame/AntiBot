@@ -13,8 +13,7 @@ import java.util.HashSet;
 public class BlacklistModule implements PunishModule {
 	private final String name = "blacklist";
 	private final ModuleManager moduleManager;
-	private Collection<String> blacklist = new HashSet<>();
-	private Collection<String> punishCommands = new HashSet<>();
+	private Collection<String> blacklist = new HashSet<>(), punishCommands = new HashSet<>();
 	private Conditions conditions;
 	private boolean enabled = true;
 
@@ -91,7 +90,11 @@ public class BlacklistModule implements PunishModule {
 		return punishCommands;
 	}
 
-	public boolean isBlacklisted(String ip) {
+	public boolean isBlacklisted(final String ip) {
 		return this.blacklist.contains(ip);
+	}
+
+	public Collection<String> getBlacklist() {
+		return this.blacklist;
 	}
 }

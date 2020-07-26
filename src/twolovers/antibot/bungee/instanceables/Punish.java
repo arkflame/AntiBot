@@ -1,5 +1,8 @@
 package twolovers.antibot.bungee.instanceables;
 
+import java.util.Collection;
+import java.util.logging.Level;
+
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -16,10 +19,6 @@ import twolovers.antibot.bungee.module.NotificationsModule;
 import twolovers.antibot.bungee.module.PlaceholderModule;
 import twolovers.antibot.shared.interfaces.PunishModule;
 
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-
 public class Punish {
 	public Punish(final Plugin plugin, final ModuleManager moduleManager, final String locale,
 			final PunishModule punishModule, final Connection connection, final Event event) {
@@ -31,8 +30,8 @@ public class Punish {
 				address = connection.getAddress().getHostString();
 
 		if (notificationsModule.isEnabled()) {
-			final String notification = placeholderModule.replacePlaceholders(locale, "%notification_message%", address,
-					checkName, new AtomicInteger(0));
+			final String notification = placeholderModule.setPlaceholders(locale, "%notification_message%", address,
+					checkName);
 			final TextComponent notificationTextComponent = new TextComponent(notification);
 
 			if (notificationsModule.isConsole()) {
@@ -50,8 +49,7 @@ public class Punish {
 			proxyPingEvent.setResponse(null);
 		} else if (!punishCommands.isEmpty()) {
 			for (String command : punishCommands) {
-				command = placeholderModule.replacePlaceholders(locale, command, address, checkName,
-						new AtomicInteger(0));
+				command = placeholderModule.setPlaceholders(locale, command, address, checkName);
 
 				if (command.startsWith("disconnect")) {
 					final BaseComponent[] disconnectMessage = TextComponent

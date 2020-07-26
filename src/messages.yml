@@ -8,8 +8,9 @@ discord: "https://discord.gg/gF36AT3"
 stats: "&c&lAB: &e%currentpps% PPS &7> &e%currentcps% CPS &7> &e%currentjps% JPS &7> &e%totalbls% BLS &7> &e%totalwls% WLS"
 notification:
   message: "&c&lAB: &e%address% &7> &6%check% &7> &c%currentpps% PPS &7> &c%currentcps% CPS &7> &c%currentjps% JPS"
+
 en:
-  reload: "&c&lAB: &aFiles succesfully reloaded!"
+  reload: "&c&lAB: &aFiles successfully reloaded!"
   help: |-
     &aAntiBot&b %version% &aby&b LinsaFTW&a.
     &e /ab notify &7> &bActivates AntiBot notifications!
@@ -95,3 +96,34 @@ de:
     settings: "%kick_blocked% &fBot-Algorithmus erkannt. [Settings]\n&7Discord: &b&n%discord%&r"
     register: "%kick_blocked% &fBot-Algorithmus erkannt. [Register]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cFüge den Server zur Serverliste hinzu und aktualisiere ihn!\n&cAktualisieren und erneut verbinden %reconnect_times% mal mehr beitreten!\n\n&7Grund: &fsicherstellen dass Sie kein Bot sind.\n&7Discord: &b&n%discord%&r"
+
+# Credits: xion87
+it:
+  reload: "&c&lAB: &aFile ricaricati con successo!"
+  help: |-
+    &aAntiBot&b %version% &adi&b LinsaFTW&a.
+    &e /ab notify &7> &bMostra le notifiche del Antibot!
+    &e /ab stats &7> &bMostra le statistiche del plugin!
+    &e /ab reload &7> &bRicarica la configurazione del plugin!
+    &e /ab blacklist <add/remove> <IP> &7> &bAggiungi o rimuovi un IP dalla blacklist!
+    &e /ab blacklist <save/load> &7> &bSalva o ricarica il file blacklist!
+    &e /ab whitelist <add/remove> <IP> &7> &bAggiunto o rimuovi un IP dalla whitelist!
+    &e /ab whitelist <save/load> &7> &bSalva o ricarica il filde whitelist!
+  error:
+    command: "&cArgomento invalido! Usa /ab help per vedere i commandi disponibili!"
+    console: "&cNon puoi eseguire questo comando dalla console!"
+    permission: "&cPermessi insufficienti!"
+  notification:
+    enabled: "&aHai abilitato le notifiche!"
+    disabled: "&cHai disabilitato le notifiche!"
+  kick:
+    blocked: "&cSei temporaneamente bloccato da questo server!\n\n&7Motivo:"
+    accounts: "%kick_blocked% &fTropppi account. [Accounts]\n&7Discord: &b&n%discord%&r"
+    whitelist: "%kick_blocked% &fIl server è sotto attacco. [Whitelist]\n&7Discord: &b&n%discord%&r"
+    blacklist: "%kick_blocked% &fAlgoritmo Bot rilevato. [Blacklist]\n&7Discord: &b&n%discord%&r"
+    fastchat: "%kick_blocked% &fAlgoritmo Bot rilevato. [FastChat]\n&7Discord: &b&n%discord%&r"
+    ratelimit: "%kick_blocked% &fTroppe connessioni. [RateLimit]\n&7Discord: &b&n%discord%&r"
+    nickname: "%kick_blocked% &fAlgoritmo Bot rilevato. [NickName]\n&7Discord: &b&n%discord%&r"
+    settings: "%kick_blocked% &fAlgoritmo Bot rilevato. [Settings]\n&7Discord: &b&n%discord%&r"
+    register: "%kick_blocked% &fAlgoritmo Bot rilevato. [Register]\n&7Discord: &b&n%discord%&r"
+    reconnect: "&cAggiungi il server alla lista dei server e aggiornala lentamente!\n&cAggiorna e ricollegati %reconnect_times% volte per entrare!\n\n&7Motivo: &fVerifica che non sei un bot.\n&7Discord: &b&n%discord%&r" 
