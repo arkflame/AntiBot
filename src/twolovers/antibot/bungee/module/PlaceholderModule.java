@@ -28,18 +28,10 @@ public class PlaceholderModule implements Module {
 	}
 
 	public final String setPlaceholders(final String string) {
-		return setPlaceholders(null, string, null, null);
+		return setPlaceholders(null, string);
 	}
 
-	public final String setPlaceholders(final String locale, String string, final String address) {
-		return setPlaceholders(locale, string, string, null);
-	}
-
-	public final String setPlaceholders(final String locale, String string, final String address,
-			final String checkName) {
-		final ReconnectModule reconnectModule = moduleManager.getReconnectModule();
-		final PlayerModule playerModule = moduleManager.getPlayerModule();
-
+	public final String setPlaceholders(final String locale, String string) {
 		for (final String key : placeholders.keySet()) {
 			final String value = placeholders.get(key);
 
@@ -60,6 +52,27 @@ public class PlaceholderModule implements Module {
 			}
 		}
 
+		string = string.replace("%lastpps%", String.valueOf(moduleManager.getLastPPS()))
+				.replace("%lastcps%", String.valueOf(moduleManager.getLastCPS()))
+				.replace("%lastjps%", String.valueOf(moduleManager.getLastJPS()))
+				.replace("%currentpps%", String.valueOf(moduleManager.getCurrentPPS()))
+				.replace("%currentcps%", String.valueOf(moduleManager.getCurrentCPS()))
+				.replace("%currentjps%", String.valueOf(moduleManager.getCurrentJPS()))
+				.replace("%totalbls%", String.valueOf(moduleManager.getBlacklistModule().getSize()))
+				.replace("%totalwls%", String.valueOf(moduleManager.getWhitelistModule().getSize()));
+
+		return ChatColor.translateAlternateColorCodes('&', string.replace("%version%", pluginVersion));
+	}
+
+	public final String setPlaceholders(final String locale, String string, final String address) {
+		return setPlaceholders(locale, string, string, null);
+	}
+
+	public final String setPlaceholders(final String locale, String string, final String address,
+			final String checkName) {
+		final ReconnectModule reconnectModule = moduleManager.getReconnectModule();
+		final PlayerModule playerModule = moduleManager.getPlayerModule();
+
 		if (address != null) {
 			final BotPlayer botPlayer = playerModule.get(address);
 
@@ -75,17 +88,10 @@ public class PlaceholderModule implements Module {
 		}
 
 		if (checkName != null) {
-			string.replace("%check%", checkName).replace("%lastpps%", String.valueOf(moduleManager.getLastPPS()))
-					.replace("%lastcps%", String.valueOf(moduleManager.getLastCPS()))
-					.replace("%lastjps%", String.valueOf(moduleManager.getLastJPS()))
-					.replace("%currentpps%", String.valueOf(moduleManager.getCurrentPPS()))
-					.replace("%currentcps%", String.valueOf(moduleManager.getCurrentCPS()))
-					.replace("%currentjps%", String.valueOf(moduleManager.getCurrentJPS()))
-					.replace("%totalbls%", String.valueOf(moduleManager.getBlacklistModule().getSize()))
-					.replace("%totalwls%", String.valueOf(moduleManager.getWhitelistModule().getSize()));
+			string.replace("%check%", checkName);
 		}
 
-		return ChatColor.translateAlternateColorCodes('&', string.replace("%version%", pluginVersion));
+		return setPlaceholders(locale, string);
 	}
 
 	@Override

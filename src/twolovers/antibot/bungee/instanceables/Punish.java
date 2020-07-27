@@ -32,7 +32,7 @@ public class Punish {
 		if (notificationsModule.isEnabled()) {
 			final String notification = placeholderModule.setPlaceholders(locale, "%notification_message%", address,
 					checkName);
-			final TextComponent notificationTextComponent = new TextComponent(notification);
+			final BaseComponent[] notificationTextComponent = TextComponent.fromLegacyText(notification);
 
 			if (notificationsModule.isConsole()) {
 				plugin.getLogger().log(Level.INFO, notification);
