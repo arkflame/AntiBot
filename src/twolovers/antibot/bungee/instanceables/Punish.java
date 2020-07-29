@@ -30,8 +30,8 @@ public class Punish {
 				address = connection.getAddress().getHostString();
 
 		if (notificationsModule.isEnabled()) {
-			final String notification = placeholderModule.setPlaceholders(locale, "%notification_message%", address,
-					checkName);
+			final String notification = placeholderModule.setPlaceholders(moduleManager, "%notification_message%",
+					locale, address, checkName);
 			final BaseComponent[] notificationTextComponent = TextComponent.fromLegacyText(notification);
 
 			if (notificationsModule.isConsole()) {
@@ -49,7 +49,7 @@ public class Punish {
 			proxyPingEvent.setResponse(null);
 		} else if (!punishCommands.isEmpty()) {
 			for (String command : punishCommands) {
-				command = placeholderModule.setPlaceholders(locale, command, address, checkName);
+				command = placeholderModule.setPlaceholders(moduleManager, command, locale, address, checkName);
 
 				if (command.startsWith("disconnect")) {
 					final BaseComponent[] disconnectMessage = TextComponent

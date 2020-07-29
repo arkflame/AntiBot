@@ -30,7 +30,7 @@ public class ModuleManager {
 	public ModuleManager(final Plugin plugin, final ConfigUtil configUtil) {
 		this.plugin = plugin;
 		this.configUtil = configUtil;
-		this.placeholderModule = new PlaceholderModule(plugin, this);
+		this.placeholderModule = new PlaceholderModule(plugin);
 		this.playerModule = new PlayerModule();
 		this.accountsModule = new AccountsModule(this);
 		this.blacklistModule = new BlacklistModule(this);
