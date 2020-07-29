@@ -13,25 +13,54 @@ import twolovers.antibot.shared.interfaces.Module;
 public class PlaceholderModule implements Module {
 	private final String name = "placeholder";
 	private final String pluginVersion;
-	private final ModuleManager moduleManager;
 	private final Map<String, String> placeholders = new HashMap<>();
 	private String lang;
 
-	PlaceholderModule(final Plugin plugin, final ModuleManager moduleManager) {
+	PlaceholderModule(final Plugin plugin) {
 		this.pluginVersion = plugin.getDescription().getVersion();
-		this.moduleManager = moduleManager;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
-	public final String setPlaceholders(final String string) {
-		return setPlaceholders(null, string);
+	private final String setPlaceholders(final String... args) {
+		return setPlaceholders(null, args);
 	}
 
-	public final String setPlaceholders(final String locale, String string) {
+	public final String setPlaceholders(final ModuleManager moduleManager, final String... args) {
+		final int length = args.length;
+
+		if (length > 0) {
+			final String string = args[0];
+
+			if (length > 1) {
+				final String locale = args[1];
+
+				if (length > 2) {
+					final String address = args[2];
+
+					if (length > 3) {
+						final String checkName = args[3];
+
+						return setPlaceholders(string, locale, address, checkName, moduleManager);
+					} else {
+						return setPlaceholders(string, locale, address, null, moduleManager);
+					}
+				} else {
+					return setPlaceholders(string, locale, null, null, moduleManager);
+				}
+			} else {
+				return setPlaceholders(string, null, null, null, moduleManager);
+			}
+		} else {
+			return "N/A";
+		}
+	}
+
+	private final String setPlaceholders(String string, final String locale, final String address,
+			final String checkName, final ModuleManager moduleManager) {
 		for (final String key : placeholders.keySet()) {
 			final String value = placeholders.get(key);
 
@@ -52,46 +81,38 @@ public class PlaceholderModule implements Module {
 			}
 		}
 
-		string = string.replace("%lastpps%", String.valueOf(moduleManager.getLastPPS()))
-				.replace("%lastcps%", String.valueOf(moduleManager.getLastCPS()))
-				.replace("%lastjps%", String.valueOf(moduleManager.getLastJPS()))
-				.replace("%currentpps%", String.valueOf(moduleManager.getCurrentPPS()))
-				.replace("%currentcps%", String.valueOf(moduleManager.getCurrentCPS()))
-				.replace("%currentjps%", String.valueOf(moduleManager.getCurrentJPS()))
-				.replace("%totalbls%", String.valueOf(moduleManager.getBlacklistModule().getSize()))
-				.replace("%totalwls%", String.valueOf(moduleManager.getWhitelistModule().getSize()));
+		if (moduleManager != null) {
+			if (address != null) {
+				final ReconnectModule reconnectModule = moduleManager.getReconnectModule();
+				final PlayerModule playerModule = moduleManager.getPlayerModule();
+				final BotPlayer botPlayer = playerModule.get(address);
 
-		return ChatColor.translateAlternateColorCodes('&', string.replace("%version%", pluginVersion));
-	}
+				if (botPlayer != null) {
+					final int reconnects = botPlayer.getReconnects(), timesConnect = reconnectModule.getTimesConnect(),
+							reconnectTimes = reconnects > timesConnect ? 0 : timesConnect - reconnects;
 
-	public final String setPlaceholders(final String locale, String string, final String address) {
-		return setPlaceholders(locale, string, string, null);
-	}
-
-	public final String setPlaceholders(final String locale, String string, final String address,
-			final String checkName) {
-		final ReconnectModule reconnectModule = moduleManager.getReconnectModule();
-		final PlayerModule playerModule = moduleManager.getPlayerModule();
-
-		if (address != null) {
-			final BotPlayer botPlayer = playerModule.get(address);
-
-			if (botPlayer != null) {
-				final int reconnects = botPlayer.getReconnects(), timesConnect = reconnectModule.getTimesConnect(),
-						reconnectTimes = reconnects > timesConnect ? 0 : timesConnect - reconnects;
-
-				string = string.replace("%reconnect_times%", String.valueOf(reconnectTimes))
-						.replace("%addresspps%", String.valueOf(botPlayer.getPPS()))
-						.replace("%addresscps%", String.valueOf(botPlayer.getCPS()))
-						.replace("%addressjps%", String.valueOf(botPlayer.getJPS())).replace("%address%", address);
+					string = string.replace("%reconnect_times%", String.valueOf(reconnectTimes))
+							.replace("%addresspps%", String.valueOf(botPlayer.getPPS()))
+							.replace("%addresscps%", String.valueOf(botPlayer.getCPS()))
+							.replace("%addressjps%", String.valueOf(botPlayer.getJPS())).replace("%address%", address);
+				}
 			}
+
+			string = string.replace("%lastpps%", String.valueOf(moduleManager.getLastPPS()))
+					.replace("%lastcps%", String.valueOf(moduleManager.getLastCPS()))
+					.replace("%lastjps%", String.valueOf(moduleManager.getLastJPS()))
+					.replace("%currentpps%", String.valueOf(moduleManager.getCurrentPPS()))
+					.replace("%currentcps%", String.valueOf(moduleManager.getCurrentCPS()))
+					.replace("%currentjps%", String.valueOf(moduleManager.getCurrentJPS()))
+					.replace("%totalbls%", String.valueOf(moduleManager.getBlacklistModule().getSize()))
+					.replace("%totalwls%", String.valueOf(moduleManager.getWhitelistModule().getSize()));
 		}
 
 		if (checkName != null) {
 			string.replace("%check%", checkName);
 		}
 
-		return setPlaceholders(locale, string);
+		return ChatColor.translateAlternateColorCodes('&', string.replace("%version%", pluginVersion));
 	}
 
 	@Override

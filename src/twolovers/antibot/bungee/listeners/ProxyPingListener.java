@@ -43,7 +43,7 @@ public class ProxyPingListener implements Listener {
 
 			if (rateLimitModule.meet(currentPPS, currentCPS, currentJPS) && rateLimitModule.check(connection)) {
 				new Punish(plugin, moduleManager, "en", rateLimitModule, connection, event);
-				System.out.println("PROXYPING");
+				
 				blacklistModule.setBlacklisted(ip, true);
 			} else if (blacklistModule.meet(currentPPS, currentCPS, currentJPS) && blacklistModule.check(connection)) {
 				new Punish(plugin, moduleManager, "en", blacklistModule, connection, event);
