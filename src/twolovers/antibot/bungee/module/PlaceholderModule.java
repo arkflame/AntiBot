@@ -25,42 +25,7 @@ public class PlaceholderModule implements Module {
 		return this.name;
 	}
 
-	private final String setPlaceholders(final String... args) {
-		return setPlaceholders(null, args);
-	}
-
-	public final String setPlaceholders(final ModuleManager moduleManager, final String... args) {
-		final int length = args.length;
-
-		if (length > 0) {
-			final String string = args[0];
-
-			if (length > 1) {
-				final String locale = args[1];
-
-				if (length > 2) {
-					final String address = args[2];
-
-					if (length > 3) {
-						final String checkName = args[3];
-
-						return setPlaceholders(string, locale, address, checkName, moduleManager);
-					} else {
-						return setPlaceholders(string, locale, address, null, moduleManager);
-					}
-				} else {
-					return setPlaceholders(string, locale, null, null, moduleManager);
-				}
-			} else {
-				return setPlaceholders(string, null, null, null, moduleManager);
-			}
-		} else {
-			return "N/A";
-		}
-	}
-
-	private final String setPlaceholders(String string, final String locale, final String address,
-			final String checkName, final ModuleManager moduleManager) {
+	private final String setPlaceholders(String string, final String locale) {
 		for (final String key : placeholders.keySet()) {
 			final String value = placeholders.get(key);
 
@@ -70,16 +35,23 @@ public class PlaceholderModule implements Module {
 				final String keyLocaleReplaced = key.replace("%" + locale + "_", "%");
 
 				if (string.contains(keyLocaleReplaced)) {
-					string = string.replace(keyLocaleReplaced, value);
+					string = setPlaceholders(string.replace(keyLocaleReplaced, value), locale);
 				} else {
 					final String keyLangReplaced = key.replace("%" + lang + "_", "%");
 
 					if (string.contains(keyLangReplaced)) {
-						string = string.replace(keyLangReplaced, value);
+						string = setPlaceholders(string.replace(keyLangReplaced, value), locale);
 					}
 				}
 			}
 		}
+
+		return string;
+	}
+
+	public final String setPlaceholders(final ModuleManager moduleManager, String string, final String locale,
+			final String address, final String checkName) {
+		string = setPlaceholders(string, locale);
 
 		if (moduleManager != null) {
 			if (address != null) {
@@ -115,6 +87,23 @@ public class PlaceholderModule implements Module {
 		return ChatColor.translateAlternateColorCodes('&', string.replace("%version%", pluginVersion));
 	}
 
+	public final String setPlaceholders(String string) {
+		return setPlaceholders(null, string, null, null, null);
+	}
+
+	public final String setPlaceholders(final ModuleManager moduleManager, String string) {
+		return setPlaceholders(moduleManager, string, null, null, null);
+	}
+
+	public final String setPlaceholders(final ModuleManager moduleManager, String string, final String locale) {
+		return setPlaceholders(moduleManager, string, locale, null, null);
+	}
+
+	public final String setPlaceholders(final ModuleManager moduleManager, String string, final String locale,
+			final String address) {
+		return setPlaceholders(moduleManager, string, locale, address, null);
+	}
+
 	@Override
 	public void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
@@ -123,18 +112,20 @@ public class PlaceholderModule implements Module {
 
 		this.lang = configYml.getString("lang");
 		this.placeholders.clear();
-		addSection(messagesYml, path, messagesYml);
+		addSection(path, messagesYml);
 	}
 
-	private void addSection(final Configuration messagesYml, final StringBuilder path, final Configuration section) {
+	private void addSection(final StringBuilder path, final Configuration section) {
 		for (final String key : section.getKeys()) {
 			final Object value = section.get(key);
 
 			if (value instanceof Configuration) {
-				addSection(messagesYml, new StringBuilder(path).append(".").append(key), (Configuration) value);
+				addSection(new StringBuilder(path).append(".").append(key), (Configuration) value);
 			} else if (value instanceof String) {
-				placeholders.put(("%" + new StringBuilder(path).toString() + "." + key + "%").replace(".", "_")
-						.replace("%_", "%"), setPlaceholders((String) value));
+				if (lang != null) {
+					placeholders.put(("%" + new StringBuilder(path).toString() + "." + key + "%").replace(".", "_")
+							.replace("%_", "%"), setPlaceholders((String) value));
+				}
 			}
 		}
 	}

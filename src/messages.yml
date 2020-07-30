@@ -96,7 +96,6 @@ de:
     settings: "%kick_blocked% &fBot-Algorithmus erkannt. [Settings]\n&7Discord: &b&n%discord%&r"
     register: "%kick_blocked% &fBot-Algorithmus erkannt. [Register]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cFüge den Server zur Serverliste hinzu und aktualisiere ihn!\n&cAktualisieren und erneut verbinden %reconnect_times% mal mehr beitreten!\n\n&7Grund: &fsicherstellen dass Sie kein Bot sind.\n&7Discord: &b&n%discord%&r"
-
 # Credits: xion87
 it:
   reload: "&c&lAB: &aFile ricaricati con successo!"
@@ -127,33 +126,33 @@ it:
     settings: "%kick_blocked% &fAlgoritmo Bot rilevato. [Settings]\n&7Discord: &b&n%discord%&r"
     register: "%kick_blocked% &fAlgoritmo Bot rilevato. [Register]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cAggiungi il server alla lista dei server e aggiornala lentamente!\n&cAggiorna e ricollegati %reconnect_times% volte per entrare!\n\n&7Motivo: &fVerifica che non sei un bot.\n&7Discord: &b&n%discord%&r" 
-
-sk:
-  reload: "&c&lAB: &aSúbory úspešne načítané!"
+# Credits: LLIcocoman
+fr:
+  reload: "&c&lAB: &aFichiers rechargés avec succès!"
   help: |-
-    &aAntiBot&b %version% &aod&b LinsaFTW&a.
-    &e /ab notify &7> &bZapne AntiBot notifikácie!
-    &e /ab stats &7> &bZobrazí štatistiky!
-    &e /ab reload &7> &bNačíta konfiguráciu pluginu!
-    &e /ab blacklist <add/remove> <IP> &7> &bPridá, alebo odstráni IP adresu z blacklistu!
-    &e /ab blacklist <save/load> &7> &bUloží, alebo načíta súbor blacklistu!
-    &e /ab whitelist <add/remove> <IP> &7> &bPridá, alebo odstráni IP adresu z whitelistu!
-    &e /ab whitelist <save/load> &7> &bUloží, alebo načíta súbor whitelistu!
+    &aAntiBot&b %version% &apar&b LinsaFTW&a.
+    &e /ab notify &7> &bActive les notifications!
+    &e /ab stats &7> &bAffiche les statistiques!
+    &e /ab reload &7> &Recharge les paramètres du plugin!
+    &e /ab blacklist <add/remove> <IP> &7> &bAjoute ou supprime une IP de la liste noire!
+    &e /ab blacklist <save/load> &7> &bSauvegarde ou charge le fichier de liste noire!
+    &e /ab whitelist <add/remove> <IP> &7> &bAjoute une supprime une IP de la liste blanche!
+    &e /ab whitelist <save/load> &7> &bSauvegarde ou charge le fichier de list blanche!
   error:
-    command: "&cNesprávny argument! Použi /ab help pre zobrazené nápovedy!"
-    console: "&cTento príkaz nemôže byť vykonaný z konzoly!"
-    permission: "&cNemáš dostatočné práva na vykonanie tejto akcie!"
+    command: "&cArgument invalide! Utilise /ab help pour afficher la liste des commandes!"
+    console: "&cVous ne pouvez utiliser cette commande depuis la console!"
+    permission: "&cVous n'avez pas la permission de faire ceci!"
   notification:
-    enabled: "&aNotifikácie zapnuté!"
-    disabled: "&cNotifikácie vypnuté!"
+    enabled: "&aVous avez activé les notifications!"
+    disabled: "&cVous avez désactivé les notifications!"
   kick:
-    blocked: "&cTvoje pripojenie bolo dočasne obmedzené serverom!\n\n&7Dôvod:"
-    accounts: "%kick_blocked% &fPríliš veľa účtov. [Accounts]\n&7Discord: &b&n%discord%&r"
-    whitelist: "%kick_blocked% &fServer je pod útokom. [Whitelist]\n&7Discord: &b&n%discord%&r"
-    blacklist: "%kick_blocked% &fDetekovaný bot algoritmus. [Blacklist]\n&7Discord: &b&n%discord%&r"
-    fastchat: "%kick_blocked% &fDetekovaný bot algoritmus. [FastChat]\n&7Discord: &b&n%discord%&r"
-    ratelimit: "%kick_blocked% &fPríliš veľa pripojení. [RateLimit]\n&7Discord: &b&n%discord%&r"
-    nickname: "%kick_blocked% &fDetekovaný bot algoritmus. [NickName]\n&7Discord: &b&n%discord%&r"
-    settings: "%kick_blocked% &fDetekovaný bot algoritmus. [Settings]\n&7Discord: &b&n%discord%&r"
-    register: "%kick_blocked% &fDetekovaný bot algoritmus. [Register]\n&7Discord: &b&n%discord%&r"
-    reconnect: "&cPridaj si server do server listu!\n&cNačítaj si ho a pripoj sa %reconnect_times% krát pre pripojenie!\n\n&7Dôvod: &fOverenie, že nie si bot.\n&7Discord: &b&n%discord%&r"
+    blocked: "&cVous êtes temporairement bloqué du serveur!\n\n&7Raison:"
+    accounts: "%kick_blocked% &fTrop de comptes detectés. [Accounts]\n&7Discord: &b&n%discord%&r"
+    whitelist: "%kick_blocked% &fAttaque de Bot detectée. [Whitelist]\n&7Discord: &b&n%discord%&r"
+    blacklist: "%kick_blocked% &fBot detecté. [Blacklist]\n&7Discord: &b&n%discord%&r"
+    fastchat: "%kick_blocked% &fBot detecté. [FastChat]\n&7Discord: &b&n%discord%&r"
+    ratelimit: "%kick_blocked% &fTrop de connexion detectée. [RateLimit]\n&7Discord: &b&n%discord%&r"
+    nickname: "%kick_blocked% &fBot detecté. [NickName]\n&7Discord: &b&n%discord%&r"
+    settings: "%kick_blocked% &fBot detecté. [Settings]\n&7Discord: &b&n%discord%&r"
+    register: "%kick_blocked% &fBot detecté. [Register]\n&7Discord: &b&n%discord%&r"
+    reconnect: "&cAjoutez le serveur à votre liste de serveurs et raffraichissez là!\n&cReconnectez-vous plus de %reconnect_times% fois pour rejoindre!\n\n&7Raison: &fNous vérifions que vous n'êtes pas un Bot.\n&7Discord: &b&n%discord%&r"
