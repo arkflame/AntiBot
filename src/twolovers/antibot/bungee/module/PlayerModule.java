@@ -5,12 +5,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.Module;
+import twolovers.antibot.shared.interfaces.IModule;
 
-public class PlayerModule implements Module {
+public class PlayerModule implements IModule {
     private final String name = "player";
     private final Map<String, BotPlayer> players = new HashMap<>();
     private final Collection<BotPlayer> offlinePlayers = new HashSet<>();
@@ -22,10 +21,8 @@ public class PlayerModule implements Module {
     }
 
     @Override
-    public void reload(ConfigUtil configUtil) {
-        final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
-
-        this.cacheTime = configYml.getInt(name + ".cache_time", 15000);
+    public void reload(final ConfigUtil configUtil) {
+        this.cacheTime = 30000;
     }
 
     public final BotPlayer get(final String hostString) {

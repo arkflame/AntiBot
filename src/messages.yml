@@ -1,8 +1,11 @@
-# Every message shown here is converted to a placeholder.
-# Example: %discord%
-# Placeholders: %version% %addresspps% %addresscps% %addressjps% %lastpps% %lastcps% %lastjps%
-# %currentpps% %currentcps% %currentjps% %totalbls% %totalwls%
+### Messages Module ###
+# The language is automatically selected depending on the client language.
 #
+# Every message shown here is converted into a placeholder. (You can make your own!)
+# Example: %discord%
+#
+# Common Placeholders: %version% %addresspps% %addresscps% %addressjps% %lastpps% %lastcps% %lastjps%
+# %currentpps% %currentcps% %currentjps% %totalbls% %totalwls%
 
 discord: "https://discord.gg/gF36AT3"
 stats: "&c&lAB: &e%currentpps% PPS &7> &e%currentcps% CPS &7> &e%currentjps% JPS &7> &e%totalbls% BLS &7> &e%totalwls% WLS"

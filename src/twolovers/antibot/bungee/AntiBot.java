@@ -27,7 +27,7 @@ public class AntiBot extends Plugin {
 
 		AntiBot.antiBot = this;
 		this.configUtil = new ConfigUtil(this);
-		this.reload();
+		reload();
 
 		// Thread that repeats itself each second
 		final Thread thread = new Thread() {
@@ -83,8 +83,9 @@ public class AntiBot extends Plugin {
 	}
 
 	public void onDisable() {
-		moduleManager.getWhitelistModule().save(configUtil);
 		moduleManager.getBlacklistModule().save(configUtil);
+		moduleManager.getRuntimeModule().update();
+		moduleManager.getWhitelistModule().save(configUtil);
 	}
 
 	public ModuleManager getModuleManager() {

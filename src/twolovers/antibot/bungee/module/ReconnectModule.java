@@ -32,20 +32,17 @@ public class ReconnectModule implements PunishModule {
 	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
+		final int pps = configYml.getInt(name + ".conditions.pps", 0);
+		final int cps = configYml.getInt(name + ".conditions.cps", 0);
+		final int jps = configYml.getInt(name + ".conditions.jps", 0);
 
-		if (configYml != null) {
-			final int pps = configYml.getInt(name + ".conditions.pps", 0);
-			final int cps = configYml.getInt(name + ".conditions.cps", 0);
-			final int jps = configYml.getInt(name + ".conditions.jps", 0);
-
-			this.enabled = configYml.getBoolean(name + ".enabled", true);
-			this.punishCommands.clear();
-			this.punishCommands.addAll(configYml.getStringList(name + ".commands"));
-			this.conditions = new Conditions(pps, cps, jps, false);
-			this.timesPing = configYml.getInt(name + ".times.ping", 2);
-			this.timesConnect = configYml.getInt(name + ".times.connect", 3);
-			this.throttle = configYml.getLong(name + ".throttle", 1000);
-		}
+		enabled = configYml.getBoolean(name + ".enabled", true);
+		punishCommands.clear();
+		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		conditions = new Conditions(pps, cps, jps, false);
+		timesPing = configYml.getInt(name + ".times.ping", 2);
+		timesConnect = configYml.getInt(name + ".times.connect", 3);
+		throttle = configYml.getLong(name + ".throttle", 1000);
 	}
 
 	@Override

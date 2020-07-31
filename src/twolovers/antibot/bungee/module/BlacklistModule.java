@@ -6,6 +6,7 @@ import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.shared.interfaces.PunishModule;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -29,27 +30,32 @@ public class BlacklistModule implements PunishModule {
 	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
+		final int pps = configYml.getInt(name + ".conditions.pps", 0);
+		final int cps = configYml.getInt(name + ".conditions.cps", 0);
+		final int jps = configYml.getInt(name + ".conditions.jps", 0);
 
-		if (configYml != null) {
-			final int pps = configYml.getInt(name + ".conditions.pps", 0);
-			final int cps = configYml.getInt(name + ".conditions.cps", 0);
-			final int jps = configYml.getInt(name + ".conditions.jps", 0);
-
-			this.enabled = configYml.getBoolean(name + ".enabled");
-			this.punishCommands.clear();
-			this.punishCommands.addAll(configYml.getStringList(name + ".commands"));
-			this.conditions = new Conditions(pps, cps, jps, false);
-		}
+		enabled = configYml.getBoolean(name + ".enabled");
+		punishCommands.clear();
+		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		conditions = new Conditions(pps, cps, jps, false);
 
 		load(configUtil);
 	}
 
-	public void setBlacklisted(final String ip, final boolean blacklist) {
+	public void setBlacklisted(final String address, final boolean blacklist) {
 		if (blacklist) {
-			moduleManager.getWhitelistModule().setWhitelisted(ip, false);
-			this.blacklist.add(ip);
-		} else
-			this.blacklist.remove(ip);
+			moduleManager.getWhitelistModule().setWhitelisted(address, false);
+
+			try {
+				moduleManager.getRuntimeModule().addBlacklisted(address);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			this.blacklist.add(address);
+		} else {
+			this.blacklist.remove(address);
+		}
 	}
 
 	final int getSize() {
@@ -69,9 +75,7 @@ public class BlacklistModule implements PunishModule {
 		final Configuration blacklistYml = configUtil.getConfiguration("%datafolder%/blacklist.yml");
 
 		this.blacklist.clear();
-
-		if (blacklistYml != null)
-			this.blacklist.addAll(blacklistYml.getStringList(""));
+		this.blacklist.addAll(blacklistYml.getStringList(""));
 	}
 
 	@Override

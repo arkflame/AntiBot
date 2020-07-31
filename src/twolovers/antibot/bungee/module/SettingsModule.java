@@ -31,23 +31,20 @@ public class SettingsModule implements PunishModule {
 	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
+		final int pps = configYml.getInt(name + ".conditions.pps", 0);
+		final int cps = configYml.getInt(name + ".conditions.cps", 0);
+		final int jps = configYml.getInt(name + ".conditions.jps", 0);
 
-		if (configYml != null) {
-			final int pps = configYml.getInt(name + ".conditions.pps", 0);
-			final int cps = configYml.getInt(name + ".conditions.cps", 0);
-			final int jps = configYml.getInt(name + ".conditions.jps", 0);
-
-			this.enabled = configYml.getBoolean(name + ".enabled");
-			this.punishCommands.clear();
-			this.punishCommands.addAll(configYml.getStringList(name + ".commands"));
-			this.conditions = new Conditions(pps, cps, jps, false);
-			this.delay = configYml.getInt(name + ".delay", 5000);
-		}
+		enabled = configYml.getBoolean(name + ".enabled");
+		punishCommands.clear();
+		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		conditions = new Conditions(pps, cps, jps, false);
+		delay = configYml.getInt(name + ".delay", 5000);
 	}
 
 	@Override
 	public final boolean meet(final int pps, final int cps, final int jps) {
-		return this.enabled && conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
+		return enabled && conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
 				moduleManager.getLastJPS());
 	}
 
@@ -62,18 +59,18 @@ public class SettingsModule implements PunishModule {
 	}
 
 	public Collection<BotPlayer> getPending() {
-		return this.pending;
+		return pending;
 	}
 
 	public void addPending(final BotPlayer botPlayer) {
-		this.pending.add(botPlayer);
+		pending.add(botPlayer);
 	}
 
 	public void removePending(final BotPlayer botPlayer) {
-		this.pending.remove(botPlayer);
+		pending.remove(botPlayer);
 	}
 
 	public long getDelay() {
-		return this.delay;
+		return delay;
 	}
 }

@@ -29,22 +29,19 @@ public class RegisterModule implements PunishModule {
 	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
+		final int pps = configYml.getInt(name + ".conditions.pps", 0);
+		final int cps = configYml.getInt(name + ".conditions.cps", 0);
+		final int jps = configYml.getInt(name + ".conditions.jps", 0);
 
-		if (configYml != null) {
-			final int pps = configYml.getInt(name + ".conditions.pps", 0);
-			final int cps = configYml.getInt(name + ".conditions.cps", 0);
-			final int jps = configYml.getInt(name + ".conditions.jps", 0);
-
-			this.enabled = configYml.getBoolean(name + ".enabled");
-			this.punishCommands.clear();
-			this.punishCommands.addAll(configYml.getStringList(name + ".commands"));
-			this.conditions = new Conditions(pps, cps, jps, false);
-		}
+		enabled = configYml.getBoolean(name + ".enabled");
+		punishCommands.clear();
+		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		conditions = new Conditions(pps, cps, jps, false);
 	}
 
 	public final void setLastRegisterCommand(final String ip, final String command) {
-		this.lastRegisterIp = ip;
-		this.lastRegisterCommand = command;
+		lastRegisterIp = ip;
+		lastRegisterCommand = command;
 	}
 
 	@Override

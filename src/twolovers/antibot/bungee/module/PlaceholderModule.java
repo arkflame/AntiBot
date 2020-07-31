@@ -8,9 +8,9 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.Module;
+import twolovers.antibot.shared.interfaces.IModule;
 
-public class PlaceholderModule implements Module {
+public class PlaceholderModule implements IModule {
 	private final String name = "placeholder";
 	private final String pluginVersion;
 	private final Map<String, String> placeholders = new HashMap<>();
@@ -81,7 +81,7 @@ public class PlaceholderModule implements Module {
 		}
 
 		if (checkName != null) {
-			string.replace("%check%", checkName);
+			string = string.replace("%check%", checkName);
 		}
 
 		return ChatColor.translateAlternateColorCodes('&', string.replace("%version%", pluginVersion));
@@ -110,8 +110,9 @@ public class PlaceholderModule implements Module {
 		final Configuration messagesYml = configUtil.getConfiguration("%datafolder%/messages.yml");
 		final StringBuilder path = new StringBuilder();
 
-		this.lang = configYml.getString("lang");
-		this.placeholders.clear();
+		lang = configYml.getString("lang");
+		placeholders.clear();
+
 		addSection(path, messagesYml);
 	}
 

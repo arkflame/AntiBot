@@ -31,22 +31,18 @@ public class WhitelistModule implements PunishModule {
 	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
+		final int pps = configYml.getInt(name + ".conditions.pps", 0);
+		final int cps = configYml.getInt(name + ".conditions.cps", 0);
+		final int jps = configYml.getInt(name + ".conditions.jps", 0);
 
-		if (configYml != null) {
-			final int pps = configYml.getInt(name + ".conditions.pps", 0);
-			final int cps = configYml.getInt(name + ".conditions.cps", 0);
-			final int jps = configYml.getInt(name + ".conditions.jps", 0);
-
-			this.enabled = configYml.getBoolean(name + ".enabled", true);
-			this.punishCommands.clear();
-			this.punishCommands.addAll(configYml.getStringList(name + ".commands"));
-			this.conditions = new Conditions(pps, cps, jps, false);
-			this.requireSwitch = configYml.getBoolean(name + ".switch", true);
-			this.timeWhitelist = configYml.getInt(name + ".time.whitelist", 30000);
-			this.timeLockout = configYml.getInt(name + ".time.lockout", 30000);
-		}
-
-		this.load(configUtil);
+		enabled = configYml.getBoolean(name + ".enabled", true);
+		punishCommands.clear();
+		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		conditions = new Conditions(pps, cps, jps, false);
+		requireSwitch = configYml.getBoolean(name + ".switch", true);
+		timeWhitelist = configYml.getInt(name + ".time.whitelist", 30000);
+		timeLockout = configYml.getInt(name + ".time.lockout", 30000);
+		load(configUtil);
 	}
 
 	public final void load(final ConfigUtil configUtil) {

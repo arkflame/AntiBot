@@ -2,50 +2,72 @@ package twolovers.antibot.bungee.module;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.Module;
+import twolovers.antibot.shared.interfaces.IModule;
 
-public class NotificationsModule implements Module {
+public class NotificationsModule implements IModule {
+	private final ModuleManager moduleManager;
+	private final Logger logger;
 	private final String name = "notifications";
-	private final Collection<ProxiedPlayer> notifications = new HashSet<>();
+	private final Collection<ProxiedPlayer> notificationPlayers = new HashSet<>();
 	private boolean enabled, console;
+
+	NotificationsModule(final ModuleManager moduleManager, final Logger logger) {
+		this.moduleManager = moduleManager;
+		this.logger = logger;
+	}
 
 	@Override
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	@Override
 	public void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
-		this.enabled = configYml.getBoolean(name + ".enabled", true);
-		this.console = configYml.getBoolean(name + ".console", true);
+		enabled = configYml.getBoolean(name + ".enabled", true);
+		console = configYml.getBoolean(name + ".console", true);
 	}
 
-	public boolean isEnabled() {
-		return this.enabled;
-	}
+	public void notify(final String locale, final String address, final String checkName) {
+		if (this.enabled) {
+			final PlaceholderModule placeholderModule = moduleManager.getPlaceholderModule();
+			final String notification = placeholderModule.setPlaceholders(moduleManager, "%notification_message%",
+					locale, address, checkName);
+			final BaseComponent[] notificationTextComponent = TextComponent.fromLegacyText(notification);
 
-	public boolean isConsole() {
-		return this.console;
+			if (this.console) {
+				this.logger.log(Level.INFO, notification);
+			}
+
+			for (final ProxiedPlayer proxiedPlayer : this.notificationPlayers) {
+				proxiedPlayer.sendMessage(ChatMessageType.ACTION_BAR, notificationTextComponent);
+			}
+		}
 	}
 
 	public void setNotifications(final ProxiedPlayer player, final boolean bool) {
-		if (bool) {
-			if (!notifications.contains(player))
-				notifications.add(player);
-		} else
-			notifications.remove(player);
+		if (this.enabled) {
+			if (bool) {
+				if (!this.notificationPlayers.contains(player)) {
+					this.notificationPlayers.add(player);
+				}
+			} else if (this.notificationPlayers.contains(player)) {
+				this.notificationPlayers.remove(player);
+			}
+		}
 	}
 
 	public boolean hasNotifications(final ProxiedPlayer player) {
-		return notifications.contains(player);
-	}
-
-	public Iterable<ProxiedPlayer> getNotificationPlayers() {
-		return notifications;
+		return notificationPlayers.contains(player);
 	}
 }

@@ -33,7 +33,8 @@ public class PostLoginListener implements Listener {
 		settingsModule.addPending(botPlayer);
 		playerModule.setOnline(botPlayer);
 
-		if (notificationsModule.isEnabled() && proxiedPlayer.hasPermission("antibot.notifications"))
+		if (proxiedPlayer.hasPermission("antibot.notifications")) {
 			notificationsModule.setNotifications(proxiedPlayer, true);
+		}
 	}
 }

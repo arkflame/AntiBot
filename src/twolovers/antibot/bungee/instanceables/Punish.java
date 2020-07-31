@@ -1,14 +1,11 @@
 package twolovers.antibot.bungee.instanceables;
 
 import java.util.Collection;
-import java.util.logging.Level;
 
-import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.Connection;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Cancellable;
@@ -29,19 +26,7 @@ public class Punish {
 				checkName = punishModuleName.substring(0, 1).toUpperCase() + punishModuleName.substring(1),
 				address = connection.getAddress().getHostString();
 
-		if (notificationsModule.isEnabled()) {
-			final String notification = placeholderModule.setPlaceholders(moduleManager, "%notification_message%",
-					locale, address, checkName);
-			final BaseComponent[] notificationTextComponent = TextComponent.fromLegacyText(notification);
-
-			if (notificationsModule.isConsole()) {
-				plugin.getLogger().log(Level.INFO, notification);
-			}
-
-			for (final ProxiedPlayer proxiedPlayer : notificationsModule.getNotificationPlayers()) {
-				proxiedPlayer.sendMessage(ChatMessageType.ACTION_BAR, notificationTextComponent);
-			}
-		}
+		notificationsModule.notify(locale, address, checkName);
 
 		if (event instanceof ProxyPingEvent) {
 			final ProxyPingEvent proxyPingEvent = (ProxyPingEvent) event;
@@ -55,16 +40,17 @@ public class Punish {
 					final BaseComponent[] disconnectMessage = TextComponent
 							.fromLegacyText(command.replace("disconnect ", ""));
 
-					if (event instanceof PreLoginEvent) {
-						final PreLoginEvent preLoginEvent = (PreLoginEvent) event;
+					if (event instanceof Cancellable) {
+						if (event instanceof PreLoginEvent) {
+							final PreLoginEvent preLoginEvent = (PreLoginEvent) event;
 
-						preLoginEvent.setCancelReason(disconnectMessage);
-						preLoginEvent.setCancelled(true);
-					} else if (event instanceof Cancellable) {
+							preLoginEvent.setCancelReason(disconnectMessage);
+						}
+
 						((Cancellable) event).setCancelled(true);
+					} else {
+						connection.disconnect(disconnectMessage);
 					}
-
-					connection.disconnect(disconnectMessage);
 				} else {
 					final ProxyServer proxyServer = plugin.getProxy();
 

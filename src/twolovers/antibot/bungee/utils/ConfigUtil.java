@@ -4,23 +4,27 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.logging.Logger;
 
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.scheduler.TaskScheduler;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 
 public class ConfigUtil {
-	final private Plugin plugin;
+	private final Plugin plugin;
+	private final Logger logger;
+	private final TaskScheduler scheduler;
 
 	public ConfigUtil(final Plugin plugin) {
 		this.plugin = plugin;
+		this.logger = plugin.getLogger();
+		this.scheduler = plugin.getProxy().getScheduler();
 	}
 
 	public Configuration getConfiguration(String file) {
-		final File dataFolder = plugin.getDataFolder();
-
-		file = file.replace("%datafolder%", dataFolder.toPath().toString());
+		file = replaceDataFolder(file);
 
 		try {
 			return ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(file));
@@ -31,9 +35,7 @@ public class ConfigUtil {
 
 	public void createConfiguration(String file) {
 		try {
-			final File dataFolder = plugin.getDataFolder();
-
-			file = file.replace("%datafolder%", dataFolder.toPath().toString());
+			file = replaceDataFolder(file);
 
 			final File configFile = new File(file);
 
@@ -51,35 +53,38 @@ public class ConfigUtil {
 				else
 					configFile.createNewFile();
 
-				System.out.print(("[%pluginname%] File " + configFile + " has been created!").replace("%pluginname%",
-						plugin.getDescription().getName()));
+				logger.info("File " + configFile + " has been created!");
 			}
 		} catch (final IOException e) {
-			System.out.print(("[%pluginname%] Unable to create configuration file!").replace("%pluginname%",
-					plugin.getDescription().getName()));
+			logger.info("Unable to create configuration file '" + file + "'!");
 		}
 	}
 
 	public void saveConfiguration(final Configuration configuration, final String file) {
-		plugin.getProxy().getScheduler().runAsync(plugin, () -> {
-			try {
-				final File dataFolder = plugin.getDataFolder();
+		final String replacedFile = replaceDataFolder(file);
 
-				ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration,
-						new File(file.replace("%datafolder%", dataFolder.toPath().toString())));
+		this.scheduler.runAsync(plugin, () -> {
+			try {
+				ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration, new File(replacedFile));
+				logger.info("File '" + replacedFile + "' successfully saved!");
 			} catch (final IOException e) {
-				System.out.print(("[%pluginname%] Unable to save configuration file!").replace("%pluginname%",
-						plugin.getDescription().getName()));
+				logger.info("Unable to save configuration file '" + replacedFile + "'!");
 			}
 		});
 	}
 
 	public void deleteConfiguration(final String file) {
-		plugin.getProxy().getScheduler().runAsync(plugin, () -> {
+		this.scheduler.runAsync(plugin, () -> {
 			final File file1 = new File(file);
 
 			if (file1.exists())
 				file1.delete();
 		});
+	}
+
+	private String replaceDataFolder(final String string) {
+		final File dataFolder = plugin.getDataFolder();
+
+		return string.replace("%datafolder%", dataFolder.toPath().toString());
 	}
 }

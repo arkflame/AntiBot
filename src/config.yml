@@ -1,62 +1,39 @@
-# AntiBot by LinsaFTW
+### AntiBot by LinsaFTW ###
 # Please help by donating, we require funds to continue with the development.
 # https://paypal.me/LinsaFTW
-#
 
-# Condition System - (Protection Mode)
+### Condition System ###
 #
-# PPS -> Pings/second (IPs that pinged the server in the last second)
-# CPS -> Connections/second (IPs that are connecting but got cancelled in the last second)
-# JPS -> Joins/second (IPs that passed the checks and joined in the last second)
+# PPS means Pings/second (Connections that pinged the server in the last second)
+# CPS means Connections/second (Connections that are trying to connect in the last second)
+# JPS means Joins/second (Connections that fully joined the server in the last second)
 #
-# This example means "The server needs any PPS, 4 CPS and 1 JPS to activate the module".
-# conditions:
-#   PPS: 0
-#   CPS: 4
-#   JPS: 1
+# When the conditions are true the module will start working.
+# If the conditions are false, the module won't check anyone.
+# This is made so we can save performance when there is no attack.
 #
-# When the conditions are achieved the module will start blocking bots.
-# If not, the module wont check anyone. (Made to only work while attack)
-# Setting all conditions to 0 will keep the module always active.
-#
+# Setting all conditions to 0 keeps the module always active.
 
-# Default plugin language. (This will change depending on the player's language)
+# Default plugin language. (This changes depending on the client language)
 lang: "en"
 
-# Notifies console and players with permissions about punishments made.
-notifications:
-  enabled: true
-
-  # Allows logging notifications on the console.
-  console: true
-
-# Module that handles player data stored to detect bots.
-player:
-  # Time to wait before removing disconnected players from the cache. (In milliseconds)
-  cache_time: 20000
-
-# Adds real players to a list on disconnect so they can bypass the checks.
-# If conditions are achieved Lockout will activate and only Whitelisted will be able to join.
-# Lockout is made for security measures and its not intended to be used normally.
-whitelist:
+# Checks if there are too many different nicknames from the same IP.
+accounts:
   enabled: true
 
   conditions:
-    pps: 40
-    cps: 0
-    jps: 20
+    pps: 0
+    cps: 6
+    jps: 1
 
-  time:
-    # Time in milliseconds the player has to be online to get whitelisted.
-    whitelist: 5000
-
-    # Time in milliseconds the lockout runs active after conditions are met.
-    lockout: 20000
+  # Max different nicknames a player can login while the check is active.
+  limit: 2
 
   commands:
-    - "disconnect %kick_whitelist%"
+    - "disconnect %kick_accounts%"
 
-# This check blocks Blacklisted IPs if conditions are achieved.
+# This blocks Blacklisted addresses if conditions are achieved.
+# Addresses are blacklisted when they fail certain checks.
 blacklist:
   enabled: true
 
@@ -68,27 +45,22 @@ blacklist:
   commands:
     - "disconnect %kick_blacklist%"
 
-# Checks if connections have abnormal behaviour to prevent attacks from single IPs.
-ratelimit:
+# Checks if players chat too fast or in invalid moments.
+fastchat:
   enabled: true
 
-  # Conditions to block a connection. (Connection needs to reach one of this values to get blocked)
-  # This basically limits how much of this actions a single IP can do per second.
   conditions:
-    pps: 8
+    pps: 0
     cps: 3
     jps: 2
 
-  # Minimum time forced between connections from the same IP. (In milliseconds)
-  throttle: 650
-
-  # Max players that can be online at the same time from the same IP.
-  max_online: 3
+  # Time players have to wait to type commands since joined. (In milliseconds)
+  time: 1000
 
   commands:
-    - "disconnect %kick_ratelimit%"
+    - "disconnect %kick_fastchat%"
 
-# Checks if connections have bot nicknames.
+# Checks if incoming connections have bot nicknames.
 nickname:
   enabled: true
 
@@ -106,11 +78,39 @@ nickname:
   commands:
     - "disconnect %kick_nickname%"
 
-# Forces connections to reconnect if they arent whitelisted.
+# Notifies console and players with permission about punishments made.
+# Permission node: antibot.notify
+notifications:
+  enabled: true
+
+  # Logs notifications on the console.
+  console: true
+
+# Checks if connections are being established too fast from the same address.
+ratelimit:
+  enabled: true
+
+  # If an address reachs any of this values it will get blocked.
+  limits:
+    pps: 8
+    cps: 3
+    jps: 2
+
+  # Minimum time forced between connections from the same IP. (In milliseconds)
+  # This replaces BungeeCord connection throttle so we can blacklist addreses.
+  throttle: 650
+
+  # Max players that can be online at the same time from the same IP.
+  max_online: 3
+
+  commands:
+    - "disconnect %kick_ratelimit%"
+
+# Asks players to reconnect/reping the first time they join the server.
 reconnect:
   enabled: true
 
-  # Declares the amount of times a player has to connect and ping the server to be allowed.
+  # The amount of times a player has to connect/ping the server to be allowed.
   times:
     ping: 1
     connect: 3
@@ -125,6 +125,32 @@ reconnect:
 
   commands:
     - "disconnect %kick_reconnect%"
+
+# Checks if different connections try to register with the same password.
+register:
+  enabled: true
+
+  conditions:
+    pps: 0
+    cps: 0
+    jps: 0
+
+  commands:
+    - "disconnect %kick_register%"
+
+# Runs Linux commands when an address is blacklisted.
+runtime:
+  enabled: false
+
+  # Time to automatically remove all added addresses. (In milliseconds)
+  # You can set this value to -1 to keep addresses permanently firewalled.
+  time: 20000
+
+  add:
+    - "iptables -I INPUT -s %address% -j DROP"
+
+  remove:
+    - "iptables -D INPUT -s %address% -j DROP"
 
 # Blocks connections that didnt send the Settings packet.
 # WARNING: Disable if you have false positives with Multi-Lobby and Minechat. (Not recommended)
@@ -142,44 +168,23 @@ settings:
   commands:
     - "disconnect %kick_settings%"
 
-# Blocks connections that chat too fast or in invalid moments.
-fastchat:
+# Adds real players to a list when they quit so they can bypass the checks.
+# If conditions are achieved Lockout will activate and only Whitelisted will be able to join.
+# Lockout was made for security measures and its not intended to be used normally.
+whitelist:
   enabled: true
 
   conditions:
-    pps: 0
-    cps: 3
-    jps: 2
-
-  # Time until the check stops monitoring the player. (In milliseconds)
-  time: 750
-
-  commands:
-    - "disconnect %kick_fastchat%"
-
-# Checks if different connections try to register with the same password.
-register:
-  enabled: true
-
-  conditions:
-    pps: 0
+    pps: 40
     cps: 0
-    jps: 0
+    jps: 20
+
+  time:
+    # Time in milliseconds the player has to be online to get whitelisted.
+    whitelist: 15000
+
+    # Time in milliseconds the lockout runs active after conditions are met.
+    lockout: 20000
 
   commands:
-    - "disconnect %kick_register%"
-
-# Checks if there are too many different nicknames from the same IP.
-accounts:
-  enabled: true
-
-  # Max different nicknames a player can login while the check is active.
-  limit: 2
-
-  conditions:
-    pps: 0
-    cps: 6
-    jps: 1
-
-  commands:
-    - "disconnect %kick_accounts%"
+    - "disconnect %kick_whitelist%"

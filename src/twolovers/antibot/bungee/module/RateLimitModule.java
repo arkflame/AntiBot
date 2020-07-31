@@ -31,24 +31,21 @@ public class RateLimitModule implements PunishModule {
 	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
+		final int pps = configYml.getInt(name + ".limits.pps", 0);
+		final int cps = configYml.getInt(name + ".limits.cps", 0);
+		final int jps = configYml.getInt(name + ".limits.jps", 0);
 
-		if (configYml != null) {
-			final int pps = configYml.getInt(name + ".conditions.pps", 0);
-			final int cps = configYml.getInt(name + ".conditions.cps", 0);
-			final int jps = configYml.getInt(name + ".conditions.jps", 0);
-
-			this.enabled = configYml.getBoolean(name + ".enabled");
-			this.punishCommands.clear();
-			this.punishCommands.addAll(configYml.getStringList(name + ".commands"));
-			this.conditions = new Conditions(pps, cps, jps, true);
-			this.maxOnline = configYml.getInt(name + ".max_online");
-			this.throttle = configYml.getInt(name + ".throttle");
-		}
+		enabled = configYml.getBoolean(name + ".enabled");
+		punishCommands.clear();
+		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		conditions = new Conditions(pps, cps, jps, true);
+		maxOnline = configYml.getInt(name + ".max_online");
+		throttle = configYml.getInt(name + ".throttle");
 	}
 
 	@Override
 	public boolean meet(final int pps, final int cps, final int jps) {
-		return this.enabled;
+		return enabled;
 	}
 
 	@Override
