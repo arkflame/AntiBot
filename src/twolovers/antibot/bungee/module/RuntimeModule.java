@@ -41,7 +41,7 @@ public class RuntimeModule implements IModule {
 		if (enabled) {
 			final long currentTime = System.currentTimeMillis();
 
-			if (currentTime - this.lastUpdateTime > time) {
+			if (time != -1 && currentTime - this.lastUpdateTime > time) {
 				this.lastUpdateTime = currentTime;
 
 				for (final String address : new HashSet<>(this.blacklisted)) {
