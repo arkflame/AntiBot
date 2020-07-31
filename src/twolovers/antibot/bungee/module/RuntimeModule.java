@@ -13,7 +13,7 @@ public class RuntimeModule implements IModule {
 	private final Collection<String> blacklisted = new HashSet<>(), addCommands = new HashSet<>(),
 			removeCommands = new HashSet<>();
 	private final String name = "runtime";
-	private long lastUpdateTime = System.currentTimeMillis();
+	private long lastUpdateTime = 0;
 	private int time = 20000;
 	private boolean enabled = true;
 
@@ -26,7 +26,8 @@ public class RuntimeModule implements IModule {
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
-		enabled = configYml.getBoolean(name + ".enabled");
+		enabled = configYml.getBoolean(name + ".enabled", enabled);
+		time = configYml.getInt(name + ".time", time);
 
 		if (configYml.contains(name + ".add")) {
 			addCommands.addAll(configYml.getStringList(name + ".add"));
@@ -41,10 +42,10 @@ public class RuntimeModule implements IModule {
 		if (enabled) {
 			final long currentTime = System.currentTimeMillis();
 
-			if (time != -1 && currentTime - this.lastUpdateTime > time) {
-				this.lastUpdateTime = currentTime;
+			if (time != -1 && currentTime - lastUpdateTime > time) {
+				lastUpdateTime = currentTime;
 
-				for (final String address : new HashSet<>(this.blacklisted)) {
+				for (final String address : new HashSet<>(blacklisted)) {
 					try {
 						removeBlacklisted(address);
 					} catch (final IOException e) {

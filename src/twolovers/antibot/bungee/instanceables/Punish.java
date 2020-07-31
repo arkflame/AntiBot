@@ -14,11 +14,11 @@ import net.md_5.bungee.api.plugin.Plugin;
 import twolovers.antibot.bungee.module.ModuleManager;
 import twolovers.antibot.bungee.module.NotificationsModule;
 import twolovers.antibot.bungee.module.PlaceholderModule;
-import twolovers.antibot.shared.interfaces.PunishModule;
+import twolovers.antibot.shared.interfaces.IPunishModule;
 
 public class Punish {
 	public Punish(final Plugin plugin, final ModuleManager moduleManager, final String locale,
-			final PunishModule punishModule, final Connection connection, final Event event) {
+			final IPunishModule punishModule, final Connection connection, final Event event) {
 		final PlaceholderModule placeholderModule = moduleManager.getPlaceholderModule();
 		final NotificationsModule notificationsModule = moduleManager.getNotificationsModule();
 		final Collection<String> punishCommands = punishModule.getPunishCommands();

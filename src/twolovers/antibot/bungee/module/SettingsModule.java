@@ -5,18 +5,18 @@ import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
 import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.PunishModule;
+import twolovers.antibot.shared.interfaces.IPunishModule;
 
 import java.util.Collection;
 import java.util.HashSet;
 
-public class SettingsModule implements PunishModule {
+public class SettingsModule implements IPunishModule {
 	private final String name = "settings";
 	private final ModuleManager moduleManager;
 	private final Collection<String> punishCommands = new HashSet<>();
 	private final Collection<BotPlayer> pending = new HashSet<>();
 	private Conditions conditions;
-	private int delay;
+	private int delay = 5000;
 	private boolean enabled = true;
 
 	public SettingsModule(final ModuleManager moduleManager) {
@@ -35,11 +35,11 @@ public class SettingsModule implements PunishModule {
 		final int cps = configYml.getInt(name + ".conditions.cps", 0);
 		final int jps = configYml.getInt(name + ".conditions.jps", 0);
 
-		enabled = configYml.getBoolean(name + ".enabled");
+		enabled = configYml.getBoolean(name + ".enabled", enabled);
 		punishCommands.clear();
 		punishCommands.addAll(configYml.getStringList(name + ".commands"));
 		conditions = new Conditions(pps, cps, jps, false);
-		delay = configYml.getInt(name + ".delay", 5000);
+		delay = configYml.getInt(name + ".delay", delay);
 	}
 
 	@Override

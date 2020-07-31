@@ -4,7 +4,7 @@ import net.md_5.bungee.api.connection.Connection;
 
 import java.util.Collection;
 
-public interface PunishModule extends IModule {
+public interface IPunishModule extends IModule {
 	boolean meet(final int pps, final int cps, final int jps);
 
 	boolean check(final Connection connection);

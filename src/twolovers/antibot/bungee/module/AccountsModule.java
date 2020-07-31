@@ -6,11 +6,11 @@ import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
 import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.PunishModule;
+import twolovers.antibot.shared.interfaces.IPunishModule;
 
 import java.util.*;
 
-public class AccountsModule implements PunishModule {
+public class AccountsModule implements IPunishModule {
 	private final String name = "accounts";
 	private final ModuleManager moduleManager;
 	private Collection<String> punishCommands = new HashSet<>();
@@ -34,11 +34,11 @@ public class AccountsModule implements PunishModule {
 		final int cps = configYml.getInt(name + ".conditions.cps", 0);
 		final int jps = configYml.getInt(name + ".conditions.jps", 0);
 
-		enabled = configYml.getBoolean(name + ".enabled");
+		enabled = configYml.getBoolean(name + ".enabled", enabled);
 		punishCommands.clear();
 		punishCommands.addAll(configYml.getStringList(name + ".commands"));
 		conditions = new Conditions(pps, cps, jps, false);
-		limit = configYml.getInt(name + ".limit");
+		limit = configYml.getInt(name + ".limit", limit);
 	}
 
 	@Override

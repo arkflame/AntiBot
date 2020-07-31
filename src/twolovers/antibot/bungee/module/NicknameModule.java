@@ -5,13 +5,13 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.PunishModule;
+import twolovers.antibot.shared.interfaces.IPunishModule;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
-public class NicknameModule implements PunishModule {
+public class NicknameModule implements IPunishModule {
 	private final String name = "nickname";
 	private final ModuleManager moduleManager;
 	private Collection<String> punishCommands = new HashSet<>();
@@ -19,7 +19,7 @@ public class NicknameModule implements PunishModule {
 	private Conditions conditions;
 	private Pattern pattern = Pattern.compile(
 			"^(Craft|Beach|Actor|Games|Tower|Elder|Mine|Nitro|Worms|Build|Plays|Hyper|Crazy|Super|_Itz|Slime)(Craft|Beach|Actor|Games|Tower|Elder|Mine|Nitro|Worms|Build|Plays|Hyper|Crazy|Super|_Itz|Slime)(11|50|69|99|88|HD|LP|XD|YT)");
-	private String lastNickname = "AAAAAAAAAAAAAAAA";
+	private String lastNickname = "A";
 	private boolean enabled = true;
 
 	public NicknameModule(final ModuleManager moduleManager) {
@@ -38,7 +38,7 @@ public class NicknameModule implements PunishModule {
 		final int cps = configYml.getInt(name + ".conditions.cps", 0);
 		final int jps = configYml.getInt(name + ".conditions.jps", 0);
 
-		enabled = configYml.getBoolean(name + ".enabled");
+		enabled = configYml.getBoolean(name + ".enabled", enabled);
 		punishCommands.clear();
 		punishCommands.addAll(configYml.getStringList(name + ".commands"));
 		conditions = new Conditions(pps, cps, jps, false);

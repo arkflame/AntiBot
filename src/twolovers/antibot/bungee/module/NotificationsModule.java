@@ -18,7 +18,7 @@ public class NotificationsModule implements IModule {
 	private final Logger logger;
 	private final String name = "notifications";
 	private final Collection<ProxiedPlayer> notificationPlayers = new HashSet<>();
-	private boolean enabled, console;
+	private boolean enabled = true, console = true;
 
 	NotificationsModule(final ModuleManager moduleManager, final Logger logger) {
 		this.moduleManager = moduleManager;
@@ -34,8 +34,8 @@ public class NotificationsModule implements IModule {
 	public void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
-		enabled = configYml.getBoolean(name + ".enabled", true);
-		console = configYml.getBoolean(name + ".console", true);
+		enabled = configYml.getBoolean(name + ".enabled", enabled);
+		console = configYml.getBoolean(name + ".console", console);
 	}
 
 	public void notify(final String locale, final String address, final String checkName) {

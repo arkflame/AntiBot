@@ -17,12 +17,12 @@ public class PlaceholderModule implements IModule {
 	private String lang;
 
 	PlaceholderModule(final Plugin plugin) {
-		this.pluginVersion = plugin.getDescription().getVersion();
+		pluginVersion = plugin.getDescription().getVersion();
 	}
 
 	@Override
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	private final String setPlaceholders(String string, final String locale) {

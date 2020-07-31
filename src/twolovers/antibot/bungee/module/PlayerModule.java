@@ -13,7 +13,7 @@ public class PlayerModule implements IModule {
     private final String name = "player";
     private final Map<String, BotPlayer> players = new HashMap<>();
     private final Collection<BotPlayer> offlinePlayers = new HashSet<>();
-    private int cacheTime;
+    private int cacheTime = 30000;
 
     @Override
     public String getName() {
@@ -22,7 +22,6 @@ public class PlayerModule implements IModule {
 
     @Override
     public void reload(final ConfigUtil configUtil) {
-        this.cacheTime = 30000;
     }
 
     public final BotPlayer get(final String hostString) {
@@ -33,33 +32,33 @@ public class PlayerModule implements IModule {
         } else {
             botPlayer = new BotPlayer(hostString);
 
-            this.players.put(hostString, botPlayer);
+            players.put(hostString, botPlayer);
         }
 
         return botPlayer;
     }
 
     public final void setOnline(final BotPlayer botPlayer) {
-        if (this.offlinePlayers.contains(botPlayer)) {
-            this.offlinePlayers.remove(botPlayer);
+        if (offlinePlayers.contains(botPlayer)) {
+            offlinePlayers.remove(botPlayer);
         }
     }
 
     public final void setOffline(final BotPlayer botPlayer) {
-        if (!this.offlinePlayers.contains(botPlayer)) {
-            this.offlinePlayers.add(botPlayer);
+        if (!offlinePlayers.contains(botPlayer)) {
+            offlinePlayers.add(botPlayer);
         }
     }
 
     public Collection<BotPlayer> getOfflinePlayers() {
-        return this.offlinePlayers;
+        return offlinePlayers;
     }
 
     public void remove(final BotPlayer botPlayer) {
         final String hostAddress = botPlayer.getHostAddress();
 
-        this.players.remove(hostAddress);
-        this.offlinePlayers.remove(botPlayer);
+        players.remove(hostAddress);
+        offlinePlayers.remove(botPlayer);
     }
 
     public long getCacheTime() {

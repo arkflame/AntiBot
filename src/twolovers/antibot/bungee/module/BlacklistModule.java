@@ -4,14 +4,14 @@ import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.PunishModule;
+import twolovers.antibot.shared.interfaces.IPunishModule;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class BlacklistModule implements PunishModule {
+public class BlacklistModule implements IPunishModule {
 	private final String name = "blacklist";
 	private final ModuleManager moduleManager;
 	private Collection<String> blacklist = new HashSet<>(), punishCommands = new HashSet<>();
@@ -34,7 +34,7 @@ public class BlacklistModule implements PunishModule {
 		final int cps = configYml.getInt(name + ".conditions.cps", 0);
 		final int jps = configYml.getInt(name + ".conditions.jps", 0);
 
-		enabled = configYml.getBoolean(name + ".enabled");
+		enabled = configYml.getBoolean(name + ".enabled", enabled);
 		punishCommands.clear();
 		punishCommands.addAll(configYml.getStringList(name + ".commands"));
 		conditions = new Conditions(pps, cps, jps, false);
