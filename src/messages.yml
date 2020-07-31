@@ -159,3 +159,33 @@ fr:
     settings: "%kick_blocked% &fBot detecté. [Settings]\n&7Discord: &b&n%discord%&r"
     register: "%kick_blocked% &fBot detecté. [Register]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cAjoutez le serveur à votre liste de serveurs et raffraichissez là!\n&cReconnectez-vous plus de %reconnect_times% fois pour rejoindre!\n\n&7Raison: &fNous vérifions que vous n'êtes pas un Bot.\n&7Discord: &b&n%discord%&r"
+# Simplified Chinese (简体中文)
+zh-cn:
+  reload: "&c&lAB: &a已成功重载文件！"
+  help: |-
+    &aAntiBot&b %version% &aby&b LinsaFTW&a.
+    &e /ab notify &7> &b开启僵尸网络防护通知提醒
+    &e /ab stats &7> &b显示插件统计数据
+    &e /ab reload &7> &b重载插件配置
+    &e /ab blacklist <add/remove> <IP> &7> &b向黑名单添加或移除 IP
+    &e /ab blacklist <save/load> &7> &b保存或加载黑名单文件
+    &e /ab whitelist <add/remove> <IP> &7> &b向白名单添加或移除 IP
+    &e /ab whitelist <save/load> &7> &b保存或加载白名单文件
+  error:
+    command: "&c参数无效！请使用 /ab help 来查看可用命令！"
+    console: "&c您无法从控制台执行此命令！"
+    permission: "&c权限不足！"
+  notification:
+    enabled: "&a您已开启通知消息！"
+    disabled: "&c您已关闭通知消息！"
+  kick:
+    blocked: "&c您已被此服务器暂时屏蔽！\n\n&7理由："
+    accounts: "%kick_blocked% &f账户过多。[账户]\n&7Discord: &b&n%discord%&r"
+    whitelist: "%kick_blocked% &f服务器正遭受攻击。[白名单]\n&7Discord: &b&n%discord%&r"
+    blacklist: "%kick_blocked% &f检测到僵尸网络算法。[黑名单]\n&7Discord: &b&n%discord%&r"
+    fastchat: "%kick_blocked% &f检测到僵尸网络算法。[刷屏]\n&7Discord: &b&n%discord%&r"
+    ratelimit: "%kick_blocked% &f检测到僵尸网络算法。[限速]\n&7Discord: &b&n%discord%&r"
+    nickname: "%kick_blocked% &f检测到僵尸网络算法。[昵称]\n&7Discord: &b&n%discord%&r"
+    settings: "%kick_blocked% &f检测到僵尸网络算法。[设置]\n&7Discord: &b&n%discord%&r"
+    register: "%kick_blocked% &f检测到僵尸网络算法。[注册]\n&7Discord: &b&n%discord%&r"
+    reconnect: "&c请添加服务器到服务器列表并刷新！\n&c刷新后重连 %reconnect_times% 次即可加入！\n\n&7理由：&f验证您不为机器人。\n&7Discord: &b&n%discord%&r"
