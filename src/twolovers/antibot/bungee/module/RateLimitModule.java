@@ -56,7 +56,8 @@ public class RateLimitModule implements IPunishModule {
 		final boolean isThrottle = (cps == 0 && pps >= 0) ? false
 				: System.currentTimeMillis() - lastConnection < throttle;
 
-		return conditions.meet(pps, cps, jps, pps, cps, jps) || isThrottle || botPlayer.getPlayers().size() > maxOnline;
+		return conditions.meet(pps, cps, jps, pps, cps, jps) || isThrottle
+				|| botPlayer.getAccounts().size() > maxOnline;
 	}
 
 	@Override

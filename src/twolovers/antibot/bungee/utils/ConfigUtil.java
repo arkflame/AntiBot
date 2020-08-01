@@ -66,7 +66,6 @@ public class ConfigUtil {
 		this.scheduler.runAsync(plugin, () -> {
 			try {
 				ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration, new File(replacedFile));
-				logger.info("File '" + replacedFile + "' successfully saved!");
 			} catch (final IOException e) {
 				logger.info("Unable to save configuration file '" + replacedFile + "'!");
 			}

@@ -23,18 +23,18 @@ public class PostLoginListener implements Listener {
 		final NotificationsModule notificationsModule = moduleManager.getNotificationsModule();
 		final PlayerModule playerModule = moduleManager.getPlayerModule();
 		final SettingsModule settingsModule = moduleManager.getSettingsModule();
-		final ProxiedPlayer proxiedPlayer = event.getPlayer();
-		final String ip = proxiedPlayer.getAddress().getHostString();
+		final ProxiedPlayer player = event.getPlayer();
+		final String ip = player.getAddress().getHostString();
 		final BotPlayer botPlayer = playerModule.get(ip);
 
 		botPlayer.setJPS(botPlayer.getJPS() + 1);
-		botPlayer.addPlayer(proxiedPlayer);
+		botPlayer.addAccount(player.getName());
 		moduleManager.setCurrentJPS(moduleManager.getCurrentJPS() + 1);
 		settingsModule.addPending(botPlayer);
 		playerModule.setOnline(botPlayer);
 
-		if (proxiedPlayer.hasPermission("antibot.notifications")) {
-			notificationsModule.setNotifications(proxiedPlayer, true);
+		if (player.hasPermission("antibot.notifications")) {
+			notificationsModule.setNotifications(player, true);
 		}
 	}
 }

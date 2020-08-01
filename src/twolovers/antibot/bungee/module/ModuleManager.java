@@ -3,6 +3,7 @@ package twolovers.antibot.bungee.module;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
@@ -13,12 +14,14 @@ import twolovers.antibot.shared.interfaces.IModule;
 
 public class ModuleManager {
 	private final Plugin plugin;
+	private final ProxyServer proxyServer;
 	private final ConfigUtil configUtil;
 	private final IModule[] modules = new IModule[13];
 	private int lastPPS = 0, lastCPS = 0, lastJPS = 0, currentPPS = 0, currentCPS = 0, currentJPS = 0;
 
 	public ModuleManager(final Plugin plugin, final ConfigUtil configUtil) {
 		this.plugin = plugin;
+		this.proxyServer = plugin.getProxy();
 		this.configUtil = configUtil;
 		this.modules[0] = new AccountsModule(this);
 		this.modules[1] = new BlacklistModule(this);
@@ -65,11 +68,13 @@ public class ModuleManager {
 					if (botPlayer == null || botPlayer.isSettings()) {
 						pendingPlayersIterator.remove();
 					} else if (currentTime - botPlayer.getLastConnection() >= settingsDelay) {
-						for (final ProxiedPlayer proxiedPlayer : botPlayer.getPlayers()) {
-							final String language = BungeeUtil.getLanguage(proxiedPlayer, "en");
+						for (final String playerName : botPlayer.getAccounts()) {
+							final ProxiedPlayer player = proxyServer.getPlayer(playerName);
 
-							if (proxiedPlayer.isConnected() && settingsModule.check(proxiedPlayer)) {
-								new Punish(plugin, this, language, settingsModule, proxiedPlayer, null);
+							if (player.isConnected() && settingsModule.check(player)) {
+								final String language = BungeeUtil.getLanguage(player, "en");
+
+								new Punish(plugin, this, language, settingsModule, player, null);
 								pendingPlayersIterator.remove();
 							}
 						}

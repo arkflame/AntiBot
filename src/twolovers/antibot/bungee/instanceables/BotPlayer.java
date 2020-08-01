@@ -3,11 +3,9 @@ package twolovers.antibot.bungee.instanceables;
 import java.util.Collection;
 import java.util.HashSet;
 
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-
 public class BotPlayer {
-    private final Collection<ProxiedPlayer> players = new HashSet<>();
     private final Collection<String> accounts = new HashSet<>();
+    private final Collection<String> totalAccounts = new HashSet<>();
     private final String hostString;
     private String lastNickname = "";
     private long lastPing = 0, lastConnection = 0, lastTimeZeroPPS = System.currentTimeMillis(),
@@ -87,19 +85,23 @@ public class BotPlayer {
         this.lastPing = lastPing;
     }
 
-    public Collection<ProxiedPlayer> getPlayers() {
-        return players;
+    public Collection<String> getAccounts() {
+        return accounts;
     }
 
-    public void addPlayer(final ProxiedPlayer player) {
-        if (!this.players.contains(player)) {
-            this.players.add(player);
-            this.accounts.add(player.getName());
+    public int getTotalAccounts() {
+        return totalAccounts.size();
+    }
+
+    public void addAccount(final String playerName) {
+        if (!accounts.contains(playerName)) {
+            accounts.add(playerName);
+            totalAccounts.add(playerName);
         }
     }
 
-    public void removePlayer(final ProxiedPlayer player) {
-        this.players.remove(player);
+    public void removeAccount(final String playerName) {
+        accounts.remove(playerName);
     }
 
     public void setSettings(final boolean settings) {
@@ -136,10 +138,6 @@ public class BotPlayer {
 
     public String getHostAddress() {
         return hostString;
-    }
-
-    public int getTotalAccounts() {
-        return accounts.size();
     }
 
     public String getLastNickname() {
