@@ -159,3 +159,33 @@ fr:
     settings: "%kick_blocked% &fBot detecté. [Settings]\n&7Discord: &b&n%discord%&r"
     register: "%kick_blocked% &fBot detecté. [Register]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cAjoutez le serveur à votre liste de serveurs et raffraichissez là!\n&cReconnectez-vous plus de %reconnect_times% fois pour rejoindre!\n\n&7Raison: &fNous vérifions que vous n'êtes pas un Bot.\n&7Discord: &b&n%discord%&r"
+# Credits: ll1
+ja:
+  reload: "&c&lAB: &a設定をリロードしました"
+  help: |-
+    &aAntiBot&b %version% &aby&b LinsaFTW&a.
+    &e /ab notify &7> &b通知の有無を切り替えます
+    &e /ab stats &7> &bプラグイン統計データを見る
+    &e /ab reload &7> &bReloads リロードします
+    &e /ab blacklist <add/remove> <IP> &7> &bIPアドレスによるブラックリストの追加または除名をします
+    &e /ab blacklist <save/load> &7> &bブラックリストファイルのセーブまたはロードを行います
+    &e /ab whitelist <add/remove> <IP> &7> &bIPアドレスによるホワイトリストの追加または除名をします
+    &e /ab whitelist <save/load> &7> &bホワイトリストのセーブまたはロードを行います
+  error:
+    command: "&cコマンド引き数が不正です！ /ab help を実行してヘルプを確認してください！"
+    console: "&cこのコマンドはコンソールからは実行できません！"
+    permission: "&cこのコマンドを実行するには権限が必要です！"
+  notification:
+    enabled: "&a通知を有効にしました!"
+    disabled: "&c通知を無効にしました!"
+  kick:
+    blocked: "&cあなたは一時的にブロックされています！\n\n&7理由:"
+    accounts: "%kick_blocked% &f多数のアカウント利用 [Accounts]\n&7Discord: &b&n%discord%&r"
+    whitelist: "%kick_blocked% &fサーバによる事前制限 [Whitelist]\n&7Discord: &b&n%discord%&r"
+    blacklist: "%kick_blocked% &fBot制限による自動検出 [Blacklist]\n&7Discord: &b&n%discord%&r"
+    fastchat: "%kick_blocked% &fBot制限による自動検出 [FastChat]\n&7Discord: &b&n%discord%&r"
+    ratelimit: "%kick_blocked% &f接続回数がおおすぎます！ [RateLimit]\n&7Discord: &b&n%discord%&r"
+    nickname: "%kick_blocked% &fBot制限による自動検出 [NickName]\n&7Discord: &b&n%discord%&r"
+    settings: "%kick_blocked% &fBot制限による自動検出 [Settings]\n&7Discord: &b&n%discord%&r"
+    register: "%kick_blocked% &fBot制限による自動検出 [Register]\n&7Discord: &b&n%discord%&r"
+    reconnect: "&cクライアント内のサーバリスト上にサーバアドレスを追加し、再接続してください！\n&c残り %reconnect_times% 回以上接続するとサーバに参加することができます\n\n&7Reason: &fあなたがBotでないこと証明してください。\n&7Discord: &b&n%discord%&r"
