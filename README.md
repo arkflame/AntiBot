@@ -1,5 +1,5 @@
 # AntiBot
-Lightweight plugin that aims to stop attacks on your server quickly and efficiently.
+Lightweight and highly customizable plugin that aims to stop attacks on your BungeeCord server quickly and efficiently.
 
 ## Getting started
 ### Information
