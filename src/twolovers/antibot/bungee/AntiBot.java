@@ -27,6 +27,7 @@ public class AntiBot extends Plugin {
 
 		AntiBot.antiBot = this;
 		this.configUtil = new ConfigUtil(this);
+		updateFiles();
 		reload();
 
 		// Thread that repeats itself each second
@@ -55,6 +56,11 @@ public class AntiBot extends Plugin {
 		};
 
 		thread.start();
+	}
+
+	public void updateFiles() {
+		configUtil.updateConfiguration("%datafolder%/config.yml");
+		configUtil.updateConfiguration("%datafolder%/messages.yml");
 	}
 
 	public void reload() {

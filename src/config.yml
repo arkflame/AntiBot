@@ -14,6 +14,9 @@
 #
 # Setting all conditions to 0 keeps the module always active.
 
+# Don't touch this
+config-version: 1
+
 # Default plugin language. (This changes depending on the client language)
 lang: "en"
 

@@ -3,6 +3,7 @@ package twolovers.antibot.bungee.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.logging.Logger;
 
@@ -38,7 +39,6 @@ public class ConfigUtil {
 			file = replaceDataFolder(file);
 
 			final File configFile = new File(file);
-
 			if (!configFile.exists()) {
 				final String[] files = file.split("/");
 				final InputStream inputStream = plugin.getClass().getClassLoader()
@@ -57,6 +57,29 @@ public class ConfigUtil {
 			}
 		} catch (final IOException e) {
 			logger.info("Unable to create configuration file '" + file + "'!");
+		}
+	}
+
+	public void updateConfiguration(String file) {
+		Configuration config = getConfiguration(file);
+		int oldVersion = config.getInt("config-version", 0);
+		final String[] path = file.split("/");
+		final InputStream inputStream = plugin.getClass().getClassLoader()
+				.getResourceAsStream(path[path.length - 1]);
+		Configuration newConfig = ConfigurationProvider.getProvider(YamlConfiguration.class).load(inputStream);
+		if (oldVersion != newConfig.getInt("config-version")) {
+			config.set("config-version", newConfig.getInt("config-version"));
+			config.getKeys().forEach(key -> {
+				if (!newConfig.contains(key)) {
+					config.set(key, null);
+				}
+			});
+			newConfig.getKeys().forEach(key -> {
+				if (!config.contains(key)) {
+					config.set(key, newConfig.get(key));
+				}
+			});
+			saveConfiguration(config, file);
 		}
 	}
 
