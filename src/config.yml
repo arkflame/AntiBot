@@ -135,6 +135,10 @@ register:
     cps: 0
     jps: 0
 
+  auth-commands:
+    - "/reg"
+    - "/l"
+
   commands:
     - "disconnect %kick_register%"
 
