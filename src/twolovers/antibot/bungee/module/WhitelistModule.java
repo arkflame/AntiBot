@@ -79,19 +79,16 @@ public class WhitelistModule implements IPunishModule {
 		}
 	}
 
-	@Override
-	public final boolean check(final Connection connection) {
-		return this.enabled && whitelist.contains(connection.getAddress().getHostString());
-	}
-
-	@Override
 	public final boolean meet(final int pps, final int cps, final int jps) {
 		return this.enabled && (conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
 				moduleManager.getLastJPS()) || System.currentTimeMillis() - this.lastLockout < this.timeLockout);
 	}
 
-	@Override
-	public boolean checkMeet(int pps, int cps, int jps, Connection connection) {
+	public final boolean check(final Connection connection) {
+		return whitelist.contains(connection.getAddress().getHostString());
+	}
+
+	public boolean meetCheck(int pps, int cps, int jps, Connection connection) {
 		return meet(pps, cps, jps) && check(connection);
 	}
 

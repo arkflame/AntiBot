@@ -53,15 +53,9 @@ public class RegisterModule implements IPunishModule {
 		}
 	}
 
-	@Override
 	public final boolean meet(final int pps, final int cps, final int jps) {
 		return this.enabled && conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
 				moduleManager.getLastJPS());
-	}
-
-	@Override
-	public final boolean check(final Connection connection) {
-		return true;
 	}
 
 	public final boolean check(final Connection connection, final String command) {
@@ -81,9 +75,9 @@ public class RegisterModule implements IPunishModule {
 		return false;
 	}
 
-	@Override
-	public boolean checkMeet(int pps, int cps, int jps, Connection connection) {
-		return meet(pps, cps, jps) && check(connection);
+	public boolean meetCheck(final int pps, final int cps, final int jps, final Connection connection,
+			final String command) {
+		return meet(pps, cps, jps) && check(connection, command);
 	}
 
 	@Override

@@ -42,12 +42,6 @@ public class RateLimitModule implements IPunishModule {
 		throttle = configYml.getInt(NAME + ".throttle", throttle);
 	}
 
-	@Override
-	public boolean meet(final int pps, final int cps, final int jps) {
-		return enabled;
-	}
-
-	@Override
 	public boolean check(final Connection connection) {
 		final PlayerModule playerModule = moduleManager.getPlayerModule();
 		final BotPlayer botPlayer = playerModule.get(connection.getAddress().getHostString());
@@ -58,11 +52,6 @@ public class RateLimitModule implements IPunishModule {
 
 		return conditions.meet(pps, cps, jps, pps, cps, jps) || isThrottle
 				|| botPlayer.getAccounts().size() > maxOnline;
-	}
-
-	@Override
-	public boolean checkMeet(int pps, int cps, int jps, Connection connection) {
-		return meet(pps, cps, jps) && check(connection);
 	}
 
 	@Override

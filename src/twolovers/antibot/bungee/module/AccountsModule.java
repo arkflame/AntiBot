@@ -41,13 +41,11 @@ public class AccountsModule implements IPunishModule {
 		limit = configYml.getInt(NAME + ".limit", limit);
 	}
 
-	@Override
 	public boolean meet(final int pps, final int cps, final int jps) {
 		return this.enabled && conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
 				moduleManager.getLastJPS());
 	}
 
-	@Override
 	public boolean check(final Connection connection) {
 		if (connection instanceof PendingConnection) {
 			final PlayerModule playerModule = moduleManager.getPlayerModule();
@@ -59,8 +57,7 @@ public class AccountsModule implements IPunishModule {
 		return false;
 	}
 
-	@Override
-	public boolean checkMeet(int pps, int cps, int jps, Connection connection) {
+	public boolean meetCheck(int pps, int cps, int jps, Connection connection) {
 		return meet(pps, cps, jps) && check(connection);
 	}
 

@@ -29,25 +29,19 @@ public class PlayerHandshakeListener implements Listener {
 				final Handshake handshake = event.getHandshake();
 				final int requestedProtocol = handshake.getRequestedProtocol();
 
-				switch (requestedProtocol) {
-					case 1: {
-						final BlacklistModule blacklistModule = moduleManager.getBlacklistModule();
-						final RateLimitModule rateLimitModule = moduleManager.getRateLimitModule();
-						final String ip = connection.getAddress().getHostString();
-						final int currentPPS = moduleManager.getCurrentPPS() + 1;
-						final int currentCPS = moduleManager.getCurrentCPS();
-						final int currentJPS = moduleManager.getCurrentJPS();
+				if (requestedProtocol == 1) {
+					final BlacklistModule blacklistModule = moduleManager.getBlacklistModule();
+					final RateLimitModule rateLimitModule = moduleManager.getRateLimitModule();
+					final String ip = connection.getAddress().getHostString();
+					final int currentPPS = moduleManager.getCurrentPPS() + 1;
+					final int currentCPS = moduleManager.getCurrentCPS();
+					final int currentJPS = moduleManager.getCurrentJPS();
 
-						if (rateLimitModule.meet(currentPPS, currentCPS, currentJPS)
-								&& rateLimitModule.check(connection)) {
-							new Punish(plugin, moduleManager, "en", rateLimitModule, connection, event);
-							blacklistModule.setBlacklisted(ip, true);
-						} else if (blacklistModule.meet(currentPPS, currentCPS, currentJPS)
-								&& blacklistModule.check(connection)) {
-							new Punish(plugin, moduleManager, "en", blacklistModule, connection, event);
-						}
-
-						break;
+					if (rateLimitModule.check(connection)) {
+						new Punish(plugin, moduleManager, "en", rateLimitModule, connection, event);
+						blacklistModule.setBlacklisted(ip, true);
+					} else if (blacklistModule.meetCheck(currentPPS, currentCPS, currentJPS, connection)) {
+						new Punish(plugin, moduleManager, "en", blacklistModule, connection, event);
 					}
 				}
 			}

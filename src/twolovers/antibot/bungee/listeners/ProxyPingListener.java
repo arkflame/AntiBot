@@ -41,11 +41,11 @@ public class ProxyPingListener implements Listener {
 
 			moduleManager.setCurrentPPS(currentPPS);
 
-			if (rateLimitModule.meet(currentPPS, currentCPS, currentJPS) && rateLimitModule.check(connection)) {
+			if (rateLimitModule.check(connection)) {
 				new Punish(plugin, moduleManager, "en", rateLimitModule, connection, event);
 
 				blacklistModule.setBlacklisted(ip, true);
-			} else if (blacklistModule.meet(currentPPS, currentCPS, currentJPS) && blacklistModule.check(connection)) {
+			} else if (blacklistModule.meetCheck(currentPPS, currentCPS, currentJPS, connection)) {
 				new Punish(plugin, moduleManager, "en", blacklistModule, connection, event);
 			} else {
 				if (botPlayer.getAccounts().size() < 1) {

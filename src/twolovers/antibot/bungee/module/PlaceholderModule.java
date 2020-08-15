@@ -122,11 +122,9 @@ public class PlaceholderModule implements IModule {
 
 			if (value instanceof Configuration) {
 				addSection(new StringBuilder(path).append(".").append(key), (Configuration) value);
-			} else if (value instanceof String) {
-				if (lang != null) {
-					placeholders.put(("%" + new StringBuilder(path).toString() + "." + key + "%").replace(".", "_")
-							.replace("%_", "%"), setPlaceholders((String) value));
-				}
+			} else if (lang != null && value instanceof String) {
+				placeholders.put(("%" + new StringBuilder(path).toString() + "." + key + "%").replace(".", "_")
+						.replace("%_", "%"), setPlaceholders((String) value));
 			}
 		}
 	}

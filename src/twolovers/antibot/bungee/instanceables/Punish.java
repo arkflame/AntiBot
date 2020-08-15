@@ -33,12 +33,14 @@ public class Punish {
 
 			proxyPingEvent.setResponse(null);
 		} else if (!punishCommands.isEmpty()) {
+			final String disconnectString = "disconnect ";
+
 			for (String command : punishCommands) {
 				command = placeholderModule.setPlaceholders(moduleManager, command, locale, address, checkName);
 
-				if (command.startsWith("disconnect")) {
+				if (command.startsWith(disconnectString)) {
 					final BaseComponent[] disconnectMessage = TextComponent
-							.fromLegacyText(command.replace("disconnect ", ""));
+							.fromLegacyText(command.replace(disconnectString, ""));
 
 					if (event instanceof Cancellable) {
 						if (event instanceof PreLoginEvent) {

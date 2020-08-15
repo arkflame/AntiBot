@@ -49,28 +49,23 @@ public class PreLoginListener implements Listener {
 						new Punish(plugin, moduleManager, locale, blacklistModule, connection, event);
 
 						whitelistModule.setLastLockout(currentTimeMillis);
-					} else if (blacklistModule.meet(currentPPS, currentCPS, currentJPS)
-							&& blacklistModule.check(connection))
+					} else if (blacklistModule.meetCheck(currentPPS, currentCPS, currentJPS, connection))
 						new Punish(plugin, moduleManager, locale, blacklistModule, connection, event);
-					else if (accountsModule.meet(currentPPS, currentCPS, currentJPS)
-							&& accountsModule.check(connection))
+					else if (accountsModule.meetCheck(currentPPS, currentCPS, currentJPS, connection))
 						new Punish(plugin, moduleManager, locale, accountsModule, connection, event);
-					else if (reconnectModule.meet(currentPPS, currentCPS, currentJPS)
-							&& reconnectModule.check(connection)) {
+					else if (reconnectModule.meetCheck(currentPPS, currentCPS, currentJPS, connection)) {
 						botPlayer.setReconnects(botPlayer.getReconnects() + 1);
 
 						new Punish(plugin, moduleManager, locale, reconnectModule, connection, event);
-					} else if (rateLimitModule.meet(currentPPS, currentCPS, currentJPS)
-							&& rateLimitModule.check(connection)) {
+					} else if (rateLimitModule.check(connection)) {
 						new Punish(plugin, moduleManager, locale, rateLimitModule, connection, event);
 						blacklistModule.setBlacklisted(ip, true);
-					} else if (nicknameModule.meet(currentPPS, currentCPS, currentJPS)
-							&& nicknameModule.check(connection))
+					} else if (nicknameModule.meetCheck(currentPPS, currentCPS, currentJPS, connection))
 						new Punish(plugin, moduleManager, locale, nicknameModule, connection, event);
 					else {
 						nicknameModule.setLastNickname(name);
 
-						if (botPlayer.getAccounts().size() < 1) {
+						if (botPlayer.getAccounts().isEmpty()) {
 							playerModule.setOffline(botPlayer);
 						}
 					}
@@ -81,14 +76,12 @@ public class PreLoginListener implements Listener {
 							ip = connection.getAddress().getHostString();
 					final BotPlayer botPlayer = playerModule.get(ip);
 					final long currentTimeMillis = System.currentTimeMillis();
-					final int currentPPS = moduleManager.getCurrentPPS();
 					final int currentCPS = moduleManager.getCurrentCPS() + 1;
-					final int currentJPS = moduleManager.getCurrentJPS();
 
 					botPlayer.setCPS(botPlayer.getCPS() + 1);
 					moduleManager.setCurrentCPS(currentCPS);
 
-					if (rateLimitModule.meet(currentPPS, currentCPS, currentJPS) && rateLimitModule.check(connection)) {
+					if (rateLimitModule.check(connection)) {
 						new Punish(plugin, moduleManager, locale, rateLimitModule, connection, event);
 						blacklistModule.setBlacklisted(ip, true);
 					}

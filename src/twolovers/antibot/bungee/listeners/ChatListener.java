@@ -49,11 +49,9 @@ public class ChatListener implements Listener {
 				} else {
 					final String lang = locale.toLanguageTag();
 
-					if (fastChatModule.meet(currentPPS, currentCPS, currentJPS)
-							&& fastChatModule.check(proxiedPlayer)) {
+					if (fastChatModule.meetCheck(currentPPS, currentCPS, currentJPS, proxiedPlayer)) {
 						new Punish(plugin, moduleManager, lang, fastChatModule, proxiedPlayer, event);
-					} else if (registerModule.meet(currentPPS, currentCPS, currentJPS)
-							&& registerModule.check(proxiedPlayer, message)) {
+					} else if (registerModule.meetCheck(currentPPS, currentCPS, currentJPS, proxiedPlayer, message)) {
 						new Punish(plugin, moduleManager, lang, registerModule, proxiedPlayer, event);
 					} else {
 						registerModule.setLastValues(proxiedPlayer.getAddress().getHostString(), message);

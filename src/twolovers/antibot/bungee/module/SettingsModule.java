@@ -1,6 +1,5 @@
 package twolovers.antibot.bungee.module;
 
-import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
 import twolovers.antibot.bungee.instanceables.Conditions;
@@ -42,20 +41,9 @@ public class SettingsModule implements IPunishModule {
 		delay = configYml.getInt(NAME + ".delay", delay);
 	}
 
-	@Override
-	public final boolean check(final Connection connection) {
-		return true;
-	}
-
-	@Override
 	public final boolean meet(final int pps, final int cps, final int jps) {
 		return enabled && conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
 				moduleManager.getLastJPS());
-	}
-
-	@Override
-	public boolean checkMeet(int pps, int cps, int jps, Connection connection) {
-		return meet(pps, cps, jps) && check(connection);
 	}
 
 	@Override
