@@ -11,7 +11,7 @@ import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.shared.interfaces.IPunishModule;
 
 public class RateLimitModule implements IPunishModule {
-	private final String name = "ratelimit";
+	private static final String NAME = "ratelimit";
 	private final ModuleManager moduleManager;
 	private Collection<String> punishCommands = new HashSet<>();
 	private Conditions conditions;
@@ -24,22 +24,22 @@ public class RateLimitModule implements IPunishModule {
 
 	@Override
 	public String getName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
-		final int pps = configYml.getInt(name + ".limits.pps", 0);
-		final int cps = configYml.getInt(name + ".limits.cps", 0);
-		final int jps = configYml.getInt(name + ".limits.jps", 0);
+		final int pps = configYml.getInt(NAME + ".limits.pps", 0);
+		final int cps = configYml.getInt(NAME + ".limits.cps", 0);
+		final int jps = configYml.getInt(NAME + ".limits.jps", 0);
 
-		enabled = configYml.getBoolean(name + ".enabled", enabled);
+		enabled = configYml.getBoolean(NAME + ".enabled", enabled);
 		punishCommands.clear();
-		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		punishCommands.addAll(configYml.getStringList(NAME + ".commands"));
 		conditions = new Conditions(pps, cps, jps, true);
-		maxOnline = configYml.getInt(name + ".max_online", maxOnline);
-		throttle = configYml.getInt(name + ".throttle", throttle);
+		maxOnline = configYml.getInt(NAME + ".max_online", maxOnline);
+		throttle = configYml.getInt(NAME + ".throttle", throttle);
 	}
 
 	@Override
@@ -58,6 +58,11 @@ public class RateLimitModule implements IPunishModule {
 
 		return conditions.meet(pps, cps, jps, pps, cps, jps) || isThrottle
 				|| botPlayer.getAccounts().size() > maxOnline;
+	}
+
+	@Override
+	public boolean checkMeet(int pps, int cps, int jps, Connection connection) {
+		return meet(pps, cps, jps) && check(connection);
 	}
 
 	@Override

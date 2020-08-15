@@ -11,7 +11,7 @@ import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.shared.interfaces.IModule;
 
 public class PlaceholderModule implements IModule {
-	private final String name = "placeholder";
+	private static final String NAME = "placeholder";
 	private final String pluginVersion;
 	private final Map<String, String> placeholders = new HashMap<>();
 	private String lang;
@@ -22,7 +22,7 @@ public class PlaceholderModule implements IModule {
 
 	@Override
 	public String getName() {
-		return name;
+		return NAME;
 	}
 
 	private final String setPlaceholders(String string, final String locale) {

@@ -11,7 +11,7 @@ import twolovers.antibot.shared.interfaces.IPunishModule;
 import java.util.*;
 
 public class AccountsModule implements IPunishModule {
-	private final String name = "accounts";
+	private static final String NAME = "accounts";
 	private final ModuleManager moduleManager;
 	private Collection<String> punishCommands = new HashSet<>();
 	private Conditions conditions;
@@ -24,21 +24,21 @@ public class AccountsModule implements IPunishModule {
 
 	@Override
 	public String getName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
-		final int pps = configYml.getInt(name + ".conditions.pps", 0);
-		final int cps = configYml.getInt(name + ".conditions.cps", 0);
-		final int jps = configYml.getInt(name + ".conditions.jps", 0);
+		final int pps = configYml.getInt(NAME + ".conditions.pps", 0);
+		final int cps = configYml.getInt(NAME + ".conditions.cps", 0);
+		final int jps = configYml.getInt(NAME + ".conditions.jps", 0);
 
-		enabled = configYml.getBoolean(name + ".enabled", enabled);
+		enabled = configYml.getBoolean(NAME + ".enabled", enabled);
 		punishCommands.clear();
-		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		punishCommands.addAll(configYml.getStringList(NAME + ".commands"));
 		conditions = new Conditions(pps, cps, jps, false);
-		limit = configYml.getInt(name + ".limit", limit);
+		limit = configYml.getInt(NAME + ".limit", limit);
 	}
 
 	@Override
@@ -57,6 +57,11 @@ public class AccountsModule implements IPunishModule {
 		}
 
 		return false;
+	}
+
+	@Override
+	public boolean checkMeet(int pps, int cps, int jps, Connection connection) {
+		return meet(pps, cps, jps) && check(connection);
 	}
 
 	@Override

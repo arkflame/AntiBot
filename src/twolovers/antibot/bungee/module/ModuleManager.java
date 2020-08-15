@@ -80,8 +80,8 @@ public class ModuleManager {
 						}
 					}
 				}
-			} catch (final Exception ex) {
-				logger.warning("AntiBot catched a generic exception! (ModuleManager.java)");
+			} catch (final Exception e) {
+				logger.warning("AntiBot catched a " + e.getClass().getName() + "! (ModuleManager.java)");
 			}
 		}
 
@@ -93,8 +93,8 @@ public class ModuleManager {
 					offlinePlayersIterator.remove();
 				}
 			}
-		} catch (final Exception ex) {
-			logger.warning("AntiBot catched a generic exception! (ModuleManager.java)");
+		} catch (final Exception e) {
+			logger.warning("AntiBot catched a " + e.getClass().getName() + "! (ModuleManager.java)");
 		}
 
 		getRuntimeModule().update();

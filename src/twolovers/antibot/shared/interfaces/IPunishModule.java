@@ -9,5 +9,7 @@ public interface IPunishModule extends IModule {
 
 	boolean check(final Connection connection);
 
+	boolean checkMeet(final int pps, final int cps, final int jps, final Connection connection);
+
 	Collection<String> getPunishCommands();
 }

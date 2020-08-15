@@ -12,7 +12,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class BlacklistModule implements IPunishModule {
-	private final String name = "blacklist";
+	private static final String NAME = "blacklist";
+	private static final String BLACKLIST_PATH = "%datafolder%/blacklist.yml";
 	private final ModuleManager moduleManager;
 	private Collection<String> blacklist = new HashSet<>(), punishCommands = new HashSet<>();
 	private Conditions conditions;
@@ -24,19 +25,19 @@ public class BlacklistModule implements IPunishModule {
 
 	@Override
 	public String getName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
-		final int pps = configYml.getInt(name + ".conditions.pps", 0);
-		final int cps = configYml.getInt(name + ".conditions.cps", 0);
-		final int jps = configYml.getInt(name + ".conditions.jps", 0);
+		final int pps = configYml.getInt(NAME + ".conditions.pps", 0);
+		final int cps = configYml.getInt(NAME + ".conditions.cps", 0);
+		final int jps = configYml.getInt(NAME + ".conditions.jps", 0);
 
-		enabled = configYml.getBoolean(name + ".enabled", enabled);
+		enabled = configYml.getBoolean(NAME + ".enabled", enabled);
 		punishCommands.clear();
-		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		punishCommands.addAll(configYml.getStringList(NAME + ".commands"));
 		conditions = new Conditions(pps, cps, jps, false);
 
 		load(configUtil);
@@ -63,16 +64,16 @@ public class BlacklistModule implements IPunishModule {
 	}
 
 	public void save(final ConfigUtil configUtil) {
-		final Configuration blacklistYml = configUtil.getConfiguration("%datafolder%/blacklist.yml");
+		final Configuration blacklistYml = configUtil.getConfiguration(BLACKLIST_PATH);
 
 		if (blacklistYml != null) {
 			blacklistYml.set("", new ArrayList<>(blacklist));
-			configUtil.saveConfiguration(blacklistYml, "%datafolder%/blacklist.yml");
+			configUtil.saveConfiguration(blacklistYml, BLACKLIST_PATH);
 		}
 	}
 
 	public void load(final ConfigUtil configUtil) {
-		final Configuration blacklistYml = configUtil.getConfiguration("%datafolder%/blacklist.yml");
+		final Configuration blacklistYml = configUtil.getConfiguration(BLACKLIST_PATH);
 
 		this.blacklist.clear();
 		this.blacklist.addAll(blacklistYml.getStringList(""));
@@ -87,6 +88,11 @@ public class BlacklistModule implements IPunishModule {
 	@Override
 	public boolean check(final Connection connection) {
 		return blacklist.contains(connection.getAddress().getHostString());
+	}
+
+	@Override
+	public boolean checkMeet(int pps, int cps, int jps, Connection connection) {
+		return meet(pps, cps, jps) && check(connection);
 	}
 
 	@Override

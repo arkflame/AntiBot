@@ -12,29 +12,29 @@ public class RuntimeModule implements IModule {
 	private final Runtime runtime = Runtime.getRuntime();
 	private final Collection<String> blacklisted = new HashSet<>(), addCommands = new HashSet<>(),
 			removeCommands = new HashSet<>();
-	private final String name = "runtime";
+	private static final String NAME = "runtime";
 	private long lastUpdateTime = 0;
 	private int time = 20000;
 	private boolean enabled = true;
 
 	@Override
 	public final String getName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
-		enabled = configYml.getBoolean(name + ".enabled", enabled);
-		time = configYml.getInt(name + ".time", time);
+		enabled = configYml.getBoolean(NAME + ".enabled", enabled);
+		time = configYml.getInt(NAME + ".time", time);
 
-		if (configYml.contains(name + ".add")) {
-			addCommands.addAll(configYml.getStringList(name + ".add"));
+		if (configYml.contains(NAME + ".add")) {
+			addCommands.addAll(configYml.getStringList(NAME + ".add"));
 		}
 
-		if (configYml.contains(name + ".remove")) {
-			removeCommands.addAll(configYml.getStringList(name + ".remove"));
+		if (configYml.contains(NAME + ".remove")) {
+			removeCommands.addAll(configYml.getStringList(NAME + ".remove"));
 		}
 	}
 

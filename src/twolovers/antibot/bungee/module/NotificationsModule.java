@@ -1,6 +1,7 @@
 package twolovers.antibot.bungee.module;
 
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,9 +17,10 @@ import twolovers.antibot.shared.interfaces.IModule;
 public class NotificationsModule implements IModule {
 	private final ModuleManager moduleManager;
 	private final Logger logger;
-	private final String name = "notifications";
+	private static final String NAME = "notifications";
 	private final Collection<ProxiedPlayer> notificationPlayers = new HashSet<>();
 	private boolean enabled = true, console = true;
+	private long lastNotificationTime = System.currentTimeMillis();
 
 	NotificationsModule(final ModuleManager moduleManager, final Logger logger) {
 		this.moduleManager = moduleManager;
@@ -27,42 +29,52 @@ public class NotificationsModule implements IModule {
 
 	@Override
 	public String getName() {
-		return this.name;
+		return NAME;
 	}
 
 	@Override
 	public void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
-		enabled = configYml.getBoolean(name + ".enabled", enabled);
-		console = configYml.getBoolean(name + ".console", console);
+		enabled = configYml.getBoolean(NAME + ".enabled", enabled);
+		console = configYml.getBoolean(NAME + ".console", console);
 	}
 
 	public void notify(final String locale, final String address, final String checkName) {
-		if (this.enabled) {
-			final PlaceholderModule placeholderModule = moduleManager.getPlaceholderModule();
-			final String notification = placeholderModule.setPlaceholders(moduleManager, "%notification_message%",
-					locale, address, checkName);
-			final BaseComponent[] notificationTextComponent = TextComponent.fromLegacyText(notification);
+		if (enabled) {
+			try {
+				final PlaceholderModule placeholderModule = moduleManager.getPlaceholderModule();
+				final String notification = placeholderModule.setPlaceholders(moduleManager, "%notification_message%",
+						locale, address, checkName);
+				final BaseComponent[] notificationTextComponent = TextComponent.fromLegacyText(notification);
+				final ChatMessageType chatMessageType = ChatMessageType.ACTION_BAR;
+				final long currentTime = System.currentTimeMillis();
 
-			if (this.console) {
-				this.logger.log(Level.INFO, notification);
-			}
+				if (console) {
+					logger.log(Level.INFO, notification);
+				}
 
-			for (final ProxiedPlayer proxiedPlayer : this.notificationPlayers) {
-				proxiedPlayer.sendMessage(ChatMessageType.ACTION_BAR, notificationTextComponent);
+				if (currentTime > lastNotificationTime + 100) {
+					for (final ProxiedPlayer player : notificationPlayers) {
+						player.sendMessage(chatMessageType, notificationTextComponent);
+					}
+
+					lastNotificationTime = currentTime;
+				}
+			} catch (final ConcurrentModificationException e) {
+				logger.warning("AntiBot catched a CME exception! (NotificationsModule.java)");
 			}
 		}
 	}
 
 	public void setNotifications(final ProxiedPlayer player, final boolean bool) {
-		if (this.enabled) {
+		if (enabled) {
 			if (bool) {
-				if (!this.notificationPlayers.contains(player)) {
-					this.notificationPlayers.add(player);
+				if (!notificationPlayers.contains(player)) {
+					notificationPlayers.add(player);
 				}
-			} else if (this.notificationPlayers.contains(player)) {
-				this.notificationPlayers.remove(player);
+			} else if (notificationPlayers.contains(player)) {
+				notificationPlayers.remove(player);
 			}
 		}
 	}

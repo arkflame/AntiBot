@@ -127,6 +127,7 @@ reconnect:
     - "disconnect %kick_reconnect%"
 
 # Checks if different connections try to register with the same password.
+# We take the second argument used in the command as the "password" to compare.
 register:
   enabled: true
 
@@ -135,9 +136,11 @@ register:
     cps: 0
     jps: 0
 
-  auth-commands:
+  auth_commands:
     - "/reg"
+    - "/register"
     - "/l"
+    - "/login"
 
   commands:
     - "disconnect %kick_register%"

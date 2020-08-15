@@ -33,23 +33,22 @@ public class AntiBot extends Plugin {
 		final Thread thread = new Thread() {
 			@Override
 			public void run() {
-				final Thread thread = this;
-
-				synchronized (thread) {
+				synchronized (this) {
 					while (!isInterrupted()) {
 						try {
 							moduleManager.update();
-						} catch (final Exception ex1) {
-							logger.warning("AntiBot catched a generic exception! (AntiBot.java)");
+						} catch (final Exception e1) {
+							logger.warning("AntiBot catched a " + e1.getClass().getName() + "! (ModuleManager.java)");
 						}
 
 						try {
-							thread.wait(1000);
-						} catch (final InterruptedException ex2) {
-							logger.warning("AntiBot catched a interrupted exception! (AntiBot.java)");
-							thread.start();
+							wait(1000);
+						} catch (final InterruptedException e2) {
+							logger.warning("AntiBot catched a " + e2.getClass().getName() + "! (ModuleManager.java)");
 						}
 					}
+
+					start();
 				}
 			}
 		};

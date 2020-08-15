@@ -10,18 +10,19 @@ import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.shared.interfaces.IModule;
 
 public class PlayerModule implements IModule {
-    private final String name = "player";
+    private static final String NAME = "player";
     private final Map<String, BotPlayer> players = new HashMap<>();
     private final Collection<BotPlayer> offlinePlayers = new HashSet<>();
     private int cacheTime = 30000;
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
     public void reload(final ConfigUtil configUtil) {
+        /* This Reload method doesn't need an implementation */
     }
 
     public final BotPlayer get(final String hostString) {

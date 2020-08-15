@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class SettingsModule implements IPunishModule {
-	private final String name = "settings";
+	private static final String NAME = "settings";
 	private final ModuleManager moduleManager;
 	private final Collection<String> punishCommands = new HashSet<>();
 	private final Collection<BotPlayer> pending = new HashSet<>();
@@ -25,21 +25,26 @@ public class SettingsModule implements IPunishModule {
 
 	@Override
 	public String getName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
-		final int pps = configYml.getInt(name + ".conditions.pps", 0);
-		final int cps = configYml.getInt(name + ".conditions.cps", 0);
-		final int jps = configYml.getInt(name + ".conditions.jps", 0);
+		final int pps = configYml.getInt(NAME + ".conditions.pps", 0);
+		final int cps = configYml.getInt(NAME + ".conditions.cps", 0);
+		final int jps = configYml.getInt(NAME + ".conditions.jps", 0);
 
-		enabled = configYml.getBoolean(name + ".enabled", enabled);
+		enabled = configYml.getBoolean(NAME + ".enabled", enabled);
 		punishCommands.clear();
-		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		punishCommands.addAll(configYml.getStringList(NAME + ".commands"));
 		conditions = new Conditions(pps, cps, jps, false);
-		delay = configYml.getInt(name + ".delay", delay);
+		delay = configYml.getInt(NAME + ".delay", delay);
+	}
+
+	@Override
+	public final boolean check(final Connection connection) {
+		return true;
 	}
 
 	@Override
@@ -49,8 +54,8 @@ public class SettingsModule implements IPunishModule {
 	}
 
 	@Override
-	public final boolean check(final Connection connection) {
-		return true;
+	public boolean checkMeet(int pps, int cps, int jps, Connection connection) {
+		return meet(pps, cps, jps) && check(connection);
 	}
 
 	@Override

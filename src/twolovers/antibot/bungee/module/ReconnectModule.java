@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class ReconnectModule implements IPunishModule {
-	private final String name = "reconnect";
+	private static final String NAME = "reconnect";
 	private final ModuleManager moduleManager;
 	private Collection<String> punishCommands = new HashSet<>();
 	private Conditions conditions;
@@ -26,23 +26,23 @@ public class ReconnectModule implements IPunishModule {
 
 	@Override
 	public String getName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
-		final int pps = configYml.getInt(name + ".conditions.pps", 0);
-		final int cps = configYml.getInt(name + ".conditions.cps", 0);
-		final int jps = configYml.getInt(name + ".conditions.jps", 0);
+		final int pps = configYml.getInt(NAME + ".conditions.pps", 0);
+		final int cps = configYml.getInt(NAME + ".conditions.cps", 0);
+		final int jps = configYml.getInt(NAME + ".conditions.jps", 0);
 
-		enabled = configYml.getBoolean(name + ".enabled", enabled);
+		enabled = configYml.getBoolean(NAME + ".enabled", enabled);
 		punishCommands.clear();
-		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		punishCommands.addAll(configYml.getStringList(NAME + ".commands"));
 		conditions = new Conditions(pps, cps, jps, false);
-		timesPing = configYml.getInt(name + ".times.ping", timesPing);
-		timesConnect = configYml.getInt(name + ".times.connect", timesConnect);
-		throttle = configYml.getLong(name + ".throttle", throttle);
+		timesPing = configYml.getInt(NAME + ".times.ping", timesPing);
+		timesConnect = configYml.getInt(NAME + ".times.connect", timesConnect);
+		throttle = configYml.getLong(NAME + ".throttle", throttle);
 	}
 
 	@Override
@@ -71,6 +71,11 @@ public class ReconnectModule implements IPunishModule {
 		}
 
 		return true;
+	}
+
+	@Override
+	public boolean checkMeet(int pps, int cps, int jps, Connection connection) {
+		return meet(pps, cps, jps) && check(connection);
 	}
 
 	@Override

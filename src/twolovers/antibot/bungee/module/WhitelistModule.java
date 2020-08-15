@@ -11,13 +11,17 @@ import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.shared.interfaces.IPunishModule;
 
 public class WhitelistModule implements IPunishModule {
-	private final String name = "whitelist";
+	private static final String WHITELIST_PATH = "%datafolder%/whitelist.yml";
+	private static final String NAME = "whitelist";
 	private final ModuleManager moduleManager;
-	private final Collection<String> whitelist = new HashSet<>(), punishCommands = new HashSet<>();
+	private final Collection<String> whitelist = new HashSet<>();
+	private final Collection<String> punishCommands = new HashSet<>();
 	private Conditions conditions;
 	private long lastLockout = 0;
-	private int timeWhitelist = 15000, timeLockout = 20000;
-	private boolean enabled = true, requireSwitch = true;
+	private int timeWhitelist = 15000;
+	private int timeLockout = 20000;
+	private boolean enabled = true;
+	private boolean requireSwitch = true;
 
 	WhitelistModule(final ModuleManager moduleManager) {
 		this.moduleManager = moduleManager;
@@ -25,28 +29,28 @@ public class WhitelistModule implements IPunishModule {
 
 	@Override
 	public String getName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
 	public final void reload(final ConfigUtil configUtil) {
 		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
-		final int pps = configYml.getInt(name + ".conditions.pps", 0);
-		final int cps = configYml.getInt(name + ".conditions.cps", 0);
-		final int jps = configYml.getInt(name + ".conditions.jps", 0);
+		final int pps = configYml.getInt(NAME + ".conditions.pps", 0);
+		final int cps = configYml.getInt(NAME + ".conditions.cps", 0);
+		final int jps = configYml.getInt(NAME + ".conditions.jps", 0);
 
-		enabled = configYml.getBoolean(name + ".enabled", true);
+		enabled = configYml.getBoolean(NAME + ".enabled", true);
 		punishCommands.clear();
-		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		punishCommands.addAll(configYml.getStringList(NAME + ".commands"));
 		conditions = new Conditions(pps, cps, jps, false);
-		requireSwitch = configYml.getBoolean(name + ".switch", requireSwitch);
-		timeWhitelist = configYml.getInt(name + ".time.whitelist", timeWhitelist);
-		timeLockout = configYml.getInt(name + ".time.lockout", timeLockout);
+		requireSwitch = configYml.getBoolean(NAME + ".switch", requireSwitch);
+		timeWhitelist = configYml.getInt(NAME + ".time.whitelist", timeWhitelist);
+		timeLockout = configYml.getInt(NAME + ".time.lockout", timeLockout);
 		load(configUtil);
 	}
 
 	public final void load(final ConfigUtil configUtil) {
-		final Configuration whitelistYml = configUtil.getConfiguration("%datafolder%/whitelist.yml");
+		final Configuration whitelistYml = configUtil.getConfiguration(WHITELIST_PATH);
 
 		this.whitelist.clear();
 
@@ -67,12 +71,17 @@ public class WhitelistModule implements IPunishModule {
 	}
 
 	public final void save(final ConfigUtil configUtil) {
-		final Configuration whitelistYml = configUtil.getConfiguration("%datafolder%/whitelist.yml");
+		final Configuration whitelistYml = configUtil.getConfiguration(WHITELIST_PATH);
 
 		if (whitelistYml != null) {
 			whitelistYml.set("", new ArrayList<>(whitelist));
-			configUtil.saveConfiguration(whitelistYml, "%datafolder%/whitelist.yml");
+			configUtil.saveConfiguration(whitelistYml, WHITELIST_PATH);
 		}
+	}
+
+	@Override
+	public final boolean check(final Connection connection) {
+		return this.enabled && whitelist.contains(connection.getAddress().getHostString());
 	}
 
 	@Override
@@ -82,8 +91,8 @@ public class WhitelistModule implements IPunishModule {
 	}
 
 	@Override
-	public final boolean check(final Connection connection) {
-		return this.enabled && whitelist.contains(connection.getAddress().getHostString());
+	public boolean checkMeet(int pps, int cps, int jps, Connection connection) {
+		return meet(pps, cps, jps) && check(connection);
 	}
 
 	@Override

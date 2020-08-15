@@ -56,7 +56,7 @@ public class ChatListener implements Listener {
 							&& registerModule.check(proxiedPlayer, message)) {
 						new Punish(plugin, moduleManager, lang, registerModule, proxiedPlayer, event);
 					} else {
-						registerModule.setLastRegisterCommand(proxiedPlayer.getAddress().getHostString(), message);
+						registerModule.setLastValues(proxiedPlayer.getAddress().getHostString(), message);
 					}
 				}
 			}
