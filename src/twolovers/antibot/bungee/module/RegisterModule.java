@@ -13,6 +13,7 @@ public class RegisterModule implements IPunishModule {
 	private final String name = "register";
 	private final ModuleManager moduleManager;
 	private Collection<String> punishCommands = new HashSet<>();
+	private Collection<String> authCommands = new HashSet<>();
 	private Conditions conditions;
 	private boolean enabled = true;
 	private String lastRegisterIp = "", lastRegisterCommand = "/reg A";
@@ -36,6 +37,8 @@ public class RegisterModule implements IPunishModule {
 		enabled = configYml.getBoolean(name + ".enabled", enabled);
 		punishCommands.clear();
 		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		authCommands.clear();
+		authCommands.addAll(configYml.getStringList(name + ".auth-commands"));
 		conditions = new Conditions(pps, cps, jps, false);
 	}
 
@@ -58,8 +61,14 @@ public class RegisterModule implements IPunishModule {
 	public final boolean check(final Connection connection, final String command) {
 		final String ip = connection.getAddress().getHostString();
 
-		return command.startsWith("/reg") && command.split(" ").length > 1 && !ip.equals(lastRegisterIp)
-				&& command.equals(lastRegisterCommand);
+		for (final String cmds : authCommands) {
+			if (command.startsWith(cmds)) {
+				return command.split(" ").length > 1 && !ip.equals(lastRegisterIp)
+						&& command.equals(lastRegisterCommand);
+			}
+		}
+
+		return false;
 	}
 
 	@Override
