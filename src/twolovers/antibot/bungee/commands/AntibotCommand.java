@@ -52,7 +52,7 @@ public class AntibotCommand extends Command {
 			switch (args[0].toLowerCase()) {
 				case "notify": {
 					if (proxiedPlayer != null) {
-						if (commandSender.hasPermission("antibot.notify")
+						if (commandSender.hasPermission("antibot.notifications")
 								|| commandSender.hasPermission("antibot.admin")) {
 							final NotificationsModule notificationsModule = moduleManager.getNotificationsModule();
 							final boolean hasNotifications = notificationsModule.hasNotifications(proxiedPlayer);
