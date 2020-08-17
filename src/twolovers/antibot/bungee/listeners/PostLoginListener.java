@@ -14,7 +14,7 @@ import twolovers.antibot.bungee.module.SettingsModule;
 public class PostLoginListener implements Listener {
 	private final ModuleManager moduleManager;
 
-	public PostLoginListener(final Plugin plugin, final ModuleManager moduleManager) {
+	public PostLoginListener(final ModuleManager moduleManager) {
 		this.moduleManager = moduleManager;
 	}
 

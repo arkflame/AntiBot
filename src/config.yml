@@ -137,10 +137,8 @@ register:
     jps: 0
 
   auth_commands:
-    - "/reg"
-    - "/register"
     - "/l"
-    - "/login"
+    - "/g"
 
   commands:
     - "disconnect %kick_register%"

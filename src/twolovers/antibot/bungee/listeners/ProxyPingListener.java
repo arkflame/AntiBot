@@ -41,7 +41,7 @@ public class ProxyPingListener implements Listener {
 
 			moduleManager.setCurrentPPS(currentPPS);
 
-			if (rateLimitModule.check(connection)) {
+			if (rateLimitModule.meetCheck(connection)) {
 				new Punish(plugin, moduleManager, "en", rateLimitModule, connection, event);
 
 				blacklistModule.setBlacklisted(ip, true);

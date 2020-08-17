@@ -67,7 +67,7 @@ public class RegisterModule implements IPunishModule {
 					final String[] splittedCommand = command.split(" ");
 					final String password = splittedCommand[1];
 
-					return splittedCommand.length > 1 && !address.equals(lastAddress) && password.equals(lastPassword);
+					return !address.equals(lastAddress) && password.equals(lastPassword);
 				}
 			}
 		}
