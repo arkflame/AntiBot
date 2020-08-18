@@ -136,10 +136,11 @@ register:
     cps: 0
     jps: 0
 
-  # If you write '/l' it will check every command that starts with '/l'. (Like '/login')
   auth_commands:
-    - "/l"
     - "/reg"
+    - "/register"
+    - "/l"
+    - "/login"
 
   commands:
     - "disconnect %kick_register%"
