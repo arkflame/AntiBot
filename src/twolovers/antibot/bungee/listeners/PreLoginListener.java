@@ -57,7 +57,7 @@ public class PreLoginListener implements Listener {
 						botPlayer.setReconnects(botPlayer.getReconnects() + 1);
 
 						new Punish(plugin, moduleManager, locale, reconnectModule, connection, event);
-					} else if (rateLimitModule.check(connection)) {
+					} else if (rateLimitModule.meetCheck(connection)) {
 						new Punish(plugin, moduleManager, locale, rateLimitModule, connection, event);
 						blacklistModule.setBlacklisted(ip, true);
 					} else if (nicknameModule.meetCheck(currentPPS, currentCPS, currentJPS, connection))
@@ -81,7 +81,7 @@ public class PreLoginListener implements Listener {
 					botPlayer.setCPS(botPlayer.getCPS() + 1);
 					moduleManager.setCurrentCPS(currentCPS);
 
-					if (rateLimitModule.check(connection)) {
+					if (rateLimitModule.meetCheck(connection)) {
 						new Punish(plugin, moduleManager, locale, rateLimitModule, connection, event);
 						blacklistModule.setBlacklisted(ip, true);
 					}

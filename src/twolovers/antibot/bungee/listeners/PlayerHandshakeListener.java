@@ -37,7 +37,7 @@ public class PlayerHandshakeListener implements Listener {
 					final int currentCPS = moduleManager.getCurrentCPS();
 					final int currentJPS = moduleManager.getCurrentJPS();
 
-					if (rateLimitModule.check(connection)) {
+					if (rateLimitModule.meetCheck(connection)) {
 						new Punish(plugin, moduleManager, "en", rateLimitModule, connection, event);
 						blacklistModule.setBlacklisted(ip, true);
 					} else if (blacklistModule.meetCheck(currentPPS, currentCPS, currentJPS, connection)) {
