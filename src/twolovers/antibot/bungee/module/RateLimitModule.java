@@ -54,7 +54,7 @@ public class RateLimitModule implements IPunishModule {
 				|| botPlayer.getAccounts().size() > maxOnline;
 	}
 
-	public boolean meetCheck(Connection connection) {
+	public boolean meetCheck(final Connection connection) {
 		return this.enabled && check(connection);
 	}
 
