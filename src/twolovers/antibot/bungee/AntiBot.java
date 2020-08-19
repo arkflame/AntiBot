@@ -25,7 +25,8 @@ public class AntiBot extends Plugin {
 	public void onEnable() {
 		final Logger logger = this.getLogger();
 
-		AntiBot.antiBot = this;
+		setInstance(this);
+
 		this.configUtil = new ConfigUtil(this);
 		reload();
 
@@ -45,6 +46,7 @@ public class AntiBot extends Plugin {
 							wait(1000);
 						} catch (final InterruptedException e2) {
 							logger.warning("AntiBot catched a " + e2.getClass().getName() + "! (ModuleManager.java)");
+							interrupt();
 						}
 					}
 
@@ -72,7 +74,7 @@ public class AntiBot extends Plugin {
 		pluginManager.registerListener(this, new ChatListener(this, moduleManager));
 		pluginManager.registerListener(this, new PlayerDisconnectListener(moduleManager));
 		pluginManager.registerListener(this, new PlayerHandshakeListener(this, moduleManager));
-		pluginManager.registerListener(this, new PostLoginListener(this, moduleManager));
+		pluginManager.registerListener(this, new PostLoginListener(moduleManager));
 		pluginManager.registerListener(this, new PreLoginListener(this, moduleManager));
 		pluginManager.registerListener(this, new ProxyPingListener(this, moduleManager));
 		pluginManager.registerListener(this, new ServerSwitchListener(this, moduleManager));
@@ -89,6 +91,10 @@ public class AntiBot extends Plugin {
 
 	public ModuleManager getModuleManager() {
 		return moduleManager;
+	}
+
+	public synchronized void setInstance(final AntiBot antiBot) {
+		AntiBot.antiBot = antiBot;
 	}
 
 	public static AntiBot getInstance() {

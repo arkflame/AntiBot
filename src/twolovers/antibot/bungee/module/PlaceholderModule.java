@@ -2,6 +2,7 @@ package twolovers.antibot.bungee.module;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -26,8 +27,9 @@ public class PlaceholderModule implements IModule {
 	}
 
 	private final String setPlaceholders(String string, final String locale) {
-		for (final String key : placeholders.keySet()) {
-			final String value = placeholders.get(key);
+		for (final Entry<String, String> entry : placeholders.entrySet()) {
+			final String key = entry.getKey();
+			final String value = entry.getValue();
 
 			if (string.contains(key)) {
 				string = string.replace(key, value);
