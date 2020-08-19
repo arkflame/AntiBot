@@ -76,8 +76,9 @@ public class ConfigUtil {
 		this.scheduler.runAsync(plugin, () -> {
 			final File file1 = new File(file);
 
-			if (file1.exists())
+			if (file1.exists()) {
 				file1.delete();
+			}
 		});
 	}
 

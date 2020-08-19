@@ -208,9 +208,10 @@ public class AntibotCommand extends Command {
 							commandSender.sendMessage(TextComponent.fromLegacyText(ChatColor.RED
 									+ "/whitelist <load/save>\n" + ChatColor.RED + "/whitelist <add/remove> <ip>"));
 						}
-					} else
+					} else {
 						commandSender.sendMessage(TextComponent.fromLegacyText(placeholderModule
 								.setPlaceholders(moduleManager, "%error_permission%", locale, address)));
+					}
 
 					break;
 				}

@@ -78,7 +78,7 @@ public class AntiBot extends Plugin {
 		pluginManager.registerListener(this, new PreLoginListener(this, moduleManager));
 		pluginManager.registerListener(this, new ProxyPingListener(this, moduleManager));
 		pluginManager.registerListener(this, new ServerSwitchListener(this, moduleManager));
-		pluginManager.registerListener(this, new SettingsChangedListener(this, moduleManager));
+		pluginManager.registerListener(this, new SettingsChangedListener(moduleManager));
 
 		pluginManager.registerCommand(this, new AntibotCommand(this, configUtil, moduleManager));
 	}

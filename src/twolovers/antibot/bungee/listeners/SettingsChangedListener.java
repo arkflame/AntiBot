@@ -3,7 +3,6 @@ package twolovers.antibot.bungee.listeners;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.SettingsChangedEvent;
 import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
 import twolovers.antibot.bungee.module.ModuleManager;
@@ -13,7 +12,7 @@ import twolovers.antibot.bungee.module.SettingsModule;
 public class SettingsChangedListener implements Listener {
 	private final ModuleManager moduleManager;
 
-	public SettingsChangedListener(final Plugin plugin, final ModuleManager moduleManager) {
+	public SettingsChangedListener(final ModuleManager moduleManager) {
 		this.moduleManager = moduleManager;
 		moduleManager.getSettingsModule();
 		moduleManager.getBlacklistModule();
