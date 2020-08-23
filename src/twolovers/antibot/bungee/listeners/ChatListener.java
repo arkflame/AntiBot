@@ -34,7 +34,7 @@ public class ChatListener implements Listener {
 			if (!whitelistModule.check(proxiedPlayer)) {
 				final RegisterModule registerModule = moduleManager.getRegisterModule();
 				final FastChatModule fastChatModule = moduleManager.getFastChatModule();
-				final String message = event.getMessage();
+				final String message = event.getMessage().trim();
 				final Locale locale = proxiedPlayer.getLocale();
 				final int currentPPS = moduleManager.getCurrentPPS(), currentCPS = moduleManager.getCurrentCPS(),
 						currentJPS = moduleManager.getCurrentJPS();

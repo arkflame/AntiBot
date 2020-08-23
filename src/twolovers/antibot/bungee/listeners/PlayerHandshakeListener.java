@@ -5,7 +5,6 @@ import net.md_5.bungee.api.event.PlayerHandshakeEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
-import net.md_5.bungee.protocol.packet.Handshake;
 import twolovers.antibot.bungee.instanceables.Punish;
 import twolovers.antibot.bungee.module.BlacklistModule;
 import twolovers.antibot.bungee.module.ModuleManager;
@@ -26,23 +25,25 @@ public class PlayerHandshakeListener implements Listener {
 			final PendingConnection connection = event.getConnection();
 
 			if (connection.isConnected()) {
-				final Handshake handshake = event.getHandshake();
-				final int requestedProtocol = handshake.getRequestedProtocol();
+				final int requestedProtocol = event.getHandshake().getRequestedProtocol();
+				final BlacklistModule blacklistModule = moduleManager.getBlacklistModule();
+				final RateLimitModule rateLimitModule = moduleManager.getRateLimitModule();
+				final String ip = connection.getAddress().getHostString();
+				int currentPPS = moduleManager.getCurrentPPS();
+				int currentCPS = moduleManager.getCurrentCPS();
+				final int currentJPS = moduleManager.getCurrentJPS();
 
 				if (requestedProtocol == 1) {
-					final BlacklistModule blacklistModule = moduleManager.getBlacklistModule();
-					final RateLimitModule rateLimitModule = moduleManager.getRateLimitModule();
-					final String ip = connection.getAddress().getHostString();
-					final int currentPPS = moduleManager.getCurrentPPS() + 1;
-					final int currentCPS = moduleManager.getCurrentCPS();
-					final int currentJPS = moduleManager.getCurrentJPS();
+					currentPPS++;
+				} else {
+					currentCPS++;
+				}
 
-					if (rateLimitModule.meetCheck(connection)) {
-						new Punish(plugin, moduleManager, "en", rateLimitModule, connection, event);
-						blacklistModule.setBlacklisted(ip, true);
-					} else if (blacklistModule.meetCheck(currentPPS, currentCPS, currentJPS, connection)) {
-						new Punish(plugin, moduleManager, "en", blacklistModule, connection, event);
-					}
+				if (rateLimitModule.meetCheck(connection)) {
+					new Punish(plugin, moduleManager, "en", rateLimitModule, connection, event);
+					blacklistModule.setBlacklisted(ip, true);
+				} else if (blacklistModule.meetCheck(currentPPS, currentCPS, currentJPS, connection)) {
+					new Punish(plugin, moduleManager, "en", blacklistModule, connection, event);
 				}
 			}
 		} catch (final Exception e) {
