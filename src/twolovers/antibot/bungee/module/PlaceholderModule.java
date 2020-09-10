@@ -72,12 +72,12 @@ public class PlaceholderModule implements IModule {
 				}
 			}
 
-			string = string.replace("%lastpps%", String.valueOf(moduleManager.getLastPPS()))
-					.replace("%lastcps%", String.valueOf(moduleManager.getLastCPS()))
-					.replace("%lastjps%", String.valueOf(moduleManager.getLastJPS()))
-					.replace("%currentpps%", String.valueOf(moduleManager.getCurrentPPS()))
-					.replace("%currentcps%", String.valueOf(moduleManager.getCurrentCPS()))
-					.replace("%currentjps%", String.valueOf(moduleManager.getCurrentJPS()))
+			string = string.replace("%lastpps%", String.valueOf(moduleManager.getLastPps()))
+					.replace("%lastcps%", String.valueOf(moduleManager.getLastCps()))
+					.replace("%lastjps%", String.valueOf(moduleManager.getLastJps()))
+					.replace("%currentpps%", String.valueOf(moduleManager.getCurrentPps()))
+					.replace("%currentcps%", String.valueOf(moduleManager.getCurrentCps()))
+					.replace("%currentjps%", String.valueOf(moduleManager.getCurrentJps()))
 					.replace("%totalbls%", String.valueOf(moduleManager.getBlacklistModule().getSize()))
 					.replace("%totalwls%", String.valueOf(moduleManager.getWhitelistModule().getSize()));
 		}

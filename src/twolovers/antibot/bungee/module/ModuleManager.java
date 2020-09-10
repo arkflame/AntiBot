@@ -1,6 +1,7 @@
 package twolovers.antibot.bungee.module;
 
-import java.util.Iterator;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.logging.Logger;
 
 import net.md_5.bungee.api.ProxyServer;
@@ -19,7 +20,7 @@ public class ModuleManager {
 	private final ConfigUtil configUtil;
 	private final IModule[] modules = new IModule[13];
 	private String defaultLanguage;
-	private int lastPPS = 0, lastCPS = 0, lastJPS = 0, currentPPS = 0, currentCPS = 0, currentJPS = 0;
+	private int lastPps = 0, lastCps = 0, lastJps = 0, currentPps = 0, currentCps = 0, currentJps = 0;
 
 	public ModuleManager(final Plugin plugin, final ConfigUtil configUtil) {
 		this.plugin = plugin;
@@ -28,15 +29,15 @@ public class ModuleManager {
 		this.modules[0] = new AccountsModule(this);
 		this.modules[1] = new BlacklistModule(this);
 		this.modules[2] = new FastChatModule(this);
-		this.modules[3] = new NicknameModule(this);
+		this.modules[3] = new NicknameModule();
 		this.modules[4] = new NotificationsModule(this, plugin.getLogger());
 		this.modules[5] = new PlaceholderModule(plugin);
 		this.modules[6] = new PlayerModule();
 		this.modules[7] = new RateLimitModule(this);
 		this.modules[8] = new ReconnectModule(this);
-		this.modules[9] = new RegisterModule(this);
+		this.modules[9] = new RegisterModule();
 		this.modules[10] = new RuntimeModule();
-		this.modules[11] = new SettingsModule(this);
+		this.modules[11] = new SettingsModule();
 		this.modules[12] = new WhitelistModule(this);
 	}
 
@@ -64,44 +65,36 @@ public class ModuleManager {
 	public void update() {
 		final PlayerModule playerModule = getPlayerModule();
 		final SettingsModule settingsModule = getSettingsModule();
-		final Iterator<BotPlayer> offlinePlayersIterator = playerModule.getOfflinePlayers().iterator();
 		final Logger logger = plugin.getLogger();
-		final long currentTime = System.currentTimeMillis(), cacheTime = playerModule.getCacheTime();
+		final long currentTime = System.currentTimeMillis();
+		final int cacheTime = playerModule.getCacheTime();
 
-		if (settingsModule.meet(this.currentPPS, this.currentCPS, this.currentJPS)) {
-			final Iterator<BotPlayer> pendingPlayersIterator = settingsModule.getPending().iterator();
+		try {
+			final Collection<BotPlayer> pendingPlayers = settingsModule.getPending();
+			final Collection<BotPlayer> offlinePlayers = playerModule.getOfflinePlayers();
 			final long settingsDelay = settingsModule.getDelay();
+			final boolean settingsModuleMeet = settingsModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps,
+					lastJps);
 
-			try {
-				while (pendingPlayersIterator.hasNext()) {
-					final BotPlayer botPlayer = pendingPlayersIterator.next();
-
-					if (botPlayer == null || botPlayer.isSettings()) {
-						pendingPlayersIterator.remove();
+			for (final BotPlayer botPlayer : new HashSet<>(offlinePlayers)) {
+				if (botPlayer == null || currentTime - botPlayer.getLastConnection() > cacheTime) {
+					offlinePlayers.remove(botPlayer);
+					pendingPlayers.remove(botPlayer);
+				} else if (settingsModuleMeet && pendingPlayers.contains(botPlayer)) {
+					if (botPlayer.isSettings()) {
+						pendingPlayers.remove(botPlayer);
 					} else if (currentTime - botPlayer.getLastConnection() >= settingsDelay) {
 						for (final String playerName : botPlayer.getAccounts()) {
 							final ProxiedPlayer player = proxyServer.getPlayer(playerName);
 
-							if (player.isConnected()) {
+							if (player != null) {
 								final String language = BungeeUtil.getLanguage(player, defaultLanguage);
 
 								new Punish(plugin, this, language, settingsModule, player, null);
-								pendingPlayersIterator.remove();
+								pendingPlayers.remove(botPlayer);
 							}
 						}
 					}
-				}
-			} catch (final Exception e) {
-				logger.warning("AntiBot catched a " + e.getClass().getName() + "! (ModuleManager.java)");
-			}
-		}
-
-		try {
-			while (offlinePlayersIterator.hasNext()) {
-				final BotPlayer botPlayer = offlinePlayersIterator.next();
-
-				if (botPlayer == null || currentTime - botPlayer.getLastConnection() > cacheTime) {
-					offlinePlayersIterator.remove();
 				}
 			}
 		} catch (final Exception e) {
@@ -110,12 +103,12 @@ public class ModuleManager {
 
 		getRuntimeModule().update();
 
-		lastPPS = currentPPS;
-		lastCPS = currentCPS;
-		lastJPS = currentJPS;
-		this.currentPPS = 0;
-		this.currentCPS = 0;
-		this.currentJPS = 0;
+		lastPps = currentPps;
+		lastCps = currentCps;
+		lastJps = currentJps;
+		this.currentPps = 0;
+		this.currentCps = 0;
+		this.currentJps = 0;
 	}
 
 	public final AccountsModule getAccountsModule() {
@@ -170,39 +163,39 @@ public class ModuleManager {
 		return (WhitelistModule) this.modules[12];
 	}
 
-	public int getLastPPS() {
-		return this.lastPPS;
+	public int getLastPps() {
+		return this.lastPps;
 	}
 
-	public int getLastCPS() {
-		return this.lastCPS;
+	public int getLastCps() {
+		return this.lastCps;
 	}
 
-	public int getLastJPS() {
-		return this.lastJPS;
+	public int getLastJps() {
+		return this.lastJps;
 	}
 
-	public int getCurrentPPS() {
-		return this.currentPPS;
+	public int getCurrentPps() {
+		return this.currentPps;
 	}
 
-	public int getCurrentCPS() {
-		return this.currentCPS;
+	public int getCurrentCps() {
+		return this.currentCps;
 	}
 
-	public int getCurrentJPS() {
-		return this.currentJPS;
+	public int getCurrentJps() {
+		return this.currentJps;
 	}
 
 	public void setCurrentPPS(final int currentPPS) {
-		this.currentPPS = currentPPS;
+		this.currentPps = currentPPS;
 	}
 
-	public void setCurrentCPS(final int currentCPS) {
-		this.currentCPS = currentCPS;
+	public void setCurrentCps(final int currentCPS) {
+		this.currentCps = currentCPS;
 	}
 
 	public void setCurrentJPS(final int currentJPS) {
-		this.currentJPS = currentJPS;
+		this.currentJps = currentJPS;
 	}
 }

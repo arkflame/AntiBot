@@ -17,7 +17,7 @@ public class PostLoginListener implements Listener {
 		this.moduleManager = moduleManager;
 	}
 
-	@EventHandler(priority = -128)
+	@EventHandler(priority = Byte.MIN_VALUE)
 	public void onPostLogin(final PostLoginEvent event) {
 		final NotificationsModule notificationsModule = moduleManager.getNotificationsModule();
 		final PlayerModule playerModule = moduleManager.getPlayerModule();
@@ -28,7 +28,7 @@ public class PostLoginListener implements Listener {
 
 		botPlayer.setJPS(botPlayer.getJPS() + 1);
 		botPlayer.addAccount(player.getName());
-		moduleManager.setCurrentJPS(moduleManager.getCurrentJPS() + 1);
+		moduleManager.setCurrentJPS(moduleManager.getCurrentJps() + 1);
 		settingsModule.addPending(botPlayer);
 		playerModule.setOnline(botPlayer);
 

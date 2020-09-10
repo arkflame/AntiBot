@@ -4,20 +4,18 @@ import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.IPunishModule;
+import twolovers.antibot.shared.extendables.PunishableModule;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class BlacklistModule implements IPunishModule {
+public class BlacklistModule extends PunishableModule {
 	private static final String NAME = "blacklist";
 	private static final String BLACKLIST_PATH = "%datafolder%/blacklist.yml";
 	private final ModuleManager moduleManager;
-	private Collection<String> blacklist = new HashSet<>(), punishCommands = new HashSet<>();
-	private Conditions conditions;
-	private boolean enabled = true;
+	private Collection<String> blacklist = new HashSet<>();
 
 	BlacklistModule(final ModuleManager moduleManager) {
 		this.moduleManager = moduleManager;
@@ -79,22 +77,8 @@ public class BlacklistModule implements IPunishModule {
 		this.blacklist.addAll(blacklistYml.getStringList(""));
 	}
 
-	public boolean meet(int pps, int cps, int jps) {
-		return this.enabled && conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
-				moduleManager.getLastJPS());
-	}
-
 	public boolean check(final Connection connection) {
 		return blacklist.contains(connection.getAddress().getHostString());
-	}
-
-	public boolean meetCheck(int pps, int cps, int jps, Connection connection) {
-		return meet(pps, cps, jps) && check(connection);
-	}
-
-	@Override
-	public Collection<String> getPunishCommands() {
-		return punishCommands;
 	}
 
 	public boolean isBlacklisted(final String ip) {

@@ -5,17 +5,11 @@ import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
 import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.IPunishModule;
+import twolovers.antibot.shared.extendables.PunishableModule;
 
-import java.util.Collection;
-import java.util.HashSet;
-
-public class FastChatModule implements IPunishModule {
+public class FastChatModule extends PunishableModule {
 	private static final String NAME = "fastchat";
 	private final ModuleManager moduleManager;
-	private Collection<String> punishCommands = new HashSet<>();
-	private Conditions conditions;
-	private boolean enabled = true;
 	private int time = 1000;
 
 	FastChatModule(final ModuleManager moduleManager) {
@@ -41,25 +35,11 @@ public class FastChatModule implements IPunishModule {
 		time = configYml.getInt(NAME + ".time", time);
 	}
 
-	public boolean meet(int pps, int cps, int jps) {
-		return this.enabled && conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
-				moduleManager.getLastJPS());
-	}
-
 	public boolean check(final Connection connection) {
 		final PlayerModule playerModule = moduleManager.getPlayerModule();
 		final BotPlayer botPlayer = playerModule.get(connection.getAddress().getHostString());
 
 		return (botPlayer == null || System.currentTimeMillis() - botPlayer.getLastConnection() < time
 				|| !botPlayer.isSettings());
-	}
-
-	public boolean meetCheck(int pps, int cps, int jps, Connection connection) {
-		return meet(pps, cps, jps) && check(connection);
-	}
-
-	@Override
-	public Collection<String> getPunishCommands() {
-		return punishCommands;
 	}
 }

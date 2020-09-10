@@ -23,7 +23,7 @@ public class ChatListener implements Listener {
 		this.moduleManager = moduleManager;
 	}
 
-	@EventHandler
+	@EventHandler(priority = Byte.MIN_VALUE)
 	public void onChat(final ChatEvent event) {
 		final Connection sender = event.getSender();
 
@@ -36,11 +36,16 @@ public class ChatListener implements Listener {
 				final FastChatModule fastChatModule = moduleManager.getFastChatModule();
 				final String message = event.getMessage().trim();
 				final Locale locale = proxiedPlayer.getLocale();
-				final int currentPPS = moduleManager.getCurrentPPS(), currentCPS = moduleManager.getCurrentCPS(),
-						currentJPS = moduleManager.getCurrentJPS();
+				final int currentPps = moduleManager.getCurrentPps();
+				final int currentCps = moduleManager.getCurrentCps();
+				final int currentJps = moduleManager.getCurrentJps();
+				final int lastPps = moduleManager.getLastPps();
+				final int lastCps = moduleManager.getLastCps();
+				final int lastJps = moduleManager.getLastJps();
 
 				if (locale == null) {
-					if (fastChatModule.meet(currentPPS, currentCPS, currentJPS)) {
+					if (fastChatModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps, lastJps)
+							&& fastChatModule.check(proxiedPlayer)) {
 						new Punish(plugin, moduleManager, "en", fastChatModule, proxiedPlayer, event);
 
 						moduleManager.getBlacklistModule().setBlacklisted(proxiedPlayer.getAddress().getHostString(),
@@ -49,9 +54,11 @@ public class ChatListener implements Listener {
 				} else {
 					final String lang = locale.toLanguageTag();
 
-					if (fastChatModule.meetCheck(currentPPS, currentCPS, currentJPS, proxiedPlayer)) {
+					if (fastChatModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps, lastJps)
+							&& fastChatModule.check(proxiedPlayer)) {
 						new Punish(plugin, moduleManager, lang, fastChatModule, proxiedPlayer, event);
-					} else if (registerModule.meetCheck(currentPPS, currentCPS, currentJPS, proxiedPlayer, message)) {
+					} else if (registerModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps, lastJps)
+							&& registerModule.check(proxiedPlayer, message)) {
 						new Punish(plugin, moduleManager, lang, registerModule, proxiedPlayer, event);
 					} else {
 						registerModule.setLastValues(proxiedPlayer.getAddress().getHostString(), message);

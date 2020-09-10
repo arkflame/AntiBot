@@ -19,7 +19,7 @@ public class SettingsChangedListener implements Listener {
 		moduleManager.getWhitelistModule();
 	}
 
-	@EventHandler(priority = -128)
+	@EventHandler(priority = Byte.MIN_VALUE)
 	public void onSettingsChanged(final SettingsChangedEvent event) {
 		final PlayerModule playerModule = moduleManager.getPlayerModule();
 		final SettingsModule settingsModule = moduleManager.getSettingsModule();

@@ -5,9 +5,11 @@ import net.md_5.bungee.api.event.PlayerHandshakeEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
+import twolovers.antibot.bungee.instanceables.BotPlayer;
 import twolovers.antibot.bungee.instanceables.Punish;
 import twolovers.antibot.bungee.module.BlacklistModule;
 import twolovers.antibot.bungee.module.ModuleManager;
+import twolovers.antibot.bungee.module.PlayerModule;
 import twolovers.antibot.bungee.module.RateLimitModule;
 
 public class PlayerHandshakeListener implements Listener {
@@ -21,33 +23,32 @@ public class PlayerHandshakeListener implements Listener {
 
 	@EventHandler(priority = Byte.MIN_VALUE)
 	public void onPlayerHandshake(final PlayerHandshakeEvent event) {
-		try {
-			final PendingConnection connection = event.getConnection();
+		final BlacklistModule blacklistModule = moduleManager.getBlacklistModule();
+		final PlayerModule playerModule = moduleManager.getPlayerModule();
+		final RateLimitModule rateLimitModule = moduleManager.getRateLimitModule();
+		final PendingConnection connection = event.getConnection();
+		final String ip = connection.getAddress().getHostString();
+		final BotPlayer botPlayer = playerModule.get(ip);
+		final int requestedProtocol = event.getHandshake().getRequestedProtocol();
+		int currentPps = moduleManager.getCurrentPps();
+		int currentCps = moduleManager.getCurrentCps();
+		final int currentJps = moduleManager.getCurrentJps();
+		final int lastPps = moduleManager.getLastPps();
+		final int lastCps = moduleManager.getLastCps();
+		final int lastJps = moduleManager.getLastJps();
 
-			if (connection.isConnected()) {
-				final int requestedProtocol = event.getHandshake().getRequestedProtocol();
-				final BlacklistModule blacklistModule = moduleManager.getBlacklistModule();
-				final RateLimitModule rateLimitModule = moduleManager.getRateLimitModule();
-				final String ip = connection.getAddress().getHostString();
-				int currentPPS = moduleManager.getCurrentPPS();
-				int currentCPS = moduleManager.getCurrentCPS();
-				final int currentJPS = moduleManager.getCurrentJPS();
+		if (requestedProtocol == 1) {
+			currentPps++;
+		} else {
+			currentCps++;
+		}
 
-				if (requestedProtocol == 1) {
-					currentPPS++;
-				} else {
-					currentCPS++;
-				}
-
-				if (rateLimitModule.meetCheck(connection)) {
-					new Punish(plugin, moduleManager, "en", rateLimitModule, connection, event);
-					blacklistModule.setBlacklisted(ip, true);
-				} else if (blacklistModule.meetCheck(currentPPS, currentCPS, currentJPS, connection)) {
-					new Punish(plugin, moduleManager, "en", blacklistModule, connection, event);
-				}
-			}
-		} catch (final Exception e) {
-			e.printStackTrace();
+		if (rateLimitModule.meet(botPlayer.getPPS(), botPlayer.getCPS(), botPlayer.getJPS(), 0, 0, 0)) {
+			new Punish(plugin, moduleManager, "en", rateLimitModule, connection, event);
+			blacklistModule.setBlacklisted(ip, true);
+		} else if (blacklistModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps, lastJps)
+				&& blacklistModule.check(connection)) {
+			new Punish(plugin, moduleManager, "en", blacklistModule, connection, event);
 		}
 	}
 }

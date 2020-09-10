@@ -8,19 +8,16 @@ import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.IPunishModule;
+import twolovers.antibot.shared.extendables.PunishableModule;
 
-public class WhitelistModule implements IPunishModule {
+public class WhitelistModule extends PunishableModule {
 	private static final String WHITELIST_PATH = "%datafolder%/whitelist.yml";
 	private static final String NAME = "whitelist";
 	private final ModuleManager moduleManager;
 	private final Collection<String> whitelist = new HashSet<>();
-	private final Collection<String> punishCommands = new HashSet<>();
-	private Conditions conditions;
 	private long lastLockout = 0;
 	private int timeWhitelist = 15000;
 	private int timeLockout = 20000;
-	private boolean enabled = true;
 	private boolean requireSwitch = true;
 
 	WhitelistModule(final ModuleManager moduleManager) {
@@ -54,16 +51,18 @@ public class WhitelistModule implements IPunishModule {
 
 		this.whitelist.clear();
 
-		if (whitelistYml != null)
+		if (whitelistYml != null) {
 			this.whitelist.addAll(whitelistYml.getStringList(""));
+		}
 	}
 
 	public final void setWhitelisted(final String ip, final boolean input) {
 		if (input) {
 			moduleManager.getBlacklistModule().setBlacklisted(ip, false);
 			whitelist.add(ip);
-		} else
+		} else {
 			whitelist.remove(ip);
+		}
 	}
 
 	final int getSize() {
@@ -79,22 +78,15 @@ public class WhitelistModule implements IPunishModule {
 		}
 	}
 
-	public final boolean meet(final int pps, final int cps, final int jps) {
-		return this.enabled && (conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
-				moduleManager.getLastJPS()) || System.currentTimeMillis() - this.lastLockout < this.timeLockout);
+	@Override
+	public final boolean meet(final int pps, final int cps, final int jps, final int lastPps, final int lastCps,
+			final int lastJps) {
+		return this.enabled && (conditions.meet(pps, cps, jps, lastPps, lastCps, lastJps)
+				|| System.currentTimeMillis() - this.lastLockout < this.timeLockout);
 	}
 
 	public final boolean check(final Connection connection) {
 		return whitelist.contains(connection.getAddress().getHostString());
-	}
-
-	public boolean meetCheck(int pps, int cps, int jps, Connection connection) {
-		return meet(pps, cps, jps) && check(connection);
-	}
-
-	@Override
-	public final Collection<String> getPunishCommands() {
-		return punishCommands;
 	}
 
 	public boolean isRequireSwitch() {

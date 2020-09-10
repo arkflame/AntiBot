@@ -1,22 +1,17 @@
 package twolovers.antibot.bungee.module;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
 import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.IPunishModule;
+import twolovers.antibot.shared.extendables.PunishableModule;
 
-public class RateLimitModule implements IPunishModule {
+public class RateLimitModule extends PunishableModule {
 	private static final String NAME = "ratelimit";
 	private final ModuleManager moduleManager;
-	private Collection<String> punishCommands = new HashSet<>();
-	private Conditions conditions;
-	private boolean enabled = true;
-	private int maxOnline = 3, throttle = 800;
+	private int maxOnline = 3;
+	private int throttle = 800;
 
 	RateLimitModule(final ModuleManager moduleManager) {
 		this.moduleManager = moduleManager;
@@ -52,14 +47,5 @@ public class RateLimitModule implements IPunishModule {
 
 		return conditions.meet(pps, cps, jps, pps, cps, jps) || isThrottle
 				|| botPlayer.getAccounts().size() > maxOnline;
-	}
-
-	public boolean meetCheck(final Connection connection) {
-		return this.enabled && check(connection);
-	}
-
-	@Override
-	public Collection<String> getPunishCommands() {
-		return punishCommands;
 	}
 }

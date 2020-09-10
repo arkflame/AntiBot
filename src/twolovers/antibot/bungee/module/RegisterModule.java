@@ -7,21 +7,13 @@ import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.IPunishModule;
+import twolovers.antibot.shared.extendables.PunishableModule;
 
-public class RegisterModule implements IPunishModule {
+public class RegisterModule extends PunishableModule {
 	private static final String NAME = "register";
-	private final ModuleManager moduleManager;
-	private Collection<String> punishCommands = new HashSet<>();
 	private Collection<String> authCommands = new HashSet<>();
-	private Conditions conditions;
-	private boolean enabled = true;
 	private String lastAddress = "";
 	private String lastPassword = "";
-
-	public RegisterModule(final ModuleManager moduleManager) {
-		this.moduleManager = moduleManager;
-	}
 
 	@Override
 	public final String getName() {
@@ -53,11 +45,6 @@ public class RegisterModule implements IPunishModule {
 		}
 	}
 
-	public final boolean meet(final int pps, final int cps, final int jps) {
-		return this.enabled && conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
-				moduleManager.getLastJPS());
-	}
-
 	public final boolean check(final Connection connection, final String command) {
 		final String address = connection.getAddress().getHostString();
 
@@ -73,15 +60,5 @@ public class RegisterModule implements IPunishModule {
 		}
 
 		return false;
-	}
-
-	public boolean meetCheck(final int pps, final int cps, final int jps, final Connection connection,
-			final String command) {
-		return meet(pps, cps, jps) && check(connection, command);
-	}
-
-	@Override
-	public final Collection<String> getPunishCommands() {
-		return punishCommands;
 	}
 }

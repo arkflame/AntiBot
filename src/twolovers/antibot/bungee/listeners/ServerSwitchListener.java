@@ -24,18 +24,22 @@ public class ServerSwitchListener implements Listener {
 		moduleManager.getWhitelistModule();
 	}
 
-	@EventHandler(priority = -128)
+	@EventHandler(priority = Byte.MIN_VALUE)
 	public void onServerSwitch(final ServerSwitchEvent event) {
 		final PlayerModule playerModule = moduleManager.getPlayerModule();
 		final ProxiedPlayer proxiedPlayer = event.getPlayer();
 		final String ip = proxiedPlayer.getAddress().getHostString();
 		final BotPlayer botPlayer = playerModule.get(ip);
-		final int currentPPS = moduleManager.getCurrentPPS();
-		final int currentCPS = moduleManager.getCurrentCPS();
-		final int currentJPS = moduleManager.getCurrentJPS();
+		final int currentPps = moduleManager.getCurrentPps();
+		final int currentCps = moduleManager.getCurrentCps();
+		final int currentJps = moduleManager.getCurrentJps();
+		final int lastPps = moduleManager.getLastPps();
+		final int lastCps = moduleManager.getLastCps();
+		final int lastJps = moduleManager.getLastJps();
 		final boolean switched = botPlayer.getSwitchs() > 0;
 
-		if (switched && settingsModule.meet(currentPPS, currentCPS, currentJPS) && !botPlayer.isSettings()) {
+		if (switched && settingsModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps, lastJps)
+				&& !botPlayer.isSettings()) {
 			new Punish(plugin, moduleManager, "en", settingsModule, proxiedPlayer, event);
 		}
 

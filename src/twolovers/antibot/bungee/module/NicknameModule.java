@@ -5,26 +5,18 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.IPunishModule;
+import twolovers.antibot.shared.extendables.PunishableModule;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
-public class NicknameModule implements IPunishModule {
+public class NicknameModule extends PunishableModule {
 	private static final String NAME = "nickname";
-	private final ModuleManager moduleManager;
-	private Collection<String> punishCommands = new HashSet<>();
 	private Collection<String> blacklist = new HashSet<>();
-	private Conditions conditions;
 	private Pattern pattern = Pattern.compile(
 			"^(Craft|Beach|Actor|Games|Tower|Elder|Mine|Nitro|Worms|Build|Plays|Hyper|Crazy|Super|_Itz|Slime)(Craft|Beach|Actor|Games|Tower|Elder|Mine|Nitro|Worms|Build|Plays|Hyper|Crazy|Super|_Itz|Slime)(11|50|69|99|88|HD|LP|XD|YT)");
 	private String lastNickname = "A";
-	private boolean enabled = true;
-
-	public NicknameModule(final ModuleManager moduleManager) {
-		this.moduleManager = moduleManager;
-	}
 
 	@Override
 	public String getName() {
@@ -46,9 +38,9 @@ public class NicknameModule implements IPunishModule {
 		blacklist.addAll(configYml.getStringList(NAME + ".blacklist"));
 	}
 
-	public boolean meet(int pps, int cps, int jps) {
-		return this.enabled && conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
-				moduleManager.getLastJPS());
+	public final boolean meet(final int pps, final int cps, final int jps, final int lastPps, final int lastCps,
+			final int lastJps) {
+		return this.enabled && (conditions.meet(pps, cps, jps, lastPps, lastCps, lastJps));
 	}
 
 	public boolean check(final Connection connection) {
@@ -71,15 +63,6 @@ public class NicknameModule implements IPunishModule {
 		}
 
 		return false;
-	}
-
-	public boolean meetCheck(int pps, int cps, int jps, Connection connection) {
-		return meet(pps, cps, jps) && check(connection);
-	}
-
-	@Override
-	public Collection<String> getPunishCommands() {
-		return punishCommands;
 	}
 
 	public final String getLastNickname() {

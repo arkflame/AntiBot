@@ -40,15 +40,11 @@ public class PlayerModule implements IModule {
     }
 
     public final void setOnline(final BotPlayer botPlayer) {
-        if (offlinePlayers.contains(botPlayer)) {
-            offlinePlayers.remove(botPlayer);
-        }
+        offlinePlayers.remove(botPlayer);
     }
 
     public final void setOffline(final BotPlayer botPlayer) {
-        if (!offlinePlayers.contains(botPlayer)) {
-            offlinePlayers.add(botPlayer);
-        }
+        offlinePlayers.add(botPlayer);
     }
 
     public Collection<BotPlayer> getOfflinePlayers() {
@@ -62,7 +58,7 @@ public class PlayerModule implements IModule {
         offlinePlayers.remove(botPlayer);
     }
 
-    public long getCacheTime() {
+    public int getCacheTime() {
         return cacheTime;
     }
 }

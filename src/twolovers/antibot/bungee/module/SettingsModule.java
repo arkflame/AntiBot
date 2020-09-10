@@ -4,23 +4,15 @@ import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
 import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.IPunishModule;
+import twolovers.antibot.shared.extendables.PunishableModule;
 
 import java.util.Collection;
 import java.util.HashSet;
 
-public class SettingsModule implements IPunishModule {
+public class SettingsModule extends PunishableModule {
 	private static final String NAME = "settings";
-	private final ModuleManager moduleManager;
-	private final Collection<String> punishCommands = new HashSet<>();
 	private final Collection<BotPlayer> pending = new HashSet<>();
-	private Conditions conditions;
 	private int delay = 5000;
-	private boolean enabled = true;
-
-	public SettingsModule(final ModuleManager moduleManager) {
-		this.moduleManager = moduleManager;
-	}
 
 	@Override
 	public String getName() {
@@ -39,16 +31,6 @@ public class SettingsModule implements IPunishModule {
 		punishCommands.addAll(configYml.getStringList(NAME + ".commands"));
 		conditions = new Conditions(pps, cps, jps, false);
 		delay = configYml.getInt(NAME + ".delay", delay);
-	}
-
-	public final boolean meet(final int pps, final int cps, final int jps) {
-		return enabled && conditions.meet(pps, cps, jps, moduleManager.getLastPPS(), moduleManager.getLastCPS(),
-				moduleManager.getLastJPS());
-	}
-
-	@Override
-	public final Collection<String> getPunishCommands() {
-		return punishCommands;
 	}
 
 	public Collection<BotPlayer> getPending() {
