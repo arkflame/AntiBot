@@ -160,7 +160,7 @@ fr:
     register: "%kick_blocked% &fBot detecté. [Register]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cAjoutez le serveur à votre liste de serveurs et raffraichissez là!\n&cReconnectez-vous plus de %reconnect_times% fois pour rejoindre!\n\n&7Raison: &fNous vérifions que vous n'êtes pas un Bot.\n&7Discord: &b&n%discord%&r"
 # Credits: gabrielmottadev
-pt-br:
+pt-BR:
   reload: "&c&lAB: &aArquivos recarregados com sucesso!"
   help: |-
     &aAntiBot&b %version% &apor&b LinsaFTW&a.
