@@ -189,3 +189,33 @@ pt-BR:
     settings: "%kick_blocked% &fAlgorítimo de bot detectado. [Settings]\n&7Discord: &b&n%discord%&r"
     register: "%kick_blocked% &fAlgorítimo de bot detectado. [Register]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cAdicione o server na lista de servidores e recarregue!\n&cRecarregue e reconecte mais %reconnect_times% vezes para entrar!\n\n&7Motivo: &fVerifique que você não é um bot.\n&7Discord: &b&n%discord%&r"
+# Credits: gabrielmottadev and frostytomas
+pt-PT:
+  reload: "&c&lAB: &aArquivos recarregados com sucesso!"
+  help: |-
+    &aAntiBot&b %version% &apor&b LinsaFTW&a.
+    &e /ab notify &7> &bAtiva as notificações do AntiBot!
+    &e /ab stats &7> &bMostra as status do plugin!
+    &e /ab reload &7> &bRecarrega as configurações do plugin!
+    &e /ab blacklist <add/remove> <IP> &7> &bAdiciona ou remove um IP da blacklist!
+    &e /ab blacklist <save/load> &7> &bGuarda ou carrega o arquivo da blacklist!
+    &e /ab whitelist <add/remove> <IP> &7> &bAdiciona ou remove um IP da whitelist!
+    &e /ab whitelist <save/load> &7> &bGuarda ou carrega o arquivo da whitelist!
+  error:
+    command: "&cArgumento inválido! Utiliza /ab help para ver os comandos disponíveis!"
+    console: "&cNão podes usar o comando pela consola!"
+    permission: "&cPermissões insuficientes!"
+  notification:
+    enabled: "&aHabilitas-te as notificações!"
+    disabled: "&cDesabilitas-te as notificações!"
+  kick:
+    blocked: "&cEstás temporariamente bloqueado deste servidor!\n\n&7Motivo:"
+    accounts: "%kick_blocked% &fMuitas contas. [Accounts]\n&7Discord: &b&n%discord%&r"
+    whitelist: "%kick_blocked% &fO servidor está sob ataque. [Whitelist]\n&7Discord: &b&n%discord%&r"
+    blacklist: "%kick_blocked% &fAlgorítimo de bot detectado. [Blacklist]\n&7Discord: &b&n%discord%&r"
+    fastchat: "%kick_blocked% &fAlgorítimo de bot detectado. [FastChat]\n&7Discord: &b&n%discord%&r"
+    ratelimit: "%kick_blocked% &fMuitas conexões. [RateLimit]\n&7Discord: &b&n%discord%&r"
+    nickname: "%kick_blocked% &fAlgorítimo de bot detectado. [NickName]\n&7Discord: &b&n%discord%&r"
+    settings: "%kick_blocked% &fAlgorítimo de bot detectado. [Settings]\n&7Discord: &b&n%discord%&r"
+    register: "%kick_blocked% &fAlgorítimo de bot detectado. [Register]\n&7Discord: &b&n%discord%&r"
+    reconnect: "&cAdiciona o server na lista de servidores e recarregua!\n&cRecarregua e reconecta mais %reconnect_times% vezes para entrares!\n\n&7Motivo: &fVerifica que  não és um bot.\n&7Discord: &b&n%discord%&r"
