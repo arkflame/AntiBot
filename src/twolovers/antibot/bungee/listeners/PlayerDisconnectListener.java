@@ -1,7 +1,5 @@
 package twolovers.antibot.bungee.listeners;
 
-import java.util.Locale;
-
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -31,15 +29,13 @@ public class PlayerDisconnectListener implements Listener {
 		final BotPlayer botPlayer = playerModule.get(ip);
 		final long currentTime = System.currentTimeMillis();
 
-		if ((proxiedPlayer.getLocale() != Locale.US || proxiedPlayer.getPing() < 500)
-				&& (!whitelistModule.isRequireSwitch() || botPlayer.getSwitchs() > 1)
+		if (proxiedPlayer.getPing() < 500 && (!whitelistModule.isRequireSwitch() || botPlayer.getSwitchs() > 1)
 				&& currentTime - botPlayer.getLastConnection() >= whitelistModule.getTimeWhitelist()) {
 			whitelistModule.setWhitelisted(ip, true);
 		}
 
 		botPlayer.removeAccount(proxiedPlayer.getName());
 		botPlayer.resetSwitchs();
-		botPlayer.setLastConnection(currentTime);
 		notificationsModule.setNotifications(proxiedPlayer, false);
 		settingsModule.removePending(botPlayer);
 

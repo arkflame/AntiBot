@@ -20,7 +20,14 @@ public class ModuleManager {
 	private final ConfigUtil configUtil;
 	private final IModule[] modules = new IModule[13];
 	private String defaultLanguage;
-	private int lastPps = 0, lastCps = 0, lastJps = 0, currentPps = 0, currentCps = 0, currentJps = 0;
+	private int lastPps = 0;
+	private int lastCps = 0;
+	private int lastJps = 0;
+	private int currentPps = 0;
+	private int currentCps = 0;
+	private int currentJps = 0;
+	private int currentIncoming = 0;
+	private int totalBlocked = 0;
 
 	public ModuleManager(final Plugin plugin, final ConfigUtil configUtil) {
 		this.plugin = plugin;
@@ -109,6 +116,7 @@ public class ModuleManager {
 		this.currentPps = 0;
 		this.currentCps = 0;
 		this.currentJps = 0;
+		currentIncoming = 0;
 	}
 
 	public final AccountsModule getAccountsModule() {
@@ -197,5 +205,25 @@ public class ModuleManager {
 
 	public void setCurrentJPS(final int currentJPS) {
 		this.currentJps = currentJPS;
+	}
+
+	public String getDefaultLanguage() {
+		return defaultLanguage;
+	}
+
+	public int getCurrentIncoming() {
+		return currentIncoming;
+	}
+
+	public void addIncoming() {
+		currentIncoming++;
+	}
+
+	public void addTotalBlocked() {
+		totalBlocked++;
+	}
+
+	public int getTotalBlocked() {
+		return totalBlocked;
 	}
 }

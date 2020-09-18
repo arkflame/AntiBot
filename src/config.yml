@@ -39,7 +39,7 @@ blacklist:
 
   conditions:
     pps: 0
-    cps: 3
+    cps: 0
     jps: 0
 
   commands:
@@ -98,7 +98,7 @@ ratelimit:
 
   # Minimum time forced between connections from the same IP. (In milliseconds)
   # This replaces BungeeCord connection throttle so we can blacklist addreses.
-  throttle: 650
+  throttle: 1000
 
   # Max players that can be online at the same time from the same IP.
   max_online: 3
@@ -121,7 +121,7 @@ reconnect:
     jps: 0
 
   # Time to wait to reconnect for the first time. (In milliseconds)
-  throttle: 800
+  throttle: 1250
 
   commands:
     - "disconnect %kick_reconnect%"
@@ -154,7 +154,7 @@ runtime:
   time: 20000
 
   add:
-    - "iptables -I INPUT -s %address% -j DROP"
+    - "iptables -A INPUT -s %address% -j DROP"
 
   remove:
     - "iptables -D INPUT -s %address% -j DROP"

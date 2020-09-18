@@ -68,18 +68,20 @@ public class NotificationsModule implements IModule {
 	}
 
 	public void setNotifications(final ProxiedPlayer player, final boolean bool) {
-		if (enabled) {
-			if (bool) {
-				if (!notificationPlayers.contains(player)) {
-					notificationPlayers.add(player);
-				}
-			} else if (notificationPlayers.contains(player)) {
-				notificationPlayers.remove(player);
+		if (bool) {
+			if (!notificationPlayers.contains(player)) {
+				notificationPlayers.add(player);
 			}
+		} else if (notificationPlayers.contains(player)) {
+			notificationPlayers.remove(player);
 		}
 	}
 
 	public boolean hasNotifications(final ProxiedPlayer player) {
 		return notificationPlayers.contains(player);
+	}
+
+	public boolean isEnabled() {
+		return enabled;
 	}
 }

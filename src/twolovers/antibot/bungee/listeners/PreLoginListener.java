@@ -42,7 +42,7 @@ public class PreLoginListener implements Listener {
 			final long currentTimeMillis = System.currentTimeMillis();
 			final int currentCps = moduleManager.getCurrentCps() + 1;
 
-			if (!whitelistModule.check(connection)) {
+			if (whitelistModule.check(connection)) {
 				botPlayer.setCPS(botPlayer.getCPS() + 1);
 				moduleManager.setCurrentCps(currentCps);
 

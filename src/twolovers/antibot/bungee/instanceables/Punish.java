@@ -22,10 +22,11 @@ public class Punish {
 		final PlaceholderModule placeholderModule = moduleManager.getPlaceholderModule();
 		final NotificationsModule notificationsModule = moduleManager.getNotificationsModule();
 		final Collection<String> punishCommands = punishModule.getPunishCommands();
-		final String punishModuleName = punishModule.getName(),
-				checkName = punishModuleName.substring(0, 1).toUpperCase() + punishModuleName.substring(1),
-				address = connection.getAddress().getHostString();
+		final String punishModuleName = punishModule.getName();
+		final String checkName = punishModuleName.substring(0, 1).toUpperCase() + punishModuleName.substring(1);
+		final String address = connection.getAddress().getHostString();
 
+		moduleManager.addTotalBlocked();
 		notificationsModule.notify(locale, address, checkName);
 
 		if (event instanceof ProxyPingEvent) {

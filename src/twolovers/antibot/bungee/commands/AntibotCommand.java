@@ -14,6 +14,7 @@ import twolovers.antibot.bungee.module.ModuleManager;
 import twolovers.antibot.bungee.module.NotificationsModule;
 import twolovers.antibot.bungee.module.PlaceholderModule;
 import twolovers.antibot.bungee.module.WhitelistModule;
+import twolovers.antibot.bungee.utils.BungeeUtil;
 import twolovers.antibot.bungee.utils.ConfigUtil;
 
 public class AntibotCommand extends Command {
@@ -34,6 +35,7 @@ public class AntibotCommand extends Command {
 		final PlaceholderModule placeholderModule = moduleManager.getPlaceholderModule();
 		final BlacklistModule blacklistModule = moduleManager.getBlacklistModule();
 		final WhitelistModule whitelistModule = moduleManager.getWhitelistModule();
+		final String defaultLanguage = moduleManager.getDefaultLanguage();
 		final ProxiedPlayer proxiedPlayer;
 		final String address;
 		final String locale;
@@ -41,36 +43,45 @@ public class AntibotCommand extends Command {
 		if (commandSender instanceof ProxiedPlayer) {
 			proxiedPlayer = (ProxiedPlayer) commandSender;
 			address = proxiedPlayer.getAddress().getHostString();
-			locale = proxiedPlayer.getLocale().toLanguageTag();
+			locale = BungeeUtil.getLanguage(proxiedPlayer, defaultLanguage);
 		} else {
 			proxiedPlayer = null;
-			address = "127.0.0.1";
-			locale = "en";
+			address = "0.0.0.0";
+			locale = defaultLanguage;
 		}
 
 		if (args.length > 0 && !args[0].equals("help")) {
 			switch (args[0].toLowerCase()) {
 				case "notify": {
-					if (proxiedPlayer != null) {
-						if (commandSender.hasPermission("antibot.notify")
-								|| commandSender.hasPermission("antibot.admin")) {
-							final NotificationsModule notificationsModule = moduleManager.getNotificationsModule();
-							final boolean hasNotifications = notificationsModule.hasNotifications(proxiedPlayer);
+					final NotificationsModule notificationsModule = moduleManager.getNotificationsModule();
 
-							notificationsModule.setNotifications(proxiedPlayer, !hasNotifications);
+					if (notificationsModule.isEnabled()) {
+						if (proxiedPlayer != null) {
+							if (commandSender.hasPermission("antibot.notify")
+									|| commandSender.hasPermission("antibot.admin")) {
+								final boolean hasNotifications = notificationsModule.hasNotifications(proxiedPlayer);
 
-							if (!hasNotifications)
+								notificationsModule.setNotifications(proxiedPlayer, !hasNotifications);
+
+								if (!hasNotifications) {
+									commandSender
+											.sendMessage(TextComponent.fromLegacyText(placeholderModule.setPlaceholders(
+													moduleManager, "%notification_enabled%", locale, address)));
+								} else {
+									commandSender
+											.sendMessage(TextComponent.fromLegacyText(placeholderModule.setPlaceholders(
+													moduleManager, "%notification_disabled%", locale, address)));
+								}
+							} else
 								commandSender.sendMessage(TextComponent.fromLegacyText(placeholderModule
-										.setPlaceholders(moduleManager, "%notification_enabled%", locale, address)));
-							else
-								commandSender.sendMessage(TextComponent.fromLegacyText(placeholderModule
-										.setPlaceholders(moduleManager, "%notification_disabled%", locale, address)));
-						} else
+										.setPlaceholders(moduleManager, "%error_permission%", locale, address)));
+						} else {
 							commandSender.sendMessage(TextComponent.fromLegacyText(placeholderModule
-									.setPlaceholders(moduleManager, "%error_permission%", locale, address)));
+									.setPlaceholders(moduleManager, "%error_console%", locale, address)));
+						}
 					} else {
 						commandSender.sendMessage(TextComponent.fromLegacyText(
-								placeholderModule.setPlaceholders(moduleManager, "%error_console%", locale, address)));
+								placeholderModule.setPlaceholders(moduleManager, "%notification_error%", locale)));
 					}
 					break;
 				}

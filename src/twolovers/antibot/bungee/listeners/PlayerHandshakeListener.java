@@ -37,6 +37,8 @@ public class PlayerHandshakeListener implements Listener {
 		final int lastCps = moduleManager.getLastCps();
 		final int lastJps = moduleManager.getLastJps();
 
+		moduleManager.addIncoming();
+
 		if (requestedProtocol == 1) {
 			currentPps++;
 		} else {

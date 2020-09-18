@@ -1,6 +1,8 @@
 package twolovers.antibot.bungee.module;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -15,7 +17,8 @@ public class PlaceholderModule implements IModule {
 	private static final String NAME = "placeholder";
 	private final String pluginVersion;
 	private final Map<String, String> placeholders = new HashMap<>();
-	private String lang;
+	private final Collection<String> locales = new HashSet<>();
+	private String defaultLang;
 
 	PlaceholderModule(final Plugin plugin) {
 		pluginVersion = plugin.getDescription().getVersion();
@@ -33,17 +36,11 @@ public class PlaceholderModule implements IModule {
 
 			if (string.contains(key)) {
 				string = string.replace(key, value);
-			} else if (locale != null) {
+			} else if (locale != null && locale.length() > 1) {
 				final String keyLocaleReplaced = key.replace("%" + locale + "_", "%");
 
 				if (string.contains(keyLocaleReplaced)) {
 					string = setPlaceholders(string.replace(keyLocaleReplaced, value), locale);
-				} else {
-					final String keyLangReplaced = key.replace("%" + lang + "_", "%");
-
-					if (string.contains(keyLangReplaced)) {
-						string = setPlaceholders(string.replace(keyLangReplaced, value), locale);
-					}
 				}
 			}
 		}
@@ -53,7 +50,13 @@ public class PlaceholderModule implements IModule {
 
 	public final String setPlaceholders(final ModuleManager moduleManager, String string, final String locale,
 			final String address, final String checkName) {
-		string = setPlaceholders(string, locale);
+		if (locales.contains(locale)) {
+			string = setPlaceholders(string, locale);
+		} else if (locale != null && locale.length() > 2 && locales.contains(locale.substring(0, 2))) {
+			string = setPlaceholders(string, locale.substring(0, 2));
+		} else {
+			string = setPlaceholders(string, defaultLang);
+		}
 
 		if (moduleManager != null) {
 			if (address != null) {
@@ -78,6 +81,8 @@ public class PlaceholderModule implements IModule {
 					.replace("%currentpps%", String.valueOf(moduleManager.getCurrentPps()))
 					.replace("%currentcps%", String.valueOf(moduleManager.getCurrentCps()))
 					.replace("%currentjps%", String.valueOf(moduleManager.getCurrentJps()))
+					.replace("%currentincoming%", String.valueOf(moduleManager.getCurrentIncoming()))
+					.replace("%totalblocked%", String.valueOf(moduleManager.getTotalBlocked()))
 					.replace("%totalbls%", String.valueOf(moduleManager.getBlacklistModule().getSize()))
 					.replace("%totalwls%", String.valueOf(moduleManager.getWhitelistModule().getSize()));
 		}
@@ -106,28 +111,34 @@ public class PlaceholderModule implements IModule {
 		return setPlaceholders(moduleManager, string, locale, address, null);
 	}
 
-	@Override
-	public void reload(final ConfigUtil configUtil) {
-		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
-		final Configuration messagesYml = configUtil.getConfiguration("%datafolder%/messages.yml");
-		final StringBuilder path = new StringBuilder();
-
-		lang = configYml.getString("lang");
-		placeholders.clear();
-
-		addSection(path, messagesYml);
-	}
-
 	private void addSection(final StringBuilder path, final Configuration section) {
 		for (final String key : section.getKeys()) {
 			final Object value = section.get(key);
 
 			if (value instanceof Configuration) {
 				addSection(new StringBuilder(path).append(".").append(key), (Configuration) value);
-			} else if (lang != null && value instanceof String) {
+			} else if (defaultLang != null && value instanceof String) {
 				placeholders.put(("%" + new StringBuilder(path).toString() + "." + key + "%").replace(".", "_")
 						.replace("%_", "%"), setPlaceholders((String) value));
 			}
 		}
+	}
+
+	@Override
+	public void reload(final ConfigUtil configUtil) {
+		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
+		final Configuration messagesYml = configUtil.getConfiguration("%datafolder%/messages.yml");
+		final StringBuilder path = new StringBuilder();
+
+		defaultLang = configYml.getString("lang");
+		placeholders.clear();
+
+		for (final String key : messagesYml.getKeys()) {
+			if (key.length() < 6) {
+				locales.add(key);
+			}
+		}
+
+		addSection(path, messagesYml);
 	}
 }

@@ -13,6 +13,7 @@ import twolovers.antibot.bungee.module.FastChatModule;
 import twolovers.antibot.bungee.module.ModuleManager;
 import twolovers.antibot.bungee.module.RegisterModule;
 import twolovers.antibot.bungee.module.WhitelistModule;
+import twolovers.antibot.bungee.utils.BungeeUtil;
 
 public class ChatListener implements Listener {
 	private final Plugin plugin;
@@ -34,6 +35,7 @@ public class ChatListener implements Listener {
 			if (!whitelistModule.check(proxiedPlayer)) {
 				final RegisterModule registerModule = moduleManager.getRegisterModule();
 				final FastChatModule fastChatModule = moduleManager.getFastChatModule();
+				final String defaultLanguage = moduleManager.getDefaultLanguage();
 				final String message = event.getMessage().trim();
 				final Locale locale = proxiedPlayer.getLocale();
 				final int currentPps = moduleManager.getCurrentPps();
@@ -46,13 +48,13 @@ public class ChatListener implements Listener {
 				if (locale == null) {
 					if (fastChatModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps, lastJps)
 							&& fastChatModule.check(proxiedPlayer)) {
-						new Punish(plugin, moduleManager, "en", fastChatModule, proxiedPlayer, event);
+						new Punish(plugin, moduleManager, defaultLanguage, fastChatModule, proxiedPlayer, event);
 
 						moduleManager.getBlacklistModule().setBlacklisted(proxiedPlayer.getAddress().getHostString(),
 								true);
 					}
 				} else {
-					final String lang = locale.toLanguageTag();
+					final String lang = BungeeUtil.getLanguage(proxiedPlayer, defaultLanguage);
 
 					if (fastChatModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps, lastJps)
 							&& fastChatModule.check(proxiedPlayer)) {
