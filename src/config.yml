@@ -39,7 +39,7 @@ blacklist:
 
   conditions:
     pps: 0
-    cps: 0
+    cps: 2
     jps: 0
 
   commands:
