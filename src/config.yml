@@ -14,6 +14,9 @@
 #
 # Setting all threshold to 0 keeps the module always active.
 
+# This is used to reset configuration file automatically. (Don't touch it)
+version: 1
+
 # Default plugin language. (This changes depending on the client language if possible)
 lang: "en"
 

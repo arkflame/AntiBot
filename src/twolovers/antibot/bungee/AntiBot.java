@@ -21,6 +21,7 @@ public class AntiBot extends Plugin {
 	private static AntiBot antiBot;
 	private ModuleManager moduleManager;
 	private ConfigUtil configUtil;
+	private boolean running = true;
 
 	@Override
 	public void onEnable() {
@@ -31,45 +32,45 @@ public class AntiBot extends Plugin {
 		this.configUtil = new ConfigUtil(this);
 		reload();
 
-		// Thread that repeats itself each second
-		final Thread thread = new Thread() {
+		/* Thread that repeats itself each second */
+		new Thread() {
 			@Override
 			public void run() {
-				synchronized (this) {
-					while (!isInterrupted()) {
-						try {
-							moduleManager.update();
-						} catch (final Exception e1) {
-							logger.warning("AntiBot catched a " + e1.getClass().getName() + "! (ModuleManager.java)");
-						}
-
-						try {
-							wait(1000);
-						} catch (final InterruptedException e2) {
-							logger.warning("AntiBot catched a " + e2.getClass().getName() + "! (ModuleManager.java)");
-							interrupt();
-						}
+				while (running) {
+					try {
+						moduleManager.update();
+					} catch (final Exception e) {
+						logger.warning("AntiBot catched a " + e.getClass().getName() + "! (ModuleManager.java)");
 					}
 
-					start();
+					try {
+						sleep(1000);
+					} catch (final InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
-		};
-
-		thread.start();
+		}.start();
 	}
 
 	public void reload() {
+		final Logger logger = getLogger();
 		final ProxyServer proxy = this.getProxy();
 		final PluginManager pluginManager = proxy.getPluginManager();
+
+		if (configUtil.getConfiguration("%datafolder%/config.yml").getInt("version", 0) != 1) {
+			configUtil.deleteConfiguration("%datafolder%/config.yml");
+		}
 
 		configUtil.createConfiguration("%datafolder%/config.yml");
 		configUtil.createConfiguration("%datafolder%/messages.yml");
 		configUtil.createConfiguration("%datafolder%/blacklist.yml");
 		configUtil.createConfiguration("%datafolder%/whitelist.yml");
+		logger.info("Configurations successfully created!");
 
 		moduleManager = new ModuleManager(this, configUtil);
 		moduleManager.reload();
+		logger.info("Modules successfully loaded!");
 
 		pluginManager.unregisterListeners(this);
 		pluginManager.registerListener(this, new ChatListener(this, moduleManager));
@@ -80,12 +81,16 @@ public class AntiBot extends Plugin {
 		pluginManager.registerListener(this, new ProxyPingListener(this, moduleManager));
 		pluginManager.registerListener(this, new ServerSwitchListener(this, moduleManager));
 		pluginManager.registerListener(this, new SettingsChangedListener(moduleManager));
+		logger.info("Listeners successfully registered!");
 
 		pluginManager.registerCommand(this, new AntibotCommand(this, configUtil, moduleManager));
+		logger.info("Commands successfully registered!");
 	}
 
 	@Override
 	public void onDisable() {
+		running = false;
+
 		moduleManager.getBlacklistModule().save(configUtil);
 		moduleManager.getRuntimeModule().update();
 		moduleManager.getWhitelistModule().save(configUtil);

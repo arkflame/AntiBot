@@ -48,10 +48,11 @@ public class ConfigUtil {
 				if (parentFile != null)
 					parentFile.mkdirs();
 
-				if (inputStream != null)
+				if (inputStream != null) {
 					Files.copy(inputStream, configFile.toPath());
-				else
+				} else {
 					configFile.createNewFile();
+				}
 
 				logger.info("File " + configFile + " has been created!");
 			}
@@ -73,13 +74,13 @@ public class ConfigUtil {
 	}
 
 	public void deleteConfiguration(final String file) {
-		this.scheduler.runAsync(plugin, () -> {
-			final File file1 = new File(file);
+		final String replacedFile = replaceDataFolder(file);
+		final File file1 = new File(replacedFile);
 
-			if (file1.exists()) {
-				file1.delete();
-			}
-		});
+		if (file1.exists()) {
+			file1.delete();
+			logger.info("File " + replacedFile + " has been deleted!");
+		}
 	}
 
 	private String replaceDataFolder(final String string) {
