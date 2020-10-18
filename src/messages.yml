@@ -80,7 +80,7 @@ es:
     ratelimit: "%kick_blocked% &fDemaciadas conexiones. [RateLimit]\n&7Discord: &b&n%discord%&r"
     nickname: "%kick_blocked% &fAlgoritmo de bots. [NickName]\n&7Discord: &b&n%discord%&r"
     settings: "%kick_blocked% &fAlgoritmo de bots. [Settings]\n&7Discord: &b&n%discord%&r"
-    register: "%kick_blocked% &fAlgoritmo de bots. [Register]\n&7Discord: &b&n%discord%&r"
+    password: "%kick_blocked% &fAlgoritmo de bots. [Password]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cAgrega el server a la lista y refrescala!\n&cRefresca y reconecta %reconnect_times% veces para entrar!\n\n&7Razon: &fVerifica que no eres un robot.\n&7Discord: &b&n%discord%&r"
 de:
   reload: "&c&lAB: &aDateien erfolgreich neu geladen!"
@@ -110,7 +110,7 @@ de:
     ratelimit: "%kick_blocked% &fzu viele Verbindungen. [RateLimit]\n&7Discord: &b&n%discord%&r"
     nickname: "%kick_blocked% &fBot-Algorithmus erkannt. [NickName]\n&7Discord: &b&n%discord%&r"
     settings: "%kick_blocked% &fBot-Algorithmus erkannt. [Settings]\n&7Discord: &b&n%discord%&r"
-    register: "%kick_blocked% &fBot-Algorithmus erkannt. [Register]\n&7Discord: &b&n%discord%&r"
+    password: "%kick_blocked% &fBot-Algorithmus erkannt. [Password]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cFüge den Server zur Serverliste hinzu und aktualisiere ihn!\n&cAktualisieren und erneut verbinden %reconnect_times% mal mehr beitreten!\n\n&7Grund: &fsicherstellen dass Sie kein Bot sind.\n&7Discord: &b&n%discord%&r"
 # Credits: xion87
 it:
@@ -141,7 +141,7 @@ it:
     ratelimit: "%kick_blocked% &fTroppe connessioni. [RateLimit]\n&7Discord: &b&n%discord%&r"
     nickname: "%kick_blocked% &fAlgoritmo Bot rilevato. [NickName]\n&7Discord: &b&n%discord%&r"
     settings: "%kick_blocked% &fAlgoritmo Bot rilevato. [Settings]\n&7Discord: &b&n%discord%&r"
-    register: "%kick_blocked% &fAlgoritmo Bot rilevato. [Register]\n&7Discord: &b&n%discord%&r"
+    password: "%kick_blocked% &fAlgoritmo Bot rilevato. [Password]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cAggiungi il server alla lista dei server e aggiornala lentamente!\n&cAggiorna e ricollegati %reconnect_times% volte per entrare!\n\n&7Motivo: &fVerifica che non sei un bot.\n&7Discord: &b&n%discord%&r" 
 # Credits: LLIcocoman
 fr:
@@ -172,7 +172,7 @@ fr:
     ratelimit: "%kick_blocked% &fTrop de connexion detectée. [RateLimit]\n&7Discord: &b&n%discord%&r"
     nickname: "%kick_blocked% &fBot detecté. [NickName]\n&7Discord: &b&n%discord%&r"
     settings: "%kick_blocked% &fBot detecté. [Settings]\n&7Discord: &b&n%discord%&r"
-    register: "%kick_blocked% &fBot detecté. [Register]\n&7Discord: &b&n%discord%&r"
+    password: "%kick_blocked% &fBot detecté. [Password]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cAjoutez le serveur à votre liste de serveurs et raffraichissez là!\n&cReconnectez-vous plus de %reconnect_times% fois pour rejoindre!\n\n&7Raison: &fNous vérifions que vous n'êtes pas un Bot.\n&7Discord: &b&n%discord%&r"
 # Credits: gabrielmottadev
 pt-BR:
@@ -203,7 +203,7 @@ pt-BR:
     ratelimit: "%kick_blocked% &fMuitas conexões. [RateLimit]\n&7Discord: &b&n%discord%&r"
     nickname: "%kick_blocked% &fAlgorítimo de bot detectado. [NickName]\n&7Discord: &b&n%discord%&r"
     settings: "%kick_blocked% &fAlgorítimo de bot detectado. [Settings]\n&7Discord: &b&n%discord%&r"
-    register: "%kick_blocked% &fAlgorítimo de bot detectado. [Register]\n&7Discord: &b&n%discord%&r"
+    password: "%kick_blocked% &fAlgorítimo de bot detectado. [Password]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cAdicione o server na lista de servidores e recarregue!\n&cRecarregue e reconecte mais %reconnect_times% vezes para entrar!\n\n&7Motivo: &fVerifique que você não é um bot.\n&7Discord: &b&n%discord%&r"
 # Credits: gabrielmottadev and frostytomas
 pt-PT:
@@ -234,5 +234,5 @@ pt-PT:
     ratelimit: "%kick_blocked% &fMuitas conexões. [RateLimit]\n&7Discord: &b&n%discord%&r"
     nickname: "%kick_blocked% &fAlgorítimo de bot detectado. [NickName]\n&7Discord: &b&n%discord%&r"
     settings: "%kick_blocked% &fAlgorítimo de bot detectado. [Settings]\n&7Discord: &b&n%discord%&r"
-    register: "%kick_blocked% &fAlgorítimo de bot detectado. [Register]\n&7Discord: &b&n%discord%&r"
+    password: "%kick_blocked% &fAlgorítimo de bot detectado. [Password]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cAdiciona o server na lista de servidores e recarregua!\n&cRecarregua e reconecta mais %reconnect_times% vezes para entrares!\n\n&7Motivo: &fVerifica que  não és um bot.\n&7Discord: &b&n%discord%&r"
