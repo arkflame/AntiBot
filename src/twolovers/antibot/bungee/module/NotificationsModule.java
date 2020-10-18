@@ -42,27 +42,28 @@ public class NotificationsModule implements IModule {
 
 	public void notify(final String locale, final String address, final String checkName) {
 		if (enabled) {
-			try {
-				final PlaceholderModule placeholderModule = moduleManager.getPlaceholderModule();
-				final String notification = placeholderModule.setPlaceholders(moduleManager, "%notification_message%",
-						locale, address, checkName);
-				final BaseComponent[] notificationTextComponent = TextComponent.fromLegacyText(notification);
-				final ChatMessageType chatMessageType = ChatMessageType.ACTION_BAR;
-				final long currentTime = System.currentTimeMillis();
+			final long currentTime = System.currentTimeMillis();
 
-				if (console) {
-					logger.log(Level.INFO, notification);
-				}
+			if (currentTime > lastNotificationTime + 100) {
+				try {
+					final PlaceholderModule placeholderModule = moduleManager.getPlaceholderModule();
+					final String notification = placeholderModule.setPlaceholders(moduleManager,
+							"%notification_message%", locale, address, checkName);
+					final BaseComponent[] notificationTextComponent = TextComponent.fromLegacyText(notification);
+					final ChatMessageType chatMessageType = ChatMessageType.ACTION_BAR;
 
-				if (currentTime > lastNotificationTime + 100) {
+					if (console) {
+						logger.log(Level.INFO, notification);
+					}
+
 					for (final ProxiedPlayer player : notificationPlayers) {
 						player.sendMessage(chatMessageType, notificationTextComponent);
 					}
 
 					lastNotificationTime = currentTime;
+				} catch (final ConcurrentModificationException e) {
+					logger.warning("AntiBot catched a CME exception! (NotificationsModule.java)");
 				}
-			} catch (final ConcurrentModificationException e) {
-				logger.warning("AntiBot catched a CME exception! (NotificationsModule.java)");
 			}
 		}
 	}

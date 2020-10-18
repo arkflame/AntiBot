@@ -39,7 +39,7 @@ public class PlayerDisconnectListener implements Listener {
 		notificationsModule.setNotifications(proxiedPlayer, false);
 		settingsModule.removePending(botPlayer);
 
-		if (botPlayer.getAccounts().size() < 1) {
+		if (botPlayer.getAccounts().isEmpty()) {
 			botPlayer.setSettings(false);
 			playerModule.setOffline(botPlayer);
 		}

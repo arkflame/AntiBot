@@ -4,12 +4,10 @@ import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
-import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.shared.extendables.PunishableModule;
 
 public class ReconnectModule extends PunishableModule {
-	private static final String NAME = "reconnect";
 	private final ModuleManager moduleManager;
 	private int timesPing = 1;
 	private int timesConnect = 3;
@@ -20,24 +18,17 @@ public class ReconnectModule extends PunishableModule {
 	}
 
 	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
 	public final void reload(final ConfigUtil configUtil) {
-		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
-		final int pps = configYml.getInt(NAME + ".conditions.pps", 0);
-		final int cps = configYml.getInt(NAME + ".conditions.cps", 0);
-		final int jps = configYml.getInt(NAME + ".conditions.jps", 0);
+		super.name = "reconnect";
+		super.reload(configUtil);
 
-		enabled = configYml.getBoolean(NAME + ".enabled", enabled);
+		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
+
 		punishCommands.clear();
-		punishCommands.addAll(configYml.getStringList(NAME + ".commands"));
-		conditions = new Conditions(pps, cps, jps, false);
-		timesPing = configYml.getInt(NAME + ".times.ping", timesPing);
-		timesConnect = configYml.getInt(NAME + ".times.connect", timesConnect);
-		throttle = configYml.getLong(NAME + ".throttle", throttle);
+		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		timesPing = configYml.getInt(name + ".times.ping", timesPing);
+		timesConnect = configYml.getInt(name + ".times.connect", timesConnect);
+		throttle = configYml.getLong(name + ".throttle", throttle);
 	}
 
 	public boolean check(final Connection connection) {

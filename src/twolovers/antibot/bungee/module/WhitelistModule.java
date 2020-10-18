@@ -6,13 +6,11 @@ import java.util.HashSet;
 
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.config.Configuration;
-import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.shared.extendables.PunishableModule;
 
 public class WhitelistModule extends PunishableModule {
 	private static final String WHITELIST_PATH = "%datafolder%/whitelist.yml";
-	private static final String NAME = "whitelist";
 	private final ModuleManager moduleManager;
 	private final Collection<String> whitelist = new HashSet<>();
 	private long lastLockout = 0;
@@ -25,24 +23,17 @@ public class WhitelistModule extends PunishableModule {
 	}
 
 	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
 	public final void reload(final ConfigUtil configUtil) {
-		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
-		final int pps = configYml.getInt(NAME + ".conditions.pps", 0);
-		final int cps = configYml.getInt(NAME + ".conditions.cps", 0);
-		final int jps = configYml.getInt(NAME + ".conditions.jps", 0);
+		super.name = "whitelist";
+		super.reload(configUtil);
 
-		enabled = configYml.getBoolean(NAME + ".enabled", true);
+		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
+
 		punishCommands.clear();
-		punishCommands.addAll(configYml.getStringList(NAME + ".commands"));
-		conditions = new Conditions(pps, cps, jps, false);
-		requireSwitch = configYml.getBoolean(NAME + ".switch", requireSwitch);
-		timeWhitelist = configYml.getInt(NAME + ".time.whitelist", timeWhitelist);
-		timeLockout = configYml.getInt(NAME + ".time.lockout", timeLockout);
+		punishCommands.addAll(configYml.getStringList(name + ".commands"));
+		requireSwitch = configYml.getBoolean(name + ".switch", requireSwitch);
+		timeWhitelist = configYml.getInt(name + ".time.whitelist", timeWhitelist);
+		timeLockout = configYml.getInt(name + ".time.lockout", timeLockout);
 		load(configUtil);
 	}
 
@@ -81,7 +72,7 @@ public class WhitelistModule extends PunishableModule {
 	@Override
 	public final boolean meet(final int pps, final int cps, final int jps, final int lastPps, final int lastCps,
 			final int lastJps) {
-		return this.enabled && (conditions.meet(pps, cps, jps, lastPps, lastCps, lastJps)
+		return this.enabled && (thresholds.meet(pps, cps, jps, lastPps, lastCps, lastJps)
 				|| System.currentTimeMillis() - this.lastLockout < this.timeLockout);
 	}
 

@@ -1,10 +1,10 @@
 package twolovers.antibot.bungee.instanceables;
 
-public class Conditions {
+public class Threshold {
 	private final int pps, cps, jps;
 	private final boolean oneMeeting;
 
-	public Conditions(final int pps, final int cps, final int jps, final boolean oneMeeting) {
+	public Threshold(final int pps, final int cps, final int jps, final boolean oneMeeting) {
 		this.pps = pps;
 		this.cps = cps;
 		this.jps = jps;

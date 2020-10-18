@@ -42,7 +42,7 @@ public class ModuleManager {
 		this.modules[6] = new PlayerModule();
 		this.modules[7] = new RateLimitModule(this);
 		this.modules[8] = new ReconnectModule(this);
-		this.modules[9] = new RegisterModule();
+		this.modules[9] = new PasswordModule();
 		this.modules[10] = new RuntimeModule();
 		this.modules[11] = new SettingsModule();
 		this.modules[12] = new WhitelistModule(this);
@@ -155,8 +155,8 @@ public class ModuleManager {
 		return (ReconnectModule) this.modules[8];
 	}
 
-	public final RegisterModule getRegisterModule() {
-		return (RegisterModule) this.modules[9];
+	public final PasswordModule getRegisterModule() {
+		return (PasswordModule) this.modules[9];
 	}
 
 	public final RuntimeModule getRuntimeModule() {

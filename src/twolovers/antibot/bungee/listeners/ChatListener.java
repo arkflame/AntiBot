@@ -11,7 +11,7 @@ import net.md_5.bungee.event.EventHandler;
 import twolovers.antibot.bungee.instanceables.Punish;
 import twolovers.antibot.bungee.module.FastChatModule;
 import twolovers.antibot.bungee.module.ModuleManager;
-import twolovers.antibot.bungee.module.RegisterModule;
+import twolovers.antibot.bungee.module.PasswordModule;
 import twolovers.antibot.bungee.module.WhitelistModule;
 import twolovers.antibot.bungee.utils.BungeeUtil;
 
@@ -33,7 +33,7 @@ public class ChatListener implements Listener {
 			final ProxiedPlayer proxiedPlayer = (ProxiedPlayer) sender;
 
 			if (!whitelistModule.check(proxiedPlayer)) {
-				final RegisterModule registerModule = moduleManager.getRegisterModule();
+				final PasswordModule registerModule = moduleManager.getRegisterModule();
 				final FastChatModule fastChatModule = moduleManager.getFastChatModule();
 				final String defaultLanguage = moduleManager.getDefaultLanguage();
 				final String message = event.getMessage().trim();

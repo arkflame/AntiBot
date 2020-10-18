@@ -5,34 +5,25 @@ import java.util.HashSet;
 
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.config.Configuration;
-import twolovers.antibot.bungee.instanceables.Conditions;
 import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.shared.extendables.PunishableModule;
 
-public class RegisterModule extends PunishableModule {
-	private static final String NAME = "register";
+public class PasswordModule extends PunishableModule {
 	private Collection<String> authCommands = new HashSet<>();
 	private String lastAddress = "";
 	private String lastPassword = "";
 
 	@Override
-	public final String getName() {
-		return NAME;
-	}
-
-	@Override
 	public final void reload(final ConfigUtil configUtil) {
-		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
-		final int pps = configYml.getInt(NAME + ".conditions.pps", 0);
-		final int cps = configYml.getInt(NAME + ".conditions.cps", 0);
-		final int jps = configYml.getInt(NAME + ".conditions.jps", 0);
+		super.name = "password";
+		super.reload(configUtil);
 
-		enabled = configYml.getBoolean(NAME + ".enabled", enabled);
+		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
+
 		punishCommands.clear();
-		punishCommands.addAll(configYml.getStringList(NAME + ".commands"));
+		punishCommands.addAll(configYml.getStringList(name + ".commands"));
 		authCommands.clear();
-		authCommands.addAll(configYml.getStringList(NAME + ".auth_commands"));
-		conditions = new Conditions(pps, cps, jps, false);
+		authCommands.addAll(configYml.getStringList(name + ".auth_commands"));
 	}
 
 	public final void setLastValues(final String address, final String command) {

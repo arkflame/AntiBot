@@ -50,7 +50,7 @@ en:
     ratelimit: "%kick_blocked% &fToo many connections. [RateLimit]\n&7Discord: &b&n%discord%&r"
     nickname: "%kick_blocked% &fBot algorithm detected. [NickName]\n&7Discord: &b&n%discord%&r"
     settings: "%kick_blocked% &fBot algorithm detected. [Settings]\n&7Discord: &b&n%discord%&r"
-    register: "%kick_blocked% &fBot algorithm detected. [Register]\n&7Discord: &b&n%discord%&r"
+    password: "%kick_blocked% &fBot algorithm detected. [Password]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cAdd the server to the serverlist and refresh it!\n&cRefresh and reconnect %reconnect_times% more times to join!\n\n&7Reason: &fVerify that you are not a bot.\n&7Discord: &b&n%discord%&r"
 es:
   reload: "&c&lAB: &aArchivos recargados correctamente!"

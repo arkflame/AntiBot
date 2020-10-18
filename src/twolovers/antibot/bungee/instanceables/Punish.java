@@ -40,19 +40,21 @@ public class Punish {
 				command = placeholderModule.setPlaceholders(moduleManager, command, locale, address, checkName);
 
 				if (command.startsWith(disconnectString)) {
-					final BaseComponent[] disconnectMessage = TextComponent
+					final BaseComponent[] textComponent = TextComponent
 							.fromLegacyText(command.replace(disconnectString, ""));
 
 					if (event instanceof Cancellable) {
 						if (event instanceof PreLoginEvent) {
 							final PreLoginEvent preLoginEvent = (PreLoginEvent) event;
 
-							preLoginEvent.setCancelReason(disconnectMessage);
+							preLoginEvent.setCancelReason(textComponent);
+						} else {
+							connection.disconnect(textComponent);
 						}
 
 						((Cancellable) event).setCancelled(true);
 					} else {
-						connection.disconnect(disconnectMessage);
+						connection.disconnect(textComponent);
 					}
 				} else {
 					final ProxyServer proxyServer = plugin.getProxy();

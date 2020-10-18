@@ -45,12 +45,12 @@ public class RuntimeModule implements IModule {
 			if (time != -1 && currentTime - lastUpdateTime > time) {
 				lastUpdateTime = currentTime;
 
-				for (final String address : new HashSet<>(blacklisted)) {
-					try {
+				try {
+					for (final String address : new HashSet<>(blacklisted)) {
 						removeBlacklisted(address);
-					} catch (final IOException e) {
-						e.printStackTrace();
 					}
+				} catch (final IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}

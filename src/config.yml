@@ -8,20 +8,20 @@
 # CPS means Connections/second (Connections that are trying to connect in the last second)
 # JPS means Joins/second (Connections that fully joined the server in the last second)
 #
-# When the conditions are true the module will start working.
-# If the conditions are false, the module won't check anyone.
+# When the threshold is true the module will start working.
+# If the threshold is false, the module won't work.
 # This is made so we can save performance when there is no attack.
 #
-# Setting all conditions to 0 keeps the module always active.
+# Setting all threshold to 0 keeps the module always active.
 
-# Default plugin language. (This changes depending on the client language)
+# Default plugin language. (This changes depending on the client language if possible)
 lang: "en"
 
 # Checks if there are too many different nicknames from the same IP.
 accounts:
   enabled: true
 
-  conditions:
+  threshold:
     pps: 0
     cps: 6
     jps: 1
@@ -32,12 +32,12 @@ accounts:
   commands:
     - "disconnect %kick_accounts%"
 
-# This blocks Blacklisted addresses if conditions are achieved.
-# Addresses are blacklisted when they fail certain checks.
+# This blocks Blacklisted addresses if threshold is achieved.
+# Addresses are blacklisted when they fail RateLimit and other checks.
 blacklist:
   enabled: true
 
-  conditions:
+  threshold:
     pps: 0
     cps: 2
     jps: 0
@@ -49,7 +49,7 @@ blacklist:
 fastchat:
   enabled: true
 
-  conditions:
+  threshold:
     pps: 0
     cps: 3
     jps: 2
@@ -64,7 +64,7 @@ fastchat:
 nickname:
   enabled: true
 
-  conditions:
+  threshold:
     pps: 0
     cps: 4
     jps: 0
@@ -91,7 +91,7 @@ ratelimit:
   enabled: true
 
   # If an address reachs any of this values it will get blocked.
-  limits:
+  threshold:
     pps: 8
     cps: 3
     jps: 2
@@ -115,7 +115,7 @@ reconnect:
     ping: 1
     connect: 3
 
-  conditions:
+  threshold:
     pps: 0
     cps: 3
     jps: 0
@@ -126,16 +126,17 @@ reconnect:
   commands:
     - "disconnect %kick_reconnect%"
 
-# Checks if different connections try to register with the same password.
+# Checks if different connections try to register/login with the same password.
 # We take the second argument used in the command as the "password" to compare.
-register:
+password:
   enabled: true
 
-  conditions:
+  threshold:
     pps: 0
     cps: 0
     jps: 0
 
+  # Commands that AntiBot will monitor as register/login.
   auth_commands:
     - "/reg "
     - "/register "
@@ -143,7 +144,7 @@ register:
     - "/login "
 
   commands:
-    - "disconnect %kick_register%"
+    - "disconnect %kick_password%"
 
 # Runs Linux commands when an address is blacklisted.
 runtime:
@@ -160,28 +161,28 @@ runtime:
     - "iptables -D INPUT -s %address% -j DROP"
 
 # Blocks connections that didnt send the Settings packet.
-# WARNING: Disable if you have false positives with Multi-Lobby and Minechat. (Not recommended)
+# WARNING: If you have false positives try increasing the threshold or disabling the module.
 settings:
   enabled: true
 
-  # Delay after joining to check if player sent Settings packet. (In milliseconds)
-  delay: 10000
-
-  conditions:
+  threshold:
     pps: 0
     cps: 0
     jps: 0
-
+  
+  # Delay after joining to check if player sent Settings packet. (In milliseconds)
+  delay: 10000
+  
   commands:
     - "disconnect %kick_settings%"
 
 # Adds real players to a list when they quit so they can bypass the checks.
-# If conditions are achieved Lockout will activate and only Whitelisted will be able to join.
+# If threshold is achieved Lockout will activate and only Whitelisted will be able to join.
 # Lockout was made for security measures and its not intended to be used normally.
 whitelist:
   enabled: true
 
-  conditions:
+  threshold:
     pps: 40
     cps: 0
     jps: 20
@@ -190,7 +191,7 @@ whitelist:
     # Time in milliseconds the player has to be online to get whitelisted.
     whitelist: 15000
 
-    # Time in milliseconds the lockout runs active after conditions are met.
+    # Time in milliseconds the lockout runs active after threshold is met.
     lockout: 20000
 
   commands:

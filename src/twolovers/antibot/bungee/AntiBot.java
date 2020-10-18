@@ -22,6 +22,7 @@ public class AntiBot extends Plugin {
 	private ModuleManager moduleManager;
 	private ConfigUtil configUtil;
 
+	@Override
 	public void onEnable() {
 		final Logger logger = this.getLogger();
 
@@ -73,7 +74,7 @@ public class AntiBot extends Plugin {
 		pluginManager.unregisterListeners(this);
 		pluginManager.registerListener(this, new ChatListener(this, moduleManager));
 		pluginManager.registerListener(this, new PlayerDisconnectListener(moduleManager));
-		pluginManager.registerListener(this, new PlayerHandshakeListener(this, moduleManager));
+		pluginManager.registerListener(this, new PlayerHandshakeListener(moduleManager));
 		pluginManager.registerListener(this, new PostLoginListener(moduleManager));
 		pluginManager.registerListener(this, new PreLoginListener(this, moduleManager));
 		pluginManager.registerListener(this, new ProxyPingListener(this, moduleManager));
@@ -83,6 +84,7 @@ public class AntiBot extends Plugin {
 		pluginManager.registerCommand(this, new AntibotCommand(this, configUtil, moduleManager));
 	}
 
+	@Override
 	public void onDisable() {
 		moduleManager.getBlacklistModule().save(configUtil);
 		moduleManager.getRuntimeModule().update();
@@ -97,7 +99,7 @@ public class AntiBot extends Plugin {
 		AntiBot.antiBot = antiBot;
 	}
 
-	public static AntiBot getInstance() {
+	public static synchronized AntiBot getInstance() {
 		return antiBot;
 	}
 }

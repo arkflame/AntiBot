@@ -1,18 +1,16 @@
 package twolovers.antibot.bungee.module;
 
-import net.md_5.bungee.api.connection.Connection;
-import net.md_5.bungee.config.Configuration;
-import twolovers.antibot.bungee.instanceables.Conditions;
-import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.extendables.PunishableModule;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import net.md_5.bungee.api.connection.Connection;
+import net.md_5.bungee.config.Configuration;
+import twolovers.antibot.bungee.utils.ConfigUtil;
+import twolovers.antibot.shared.extendables.PunishableModule;
+
 public class BlacklistModule extends PunishableModule {
-	private static final String NAME = "blacklist";
 	private static final String BLACKLIST_PATH = "%datafolder%/blacklist.yml";
 	private final ModuleManager moduleManager;
 	private Collection<String> blacklist = new HashSet<>();
@@ -22,21 +20,14 @@ public class BlacklistModule extends PunishableModule {
 	}
 
 	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
 	public final void reload(final ConfigUtil configUtil) {
-		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
-		final int pps = configYml.getInt(NAME + ".conditions.pps", 0);
-		final int cps = configYml.getInt(NAME + ".conditions.cps", 0);
-		final int jps = configYml.getInt(NAME + ".conditions.jps", 0);
+		super.name = "blacklist";
+		super.reload(configUtil);
 
-		enabled = configYml.getBoolean(NAME + ".enabled", enabled);
+		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
+
 		punishCommands.clear();
-		punishCommands.addAll(configYml.getStringList(NAME + ".commands"));
-		conditions = new Conditions(pps, cps, jps, false);
+		punishCommands.addAll(configYml.getStringList(name + ".commands"));
 
 		load(configUtil);
 	}
@@ -47,7 +38,7 @@ public class BlacklistModule extends PunishableModule {
 
 			try {
 				moduleManager.getRuntimeModule().addBlacklisted(address);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 
@@ -78,7 +69,7 @@ public class BlacklistModule extends PunishableModule {
 	}
 
 	public boolean check(final Connection connection) {
-		return blacklist.contains(connection.getAddress().getHostString());
+		return isBlacklisted(connection.getAddress().getHostString());
 	}
 
 	public boolean isBlacklisted(final String ip) {
