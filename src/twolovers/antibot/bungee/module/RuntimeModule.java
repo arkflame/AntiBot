@@ -39,7 +39,7 @@ public class RuntimeModule implements IModule {
 	}
 
 	public void update() {
-		if (enabled) {
+		if (enabled && !removeCommands.isEmpty()) {
 			final long currentTime = System.currentTimeMillis();
 
 			if (time != -1 && currentTime - lastUpdateTime > time) {
@@ -59,7 +59,7 @@ public class RuntimeModule implements IModule {
 	public void addBlacklisted(final String address) throws IOException {
 		if (enabled && !blacklisted.contains(address)) {
 			for (final String command : addCommands) {
-				runtime.exec(command.replace("%address%", address));
+				runtime.exec(command.replace("%address%", address).replace("%time%", String.valueOf(time)));
 			}
 
 			blacklisted.add(address);
@@ -69,7 +69,9 @@ public class RuntimeModule implements IModule {
 	public void removeBlacklisted(final String address) throws IOException {
 		if (enabled && blacklisted.contains(address)) {
 			for (final String command : removeCommands) {
-				runtime.exec(command.replace("%address%", address));
+				if (!command.isEmpty()) {
+					runtime.exec(command.replace("%address%", address).replace("%time%", String.valueOf(time)));
+				}
 			}
 
 			blacklisted.remove(address);

@@ -157,6 +157,14 @@ runtime:
   # You can set this value to -1 to keep addresses permanently firewalled.
   time: 20000
 
+  # Placeholders: %address%, %time%
+  # If you don't want to run any commands on remove/add set the value to []
+  #
+  # IPSet (Optional)
+  # You can optionally use IPSet, it is like IPTables but faster.
+  # You can use: "ipset add blacklist %address% timeout %time%" to add with timeout.
+  # REMEMBER: Install IPSet and create the blacklist with "ipset create blacklist hash:ip hashsize 4096"
+  #
   add:
     - "iptables -A INPUT -s %address% -j DROP"
 
