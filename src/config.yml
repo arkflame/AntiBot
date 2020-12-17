@@ -176,6 +176,9 @@ runtime:
 settings:
   enabled: true
 
+  # Blocks connections if they didn't send the settings packet before switching servers.
+  switching: false
+
   threshold:
     pps: 0
     cps: 0

@@ -30,17 +30,20 @@ public class ServerSwitchListener implements Listener {
 		final ProxiedPlayer proxiedPlayer = event.getPlayer();
 		final String ip = proxiedPlayer.getAddress().getHostString();
 		final BotPlayer botPlayer = playerModule.get(ip);
-		final int currentPps = moduleManager.getCurrentPps();
-		final int currentCps = moduleManager.getCurrentCps();
-		final int currentJps = moduleManager.getCurrentJps();
-		final int lastPps = moduleManager.getLastPps();
-		final int lastCps = moduleManager.getLastCps();
-		final int lastJps = moduleManager.getLastJps();
-		final boolean switched = botPlayer.getSwitchs() > 0;
 
-		if (switched && settingsModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps, lastJps)
-				&& !botPlayer.isSettings()) {
-			new Punish(plugin, moduleManager, "en", settingsModule, proxiedPlayer, event);
+		if (settingsModule.isSwitching()) {
+			final int currentPps = moduleManager.getCurrentPps();
+			final int currentCps = moduleManager.getCurrentCps();
+			final int currentJps = moduleManager.getCurrentJps();
+			final int lastPps = moduleManager.getLastPps();
+			final int lastCps = moduleManager.getLastCps();
+			final int lastJps = moduleManager.getLastJps();
+			final boolean switched = botPlayer.getSwitchs() > 0;
+
+			if (switched && settingsModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps, lastJps)
+					&& !botPlayer.isSettings()) {
+				new Punish(plugin, moduleManager, "en", settingsModule, proxiedPlayer, event);
+			}
 		}
 
 		botPlayer.addSwitch();
