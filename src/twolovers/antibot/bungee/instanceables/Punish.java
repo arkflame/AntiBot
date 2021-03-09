@@ -2,7 +2,6 @@ package twolovers.antibot.bungee.instanceables;
 
 import java.util.Collection;
 
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -57,7 +56,7 @@ public class Punish {
 						connection.disconnect(textComponent);
 					}
 				} else {
-					final ProxyServer proxyServer = BungeeCord.getInstance();
+					final ProxyServer proxyServer = ProxyServer.getInstance();
 
 					proxyServer.getPluginManager().dispatchCommand(proxyServer.getConsole(), command);
 				}

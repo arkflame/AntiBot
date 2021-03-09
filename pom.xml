@@ -1,7 +1,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>exploitfixer</groupId>
-  <artifactId>ExploitFixer</artifactId>
+  <groupId>antibot</groupId>
+  <artifactId>AntiBot</artifactId>
   <version>SNAPSHOT</version>
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -57,13 +57,6 @@
       <version>1.16-R0.5-SNAPSHOT</version>
       <type>javadoc</type>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>net</groupId>
-      <artifactId>HamsterAPI</artifactId>
-      <version>SNAPSHOT</version>
-      <scope>system</scope>
-      <systemPath>C:\JAR Files\HamsterAPI.jar</systemPath>
     </dependency>
   </dependencies>
 </project>
