@@ -26,9 +26,9 @@ public class PostLoginListener implements Listener {
 		final String ip = player.getAddress().getHostString();
 		final BotPlayer botPlayer = playerModule.get(ip);
 
-		botPlayer.setJPS(botPlayer.getJPS() + 1);
+		botPlayer.getIncoming().addJPS();
 		botPlayer.addAccount(player.getName());
-		moduleManager.setCurrentJPS(moduleManager.getCurrentJps() + 1);
+		moduleManager.getCounterModule().getCurrent().addJPS();
 		settingsModule.addPending(botPlayer);
 		playerModule.setOnline(botPlayer);
 

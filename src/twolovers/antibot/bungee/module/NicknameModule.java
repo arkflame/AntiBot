@@ -8,12 +8,14 @@ import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.utils.ConfigUtil;
+import twolovers.antibot.bungee.utils.Incoming;
 import twolovers.antibot.shared.extendables.PunishableModule;
 
 public class NicknameModule extends PunishableModule {
 	private Collection<String> blacklist = new HashSet<>();
-	private Pattern pattern = Pattern.compile(
-			"^(Craft|Beach|Actor|Games|Tower|Elder|Mine|Nitro|Worms|Build|Plays|Hyper|Crazy|Super|_Itz|Slime)(Craft|Beach|Actor|Games|Tower|Elder|Mine|Nitro|Worms|Build|Plays|Hyper|Crazy|Super|_Itz|Slime)(11|50|69|99|88|HD|LP|XD|YT)");
+	private static final String MCSPAM_WORDS = "(Craft|Beach|Actor|Games|Tower|Elder|Mine|Nitro|Worms|Build|Plays|Hyper|Crazy|Super|_Itz|Slime)";
+	private static final String MCSPAM_SUFFIX = "(11|50|69|99|88|HD|LP|XD|YT)";
+	private static final Pattern PATTERN = Pattern.compile("^" + MCSPAM_WORDS + MCSPAM_WORDS + MCSPAM_SUFFIX);
 	private String lastNickname = "A";
 
 	@Override
@@ -30,9 +32,8 @@ public class NicknameModule extends PunishableModule {
 	}
 
 	@Override
-	public final boolean meet(final int pps, final int cps, final int jps, final int lastPps, final int lastCps,
-			final int lastJps) {
-		return this.enabled && (thresholds.meet(pps, cps, jps, lastPps, lastCps, lastJps));
+	public final boolean meet(final Incoming ...incoming) {
+		return this.enabled && (thresholds.meet(incoming));
 	}
 
 	public boolean check(final Connection connection) {
@@ -50,7 +51,7 @@ public class NicknameModule extends PunishableModule {
 					}
 				}
 
-				return pattern.matcher(name).find();
+				return PATTERN.matcher(name).find();
 			}
 		}
 

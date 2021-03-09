@@ -4,6 +4,7 @@ import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
 import twolovers.antibot.bungee.utils.ConfigUtil;
+import twolovers.antibot.bungee.utils.Incoming;
 import twolovers.antibot.shared.extendables.PunishableModule;
 
 public class RateLimitModule extends PunishableModule {
@@ -31,12 +32,12 @@ public class RateLimitModule extends PunishableModule {
 	public boolean check(final Connection connection) {
 		final PlayerModule playerModule = moduleManager.getPlayerModule();
 		final BotPlayer botPlayer = playerModule.get(connection.getAddress().getHostString());
-		final int pps = botPlayer.getPPS(), cps = botPlayer.getCPS(), jps = botPlayer.getJPS();
+		final Incoming incoming = botPlayer.getIncoming();
 		final long lastConnection = botPlayer.getLastConnection();
-		final boolean isThrottle = (cps == 0 && pps >= 0) ? false
+		final boolean isThrottle = (incoming.getCPS() == 0 && incoming.getPPS() >= 0) ? false
 				: System.currentTimeMillis() - lastConnection < throttle;
 
-		return thresholds.meet(pps, cps, jps, pps, cps, jps) || isThrottle
+		return thresholds.meet(incoming) || isThrottle
 				|| botPlayer.getAccounts().size() > maxOnline;
 	}
 }

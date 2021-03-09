@@ -6,6 +6,7 @@ import java.util.HashSet;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.Threshold;
 import twolovers.antibot.bungee.utils.ConfigUtil;
+import twolovers.antibot.bungee.utils.Incoming;
 import twolovers.antibot.shared.interfaces.IPunishModule;
 
 public class PunishableModule implements IPunishModule {
@@ -27,7 +28,7 @@ public class PunishableModule implements IPunishModule {
         final int jps = configYml.getInt(name + ".threshold.jps", 0);
         
         enabled = configYml.getBoolean(name + ".enabled", enabled);
-        thresholds = new Threshold(pps, cps, jps, false);
+        thresholds = new Threshold(new Incoming(pps, cps, jps), false);
     }
 
     @Override
@@ -35,8 +36,7 @@ public class PunishableModule implements IPunishModule {
         return punishCommands;
     }
 
-    public boolean meet(final int pps, final int cps, final int jps, final int lastPps, final int lastCps,
-            final int lastJps) {
-        return this.enabled && (thresholds.meet(pps, cps, jps, lastPps, lastCps, lastJps));
+    public boolean meet(final Incoming ...incoming) {
+        return this.enabled && (thresholds.meet(incoming));
     }
 }

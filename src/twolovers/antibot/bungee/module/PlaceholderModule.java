@@ -11,6 +11,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
 import twolovers.antibot.bungee.utils.ConfigUtil;
+import twolovers.antibot.bungee.utils.Incoming;
 import twolovers.antibot.shared.interfaces.IModule;
 
 public class PlaceholderModule implements IModule {
@@ -65,24 +66,29 @@ public class PlaceholderModule implements IModule {
 				final BotPlayer botPlayer = playerModule.get(address);
 
 				if (botPlayer != null) {
+					final Incoming incoming = botPlayer.getIncoming();
 					final int reconnects = botPlayer.getReconnects(), timesConnect = reconnectModule.getTimesConnect(),
 							reconnectTimes = reconnects > timesConnect ? 0 : timesConnect - reconnects;
 
 					string = string.replace("%reconnect_times%", String.valueOf(reconnectTimes))
-							.replace("%addresspps%", String.valueOf(botPlayer.getPPS()))
-							.replace("%addresscps%", String.valueOf(botPlayer.getCPS()))
-							.replace("%addressjps%", String.valueOf(botPlayer.getJPS())).replace("%address%", address);
+							.replace("%addresspps%", String.valueOf(incoming.getPPS()))
+							.replace("%addresscps%", String.valueOf(incoming.getCPS()))
+							.replace("%addressjps%", String.valueOf(incoming.getJPS())).replace("%address%", address);
 				}
 			}
 
-			string = string.replace("%lastpps%", String.valueOf(moduleManager.getLastPps()))
-					.replace("%lastcps%", String.valueOf(moduleManager.getLastCps()))
-					.replace("%lastjps%", String.valueOf(moduleManager.getLastJps()))
-					.replace("%currentpps%", String.valueOf(moduleManager.getCurrentPps()))
-					.replace("%currentcps%", String.valueOf(moduleManager.getCurrentCps()))
-					.replace("%currentjps%", String.valueOf(moduleManager.getCurrentJps()))
-					.replace("%currentincoming%", String.valueOf(moduleManager.getCurrentIncoming()))
-					.replace("%totalblocked%", String.valueOf(moduleManager.getTotalBlocked()))
+			final CounterModule counterModule = moduleManager.getCounterModule();
+			final Incoming current = counterModule.getCurrent();
+			final Incoming last = counterModule.getLast();
+
+			string = string.replace("%lastpps%", String.valueOf(last.getPPS()))
+					.replace("%lastcps%", String.valueOf(last.getCPS()))
+					.replace("%lastjps%", String.valueOf(last.getCPS()))
+					.replace("%currentpps%", String.valueOf(current.getPPS()))
+					.replace("%currentcps%", String.valueOf(current.getCPS()))
+					.replace("%currentjps%", String.valueOf(current.getCPS()))
+					.replace("%currentincoming%", String.valueOf(counterModule.getTotalIncome()))
+					.replace("%totalblocked%", String.valueOf(counterModule.getTotalBlocked()))
 					.replace("%totalbls%", String.valueOf(moduleManager.getBlacklistModule().getSize()))
 					.replace("%totalwls%", String.valueOf(moduleManager.getWhitelistModule().getSize()));
 		}

@@ -6,8 +6,10 @@ import net.md_5.bungee.api.plugin.Cancellable;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
+import twolovers.antibot.bungee.module.CounterModule;
 import twolovers.antibot.bungee.module.ModuleManager;
 import twolovers.antibot.bungee.module.PlayerModule;
+import twolovers.antibot.bungee.utils.Incoming;
 
 public class PlayerHandshakeListener implements Listener {
 	private final ModuleManager moduleManager;
@@ -25,23 +27,21 @@ public class PlayerHandshakeListener implements Listener {
 		}
 
 		final PendingConnection connection = event.getConnection();
+		final CounterModule counterModule = moduleManager.getCounterModule();
+		final Incoming incoming = counterModule.getCurrent();
 		final String ip = connection.getAddress().getHostString();
 		final BotPlayer botPlayer = playerModule.get(ip);
 		final int requestedProtocol = event.getHandshake().getRequestedProtocol();
-		int currentPps = moduleManager.getCurrentPps();
-		int currentCps = moduleManager.getCurrentCps();
 
-		moduleManager.addIncoming();
+		counterModule.addIncoming();
 
 		if (requestedProtocol == 1) {
-			currentPps++;
-			botPlayer.setPPS(botPlayer.getPPS() + 1);
-			moduleManager.setCurrentPPS(currentPps);
+			incoming.addPPS();
+			botPlayer.getIncoming().addPPS();
 			botPlayer.setRepings(botPlayer.getRepings() + 1);
 		} else {
-			currentCps++;
-			botPlayer.setCPS(botPlayer.getCPS() + 1);
-			moduleManager.setCurrentCps(currentCps);
+			incoming.addCPS();
+			botPlayer.getIncoming().addCPS();
 		}
 	}
 }

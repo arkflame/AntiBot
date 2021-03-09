@@ -10,19 +10,16 @@ import twolovers.antibot.bungee.module.PlayerModule;
 import twolovers.antibot.bungee.module.SettingsModule;
 
 public class SettingsChangedListener implements Listener {
-	private final ModuleManager moduleManager;
+	private final PlayerModule playerModule;
+	private final SettingsModule settingsModule;
 
 	public SettingsChangedListener(final ModuleManager moduleManager) {
-		this.moduleManager = moduleManager;
-		moduleManager.getSettingsModule();
-		moduleManager.getBlacklistModule();
-		moduleManager.getWhitelistModule();
+		this.playerModule = moduleManager.getPlayerModule();
+		this.settingsModule = moduleManager.getSettingsModule();
 	}
 
 	@EventHandler(priority = Byte.MIN_VALUE)
 	public void onSettingsChanged(final SettingsChangedEvent event) {
-		final PlayerModule playerModule = moduleManager.getPlayerModule();
-		final SettingsModule settingsModule = moduleManager.getSettingsModule();
 		final ProxiedPlayer proxiedPlayer = event.getPlayer();
 		final String ip = proxiedPlayer.getAddress().getHostString();
 		final BotPlayer botPlayer = playerModule.get(ip);

@@ -1,23 +1,33 @@
 package twolovers.antibot.bungee.instanceables;
 
-public class Threshold {
-	private final int pps, cps, jps;
-	private final boolean oneMeeting;
+import twolovers.antibot.bungee.utils.Incoming;
 
-	public Threshold(final int pps, final int cps, final int jps, final boolean oneMeeting) {
-		this.pps = pps;
-		this.cps = cps;
-		this.jps = jps;
-		this.oneMeeting = oneMeeting;
+public class Threshold {
+	// The amount of [PPS/CPS/JPS] required.
+	private final Incoming incoming;
+	// If only one [PPS/CPS/JPS] value should match.
+	private final boolean oneMatch;
+
+	public Threshold(final Incoming incoming, final boolean oneMeeting) {
+		this.incoming = incoming;
+		this.oneMatch = oneMeeting;
 	}
 
-	public boolean meet(final int pps, final int cps, final int jps, final int lastPPS, final int lastCPS,
-			final int lastJPS) {
-		if (oneMeeting) {
-			return (pps >= this.pps || cps >= this.cps || jps >= this.jps);
+	public boolean meet(final Incoming ...incoming1) {
+		if (oneMatch) {
+			for (final Incoming incoming2 : incoming1) {
+				if (incoming2.hasGreater(incoming)) {
+					return true;
+				}
+			}
 		} else {
-			return ((pps >= this.pps && cps >= this.cps && jps >= this.jps)
-					|| (lastPPS >= this.pps && lastCPS >= this.cps && lastJPS >= this.jps));
+			for (final Incoming incoming2 : incoming1) {
+				if (incoming2.isGreater(incoming)) {
+					return true;
+				}
+			}
 		}
+
+		return false;
 	}
 }

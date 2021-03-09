@@ -15,6 +15,7 @@ import twolovers.antibot.bungee.listeners.ProxyPingListener;
 import twolovers.antibot.bungee.listeners.ServerSwitchListener;
 import twolovers.antibot.bungee.listeners.SettingsChangedListener;
 import twolovers.antibot.bungee.module.ModuleManager;
+import twolovers.antibot.bungee.tasks.AntiBotSecondTask;
 import twolovers.antibot.bungee.utils.ConfigUtil;
 
 public class AntiBot extends Plugin {
@@ -23,34 +24,31 @@ public class AntiBot extends Plugin {
 	private ConfigUtil configUtil;
 	private boolean running = true;
 
+	public ModuleManager getModuleManager() {
+		return moduleManager;
+	}
+
+	public static void setInstance(final AntiBot antiBot) {
+		AntiBot.antiBot = antiBot;
+	}
+
+	public static AntiBot getInstance() {
+		return antiBot;
+	}
+
+	public boolean isRunning() {
+		return running;
+	}
+
 	@Override
 	public void onEnable() {
-		final Logger logger = this.getLogger();
-
 		setInstance(this);
 
 		this.configUtil = new ConfigUtil(this);
 		reload();
 
 		/* Thread that repeats itself each second */
-		new Thread() {
-			@Override
-			public void run() {
-				while (running) {
-					try {
-						moduleManager.update();
-					} catch (final Exception e) {
-						logger.warning("AntiBot catched a " + e.getClass().getName() + "! (ModuleManager.java)");
-					}
-
-					try {
-						sleep(1000);
-					} catch (final InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}.start();
+		new Thread(new AntiBotSecondTask(getLogger(), antiBot, moduleManager)).start();
 	}
 
 	public void reload() {
@@ -73,13 +71,13 @@ public class AntiBot extends Plugin {
 		logger.info("Modules successfully loaded!");
 
 		pluginManager.unregisterListeners(this);
-		pluginManager.registerListener(this, new ChatListener(this, moduleManager));
+		pluginManager.registerListener(this, new ChatListener(moduleManager));
 		pluginManager.registerListener(this, new PlayerDisconnectListener(moduleManager));
 		pluginManager.registerListener(this, new PlayerHandshakeListener(moduleManager));
 		pluginManager.registerListener(this, new PostLoginListener(moduleManager));
-		pluginManager.registerListener(this, new PreLoginListener(this, moduleManager));
-		pluginManager.registerListener(this, new ProxyPingListener(this, moduleManager));
-		pluginManager.registerListener(this, new ServerSwitchListener(this, moduleManager));
+		pluginManager.registerListener(this, new PreLoginListener(moduleManager));
+		pluginManager.registerListener(this, new ProxyPingListener(moduleManager));
+		pluginManager.registerListener(this, new ServerSwitchListener(moduleManager));
 		pluginManager.registerListener(this, new SettingsChangedListener(moduleManager));
 		logger.info("Listeners successfully registered!");
 
@@ -94,17 +92,5 @@ public class AntiBot extends Plugin {
 		moduleManager.getBlacklistModule().save(configUtil);
 		moduleManager.getRuntimeModule().update();
 		moduleManager.getWhitelistModule().save(configUtil);
-	}
-
-	public ModuleManager getModuleManager() {
-		return moduleManager;
-	}
-
-	public synchronized void setInstance(final AntiBot antiBot) {
-		AntiBot.antiBot = antiBot;
-	}
-
-	public static synchronized AntiBot getInstance() {
-		return antiBot;
 	}
 }

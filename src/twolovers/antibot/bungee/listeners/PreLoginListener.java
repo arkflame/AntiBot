@@ -3,14 +3,13 @@ package twolovers.antibot.bungee.listeners;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 import twolovers.antibot.bungee.instanceables.BotPlayer;
 import twolovers.antibot.bungee.instanceables.Punish;
 import twolovers.antibot.bungee.module.*;
+import twolovers.antibot.bungee.utils.Incoming;
 
 public class PreLoginListener implements Listener {
-	private final Plugin plugin;
 	private final ModuleManager moduleManager;
 	private final AccountsModule accountsModule;
 	private final BlacklistModule blacklistModule;
@@ -20,8 +19,7 @@ public class PreLoginListener implements Listener {
 	private final ReconnectModule reconnectModule;
 	private final WhitelistModule whitelistModule;
 
-	public PreLoginListener(final Plugin plugin, final ModuleManager moduleManager) {
-		this.plugin = plugin;
+	public PreLoginListener(final ModuleManager moduleManager) {
 		this.moduleManager = moduleManager;
 		this.accountsModule = moduleManager.getAccountsModule();
 		this.blacklistModule = moduleManager.getBlacklistModule();
@@ -44,40 +42,33 @@ public class PreLoginListener implements Listener {
 			return;
 		}
 
-		final String locale = "en"; // Can't get locale on PreLogin.
+		final String locale = moduleManager.getDefaultLanguage(); // Can't get locale on PreLogin.
 		final String ip = connection.getAddress().getHostString();
 		final BotPlayer botPlayer = playerModule.get(ip);
 		final String name = connection.getName();
 		final long currentTimeMillis = System.currentTimeMillis();
-		final int currentPps = moduleManager.getCurrentPps();
-		final int currentCps = moduleManager.getCurrentCps();
-		final int currentJps = moduleManager.getCurrentJps();
-		final int lastPps = moduleManager.getLastPps();
-		final int lastCps = moduleManager.getLastCps();
-		final int lastJps = moduleManager.getLastJps();
+		final CounterModule counterModule = moduleManager.getCounterModule();
+		final Incoming current = counterModule.getCurrent();
+		final Incoming last = counterModule.getLast();
 
-		if (nicknameModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps, lastJps)
-				&& nicknameModule.check(connection)) {
-			new Punish(plugin, moduleManager, locale, nicknameModule, connection, event);
-		} else if (whitelistModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps, lastJps)) {
-			new Punish(plugin, moduleManager, locale, blacklistModule, connection, event);
+		if (nicknameModule.meet(current, last) && nicknameModule.check(connection)) {
+			new Punish(moduleManager, locale, nicknameModule, connection, event);
+		} else if (whitelistModule.meet(current, last)) {
+			new Punish(moduleManager, locale, blacklistModule, connection, event);
 
 			whitelistModule.setLastLockout(currentTimeMillis);
-		} else if (blacklistModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps, lastJps)
-				&& blacklistModule.check(connection)) {
-			new Punish(plugin, moduleManager, locale, blacklistModule, connection, event);
-		} else if (rateLimitModule.meet(botPlayer.getPPS(), botPlayer.getCPS(), botPlayer.getJPS(), 0, 0, 0)) {
-			new Punish(plugin, moduleManager, locale, rateLimitModule, connection, event);
+		} else if (blacklistModule.meet(current, last) && blacklistModule.check(connection)) {
+			new Punish(moduleManager, locale, blacklistModule, connection, event);
+		} else if (rateLimitModule.meet(botPlayer.getIncoming())) {
+			new Punish(moduleManager, locale, rateLimitModule, connection, event);
 
 			blacklistModule.setBlacklisted(ip, true);
-		} else if (accountsModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps, lastJps)
-				&& accountsModule.check(connection)) {
-			new Punish(plugin, moduleManager, locale, accountsModule, connection, event);
-		} else if (reconnectModule.meet(currentPps, currentCps, currentJps, lastPps, lastCps, lastJps)
-				&& reconnectModule.check(connection)) {
+		} else if (accountsModule.meet(current, last) && accountsModule.check(connection)) {
+			new Punish(moduleManager, locale, accountsModule, connection, event);
+		} else if (reconnectModule.meet(current, last) && reconnectModule.check(connection)) {
 			botPlayer.setReconnects(botPlayer.getReconnects() + 1);
 
-			new Punish(plugin, moduleManager, locale, reconnectModule, connection, event);
+			new Punish(moduleManager, locale, reconnectModule, connection, event);
 		}
 
 		botPlayer.setLastNickname(name);

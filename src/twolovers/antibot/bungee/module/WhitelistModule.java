@@ -7,6 +7,7 @@ import java.util.HashSet;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.config.Configuration;
 import twolovers.antibot.bungee.utils.ConfigUtil;
+import twolovers.antibot.bungee.utils.Incoming;
 import twolovers.antibot.shared.extendables.PunishableModule;
 
 public class WhitelistModule extends PunishableModule {
@@ -70,9 +71,8 @@ public class WhitelistModule extends PunishableModule {
 	}
 
 	@Override
-	public final boolean meet(final int pps, final int cps, final int jps, final int lastPps, final int lastCps,
-			final int lastJps) {
-		return this.enabled && (thresholds.meet(pps, cps, jps, lastPps, lastCps, lastJps)
+	public final boolean meet(final Incoming ...incoming) {
+		return this.enabled && (thresholds.meet(incoming)
 				|| System.currentTimeMillis() - this.lastLockout < this.timeLockout);
 	}
 
