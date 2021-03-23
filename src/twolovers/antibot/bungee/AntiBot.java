@@ -1,5 +1,6 @@
 package twolovers.antibot.bungee;
 
+import java.util.Timer;
 import java.util.logging.Logger;
 
 import net.md_5.bungee.api.ProxyServer;
@@ -23,6 +24,8 @@ public class AntiBot extends Plugin {
 	private ModuleManager moduleManager;
 	private ConfigUtil configUtil;
 	private boolean running = true;
+
+	private Timer timer;
 
 	public ModuleManager getModuleManager() {
 		return moduleManager;
@@ -48,7 +51,10 @@ public class AntiBot extends Plugin {
 		reload();
 
 		/* Thread that repeats itself each second */
-		new Thread(new AntiBotSecondTask(getLogger(), antiBot, moduleManager)).start();
+
+		 timer = new Timer("2LS AntiBot - AntiBot Second Task");
+
+		timer.schedule(new AntiBotSecondTask(getLogger(), antiBot, moduleManager), 1000L);
 	}
 
 	public void reload() {
@@ -88,6 +94,7 @@ public class AntiBot extends Plugin {
 	@Override
 	public void onDisable() {
 		running = false;
+		timer.cancel();
 
 		moduleManager.getBlacklistModule().save(configUtil);
 		moduleManager.getRuntimeModule().update();

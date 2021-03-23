@@ -1,14 +1,15 @@
 package twolovers.antibot.bungee.tasks;
 
-import java.util.logging.Logger;
-
 import twolovers.antibot.bungee.AntiBot;
 import twolovers.antibot.bungee.module.ModuleManager;
 
-public class AntiBotSecondTask implements Runnable {
+import java.util.TimerTask;
+import java.util.logging.Logger;
+
+public class AntiBotSecondTask extends TimerTask {
     private final Logger logger;
     private final AntiBot antiBot;
-private final ModuleManager moduleManager;
+    private final ModuleManager moduleManager;
 
     public AntiBotSecondTask(final Logger logger, final AntiBot antiBot, final ModuleManager moduleManager) {
         this.logger = logger;
@@ -18,12 +19,11 @@ private final ModuleManager moduleManager;
 
     @Override
     public void run() {
-        while (antiBot.isRunning()) {
+        if (antiBot.isRunning()) {
             try {
                 moduleManager.update();
-                Thread.sleep(1000);
             } catch (final Exception e) {
-                logger.warning("AntiBot catched a " + e.getClass().getName() + "! (ModuleManager.java:44)");
+                logger.warning("AntiBot catched a " + e.getClass().getName() + "! (AntiBotSecondTask.java:24)");
             }
         }
     }

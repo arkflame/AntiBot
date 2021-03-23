@@ -1,14 +1,19 @@
 package twolovers.antibot.bungee.utils;
 
+import java.util.concurrent.atomic.LongAccumulator;
+
 public class Incoming {
-    private int pps;
-    private int cps;
-    private int jps;
+    private final LongAccumulator pps;
+    private final LongAccumulator cps;
+    private final LongAccumulator jps;
 
     public Incoming(final int pps, final int cps, final int jps) {
-        this.pps = pps;
-        this.cps = cps;
-        this.jps = jps;
+        this.pps = new LongAccumulator(Long::sum, 0L);
+        this.pps.accumulate(pps);
+        this.cps = new LongAccumulator(Long::sum, 0L);
+        this.cps.accumulate(cps);
+        this.jps = new LongAccumulator(Long::sum, 0L);
+        this.jps.accumulate(jps);
     }
 
     public Incoming() {
@@ -16,40 +21,40 @@ public class Incoming {
     }
 
     public void reset() {
-        pps = 0;
-        cps = 0;
-        jps = 0;
+        pps.reset();
+        cps.reset();
+        jps.reset();
     }
 
     public void addPPS() {
-        pps++;
+        pps.accumulate(1L);
     }
 
     public void addCPS() {
-        cps++;
+        cps.accumulate(1L);
     }
 
     public void addJPS() {
-        jps++;
+        jps.accumulate(1L);
     }
 
-    public int getPPS() {
-        return pps;
+    public long getPPS() {
+        return pps.get();
     }
 
-    public int getCPS() {
-        return cps;
+    public long getCPS() {
+        return cps.get();
     }
 
-    public int getJPS() {
-        return jps;
+    public long getJPS() {
+        return jps.get();
     }
 
 	public boolean isGreater(final Incoming incoming) {
-		return pps >= incoming.getPPS() && cps >= incoming.getCPS() && jps >= incoming.getJPS();
+		return pps.get() >= incoming.getPPS() && cps.get() >= incoming.getCPS() && jps.get() >= incoming.getJPS();
 	}
 
 	public boolean hasGreater(final Incoming incoming) {
-		return pps >= incoming.getPPS() || cps >= incoming.getCPS() || jps >= incoming.getJPS();
+		return pps.get() >= incoming.getPPS() || cps.get() >= incoming.getCPS() || jps.get() >= incoming.getJPS();
 	}
 }

@@ -1,17 +1,20 @@
 package twolovers.antibot.bungee.module;
 
+import io.netty.util.internal.ConcurrentSet;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.config.Configuration;
+import twolovers.antibot.bungee.AntiBot;
+import twolovers.antibot.bungee.utils.ConfigUtil;
+import twolovers.antibot.shared.interfaces.IModule;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
-import net.md_5.bungee.config.Configuration;
-import twolovers.antibot.bungee.utils.ConfigUtil;
-import twolovers.antibot.shared.interfaces.IModule;
-
 public class RuntimeModule implements IModule {
 	private final Runtime runtime = Runtime.getRuntime();
-	private final Collection<String> blacklisted = new HashSet<>(), addCommands = new HashSet<>(),
-			removeCommands = new HashSet<>();
+	private final Collection<String> blacklisted = new ConcurrentSet<>(), addCommands = new ConcurrentSet<>(),
+			removeCommands = new ConcurrentSet<>(); // HashSet to ConcurrentSet to prevent ConcurrentModificationException.
 	private static final String NAME = "runtime";
 	private long lastUpdateTime = 0;
 	private int time = 20000;
@@ -45,34 +48,41 @@ public class RuntimeModule implements IModule {
 			if (time != -1 && currentTime - lastUpdateTime > time) {
 				lastUpdateTime = currentTime;
 
-				try {
-					for (final String address : new HashSet<>(blacklisted)) {
-						removeBlacklisted(address);
-					}
-				} catch (final IOException e) {
-					e.printStackTrace();
+				for (final String address : new HashSet<>(blacklisted)) {
+					removeBlacklisted(address);
 				}
 			}
 		}
 	}
 
-	public void addBlacklisted(final String address) throws IOException {
+	public void addBlacklisted(final String address)  {
 		if (enabled && !blacklisted.contains(address)) {
+			ProxyServer.getInstance().getScheduler().runAsync(AntiBot.getInstance(), () -> { // async to prevent errors when there's a lot of ip to be banned.
 			for (final String command : addCommands) {
-				runtime.exec(command.replace("%address%", address).replace("%time%", String.valueOf(time)));
+				try {
+					runtime.exec(command.replace("%address%", address).replace("%time%", String.valueOf(time)));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
-
+			});
 			blacklisted.add(address);
 		}
 	}
 
-	public void removeBlacklisted(final String address) throws IOException {
+	public void removeBlacklisted(final String address) {
 		if (enabled && blacklisted.contains(address)) {
-			for (final String command : removeCommands) {
-				if (!command.isEmpty()) {
-					runtime.exec(command.replace("%address%", address).replace("%time%", String.valueOf(time)));
+			ProxyServer.getInstance().getScheduler().runAsync(AntiBot.getInstance(), () -> { // async to prevent errors when there's a lot of ip to be banned.
+				for (final String command : removeCommands) {
+					if (!command.isEmpty()) {
+						try {
+							runtime.exec(command.replace("%address%", address).replace("%time%", String.valueOf(time)));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
 				}
-			}
+			});
 
 			blacklisted.remove(address);
 		}

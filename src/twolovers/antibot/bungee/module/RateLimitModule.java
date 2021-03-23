@@ -34,8 +34,7 @@ public class RateLimitModule extends PunishableModule {
 		final BotPlayer botPlayer = playerModule.get(connection.getAddress().getHostString());
 		final Incoming incoming = botPlayer.getIncoming();
 		final long lastConnection = botPlayer.getLastConnection();
-		final boolean isThrottle = (incoming.getCPS() == 0 && incoming.getPPS() >= 0) ? false
-				: System.currentTimeMillis() - lastConnection < throttle;
+		final boolean isThrottle = (incoming.getCPS() != 0 || incoming.getPPS() < 0) && System.currentTimeMillis() - lastConnection < throttle;
 
 		return thresholds.meet(incoming) || isThrottle
 				|| botPlayer.getAccounts().size() > maxOnline;
