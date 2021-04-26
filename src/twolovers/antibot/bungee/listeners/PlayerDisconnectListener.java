@@ -21,7 +21,7 @@ public class PlayerDisconnectListener implements Listener {
         final SettingsModule settingsModule = moduleManager.getSettingsModule();
         final WhitelistModule whitelistModule = moduleManager.getWhitelistModule();
         final ProxiedPlayer proxiedPlayer = event.getPlayer();
-        final String ip = proxiedPlayer.getAddress().getHostString();
+        final String ip = proxiedPlayer.getPendingConnection().getVirtualHost().getHostString();
         final BotPlayer botPlayer = playerModule.get(ip);
         final long currentTime = System.currentTimeMillis();
 

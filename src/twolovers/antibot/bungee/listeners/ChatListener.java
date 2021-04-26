@@ -60,14 +60,16 @@ public class ChatListener implements Listener {
 
         final String lang = BungeeUtil.getLanguage(proxiedPlayer, defaultLanguage);
 
-        if (fastChatModule.meet(currentIncoming, lastIncoming)
-                && fastChatModule.check(proxiedPlayer)) {
+        if (fastChatModule.meet(currentIncoming, lastIncoming) && fastChatModule.check(proxiedPlayer)) {
             new Punish(moduleManager, lang, fastChatModule, proxiedPlayer, event);
-        } else if (registerModule.meet(currentIncoming, lastIncoming)
-                && registerModule.check(proxiedPlayer, message)) {
-            new Punish(moduleManager, lang, registerModule, proxiedPlayer, event);
-        } else {
-            registerModule.setLastValues(proxiedPlayer.getPendingConnection().getVirtualHost().getHostString(), message);
+            return;
         }
+
+        if (registerModule.meet(currentIncoming, lastIncoming) && registerModule.check(proxiedPlayer, message)) {
+            new Punish(moduleManager, lang, registerModule, proxiedPlayer, event);
+            return;
+        }
+
+        registerModule.setLastValues(proxiedPlayer.getPendingConnection().getVirtualHost().getHostString(), message);
     }
 }
