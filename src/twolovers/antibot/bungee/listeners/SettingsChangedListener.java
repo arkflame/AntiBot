@@ -21,7 +21,7 @@ public class SettingsChangedListener implements Listener {
 	@EventHandler(priority = Byte.MIN_VALUE)
 	public void onSettingsChanged(final SettingsChangedEvent event) {
 		final ProxiedPlayer proxiedPlayer = event.getPlayer();
-		final String ip = proxiedPlayer.getAddress().getHostString();
+		final String ip = proxiedPlayer.getPendingConnection().getVirtualHost().getHostString();
 		final BotPlayer botPlayer = playerModule.get(ip);
 
 		botPlayer.setSettings(true);

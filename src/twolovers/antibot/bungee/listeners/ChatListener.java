@@ -1,7 +1,5 @@
 package twolovers.antibot.bungee.listeners;
 
-import java.util.Locale;
-
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
@@ -15,52 +13,61 @@ import twolovers.antibot.bungee.module.WhitelistModule;
 import twolovers.antibot.bungee.utils.BungeeUtil;
 import twolovers.antibot.bungee.utils.Incoming;
 
+import java.util.Locale;
+
 public class ChatListener implements Listener {
-	private final ModuleManager moduleManager;
+    private final ModuleManager moduleManager;
 
-	public ChatListener(final ModuleManager moduleManager) {
-		this.moduleManager = moduleManager;
-	}
+    public ChatListener(final ModuleManager moduleManager) {
+        this.moduleManager = moduleManager;
+    }
 
-	@EventHandler(priority = Byte.MIN_VALUE)
-	public void onChat(final ChatEvent event) {
-		final Connection sender = event.getSender();
+    @EventHandler(priority = Byte.MIN_VALUE)
+    public void onChat(final ChatEvent event) {
+        final Connection sender = event.getSender();
 
-		if (!event.isCancelled() && sender instanceof ProxiedPlayer) {
-			final WhitelistModule whitelistModule = moduleManager.getWhitelistModule();
-			final ProxiedPlayer proxiedPlayer = (ProxiedPlayer) sender;
+        if (event.isCancelled()) {
+            return;
+        }
 
-			if (!whitelistModule.check(proxiedPlayer)) {
-				final PasswordModule registerModule = moduleManager.getRegisterModule();
-				final FastChatModule fastChatModule = moduleManager.getFastChatModule();
-				final String defaultLanguage = moduleManager.getDefaultLanguage();
-				final String message = event.getMessage().trim();
-				final Locale locale = proxiedPlayer.getLocale();
-				final Incoming currentIncoming = moduleManager.getCounterModule().getCurrent();
-				final Incoming lastIncoming = moduleManager.getCounterModule().getLast();
+        if (!(sender instanceof ProxiedPlayer)) {
+            return;
+        }
 
-				if (locale == null) {
-					if (fastChatModule.meet(currentIncoming, lastIncoming)
-							&& fastChatModule.check(proxiedPlayer)) {
-						new Punish(moduleManager, defaultLanguage, fastChatModule, proxiedPlayer, event);
+        final WhitelistModule whitelistModule = moduleManager.getWhitelistModule();
+        final ProxiedPlayer proxiedPlayer = (ProxiedPlayer) sender;
 
-						moduleManager.getBlacklistModule().setBlacklisted(proxiedPlayer.getAddress().getHostString(),
-								true);
-					}
-				} else {
-					final String lang = BungeeUtil.getLanguage(proxiedPlayer, defaultLanguage);
+        if (whitelistModule.check(proxiedPlayer)) {
+            return;
+        }
 
-					if (fastChatModule.meet(currentIncoming, lastIncoming)
-							&& fastChatModule.check(proxiedPlayer)) {
-						new Punish(moduleManager, lang, fastChatModule, proxiedPlayer, event);
-					} else if (registerModule.meet(currentIncoming, lastIncoming)
-							&& registerModule.check(proxiedPlayer, message)) {
-						new Punish(moduleManager, lang, registerModule, proxiedPlayer, event);
-					} else {
-						registerModule.setLastValues(proxiedPlayer.getAddress().getHostString(), message);
-					}
-				}
-			}
-		}
-	}
+        final PasswordModule registerModule = moduleManager.getRegisterModule();
+        final FastChatModule fastChatModule = moduleManager.getFastChatModule();
+        final String defaultLanguage = moduleManager.getDefaultLanguage();
+        final String message = event.getMessage().trim();
+        final Locale locale = proxiedPlayer.getLocale();
+        final Incoming currentIncoming = moduleManager.getCounterModule().getCurrent();
+        final Incoming lastIncoming = moduleManager.getCounterModule().getLast();
+
+        if (locale == null) {
+
+            if (!fastChatModule.meet(currentIncoming, lastIncoming) && !fastChatModule.check(proxiedPlayer)) return;
+
+            new Punish(moduleManager, defaultLanguage, fastChatModule, proxiedPlayer, event);
+            moduleManager.getBlacklistModule().setBlacklisted(proxiedPlayer.getPendingConnection().getVirtualHost().getHostString(), true);
+            return;
+        }
+
+        final String lang = BungeeUtil.getLanguage(proxiedPlayer, defaultLanguage);
+
+        if (fastChatModule.meet(currentIncoming, lastIncoming)
+                && fastChatModule.check(proxiedPlayer)) {
+            new Punish(moduleManager, lang, fastChatModule, proxiedPlayer, event);
+        } else if (registerModule.meet(currentIncoming, lastIncoming)
+                && registerModule.check(proxiedPlayer, message)) {
+            new Punish(moduleManager, lang, registerModule, proxiedPlayer, event);
+        } else {
+            registerModule.setLastValues(proxiedPlayer.getPendingConnection().getVirtualHost().getHostString(), message);
+        }
+    }
 }

@@ -29,7 +29,7 @@ public class PlayerHandshakeListener implements Listener {
 		final PendingConnection connection = event.getConnection();
 		final CounterModule counterModule = moduleManager.getCounterModule();
 		final Incoming incoming = counterModule.getCurrent();
-		final String ip = connection.getAddress().getHostString();
+		final String ip = connection.getVirtualHost().getHostString();
 		final BotPlayer botPlayer = playerModule.get(ip);
 		final int requestedProtocol = event.getHandshake().getRequestedProtocol();
 

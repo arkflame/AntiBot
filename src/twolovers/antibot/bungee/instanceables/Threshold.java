@@ -14,17 +14,17 @@ public class Threshold {
 	}
 
 	public boolean meet(final Incoming ...incoming1) {
-		if (oneMatch) {
-			for (final Incoming incoming2 : incoming1) {
-				if (incoming2.hasGreater(incoming)) {
-					return true;
-				}
-			}
-		} else {
+		if (!oneMatch) {
 			for (final Incoming incoming2 : incoming1) {
 				if (incoming2.isGreater(incoming)) {
 					return true;
 				}
+			}
+		}
+
+		for (final Incoming incoming2 : incoming1) {
+			if (incoming2.hasGreater(incoming)) {
+				return true;
 			}
 		}
 

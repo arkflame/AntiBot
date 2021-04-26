@@ -12,33 +12,36 @@ import twolovers.antibot.bungee.module.PlayerModule;
 import twolovers.antibot.bungee.module.SettingsModule;
 
 public class ServerSwitchListener implements Listener {
-	private final ModuleManager moduleManager;
-	private final SettingsModule settingsModule;
+    private final ModuleManager moduleManager;
+    private final SettingsModule settingsModule;
 
-	public ServerSwitchListener(final ModuleManager moduleManager) {
-		this.moduleManager = moduleManager;
-		this.settingsModule = moduleManager.getSettingsModule();
-		moduleManager.getBlacklistModule();
-		moduleManager.getWhitelistModule();
-	}
+    public ServerSwitchListener(final ModuleManager moduleManager) {
+        this.moduleManager = moduleManager;
+        this.settingsModule = moduleManager.getSettingsModule();
+        moduleManager.getBlacklistModule();
+        moduleManager.getWhitelistModule();
+    }
 
-	@EventHandler(priority = Byte.MIN_VALUE)
-	public void onServerSwitch(final ServerSwitchEvent event) {
-		final PlayerModule playerModule = moduleManager.getPlayerModule();
-		final ProxiedPlayer proxiedPlayer = event.getPlayer();
-		final String ip = proxiedPlayer.getAddress().getHostString();
-		final BotPlayer botPlayer = playerModule.get(ip);
+    @EventHandler(priority = Byte.MIN_VALUE)
+    public void onServerSwitch(final ServerSwitchEvent event) {
+        final PlayerModule playerModule = moduleManager.getPlayerModule();
+        final ProxiedPlayer proxiedPlayer = event.getPlayer();
+        final String ip = proxiedPlayer.getPendingConnection().getVirtualHost().getHostString();
+        final BotPlayer botPlayer = playerModule.get(ip);
 
-		if (settingsModule.isSwitching()) {
-			final CounterModule counterModule = moduleManager.getCounterModule();
-			final boolean switched = botPlayer.getSwitchs() > 0;
+        if (!settingsModule.isSwitching()) {
+            botPlayer.addSwitch();
+            return;
+        }
 
-			if (switched && settingsModule.meet(counterModule.getCurrent(), counterModule.getLast())
-					&& !botPlayer.isSettings()) {
-				new Punish(moduleManager, moduleManager.getDefaultLanguage(), settingsModule, proxiedPlayer, event);
-			}
-		}
+        final CounterModule counterModule = moduleManager.getCounterModule();
+        final boolean switched = botPlayer.getSwitchs() > 0;
 
-		botPlayer.addSwitch();
-	}
+        if (switched && settingsModule.meet(counterModule.getCurrent(), counterModule.getLast())
+                && !botPlayer.isSettings()) {
+            new Punish(moduleManager, moduleManager.getDefaultLanguage(), settingsModule, proxiedPlayer, event);
+        }
+
+        botPlayer.addSwitch();
+    }
 }
