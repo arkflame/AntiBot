@@ -1,6 +1,5 @@
 package twolovers.antibot.bungee.module;
 
-import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.bungee.utils.Incoming;
 import twolovers.antibot.shared.interfaces.IModule;
 
@@ -15,11 +14,6 @@ public class CounterModule implements IModule {
         return "Counter";
     }
 
-    @Override
-    public void reload(final ConfigUtil configUtil) {
-        // Nothing to reload
-    }
-    
     public void update() {
 		current.reset();
 		last.reset();

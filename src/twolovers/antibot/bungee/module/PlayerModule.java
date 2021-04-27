@@ -20,11 +20,6 @@ public class PlayerModule implements IModule {
         return NAME;
     }
 
-    @Override
-    public void reload(final ConfigUtil configUtil) {
-        /* This Reload method doesn't need an implementation */
-    }
-
     public final BotPlayer get(final String hostString) {
         final BotPlayer botPlayer;
 

@@ -5,5 +5,7 @@ import twolovers.antibot.bungee.utils.ConfigUtil;
 public interface IModule {
 	String getName();
 
-	void reload(final ConfigUtil configUtil);
+	default void reload(final ConfigUtil configUtil) {
+
+	}
 }
