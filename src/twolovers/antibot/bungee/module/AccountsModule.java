@@ -8,33 +8,33 @@ import twolovers.antibot.bungee.utils.ConfigUtil;
 import twolovers.antibot.shared.extendables.PunishableModule;
 
 public class AccountsModule extends PunishableModule {
-	private final ModuleManager moduleManager;
-	private int limit = 2;
+    private final ModuleManager moduleManager;
+    private int limit = 2;
 
-	public AccountsModule(final ModuleManager moduleManager) {
-		this.moduleManager = moduleManager;
-	}
+    public AccountsModule(final ModuleManager moduleManager) {
+        this.moduleManager = moduleManager;
+    }
 
-	@Override
-	public final void reload(final ConfigUtil configUtil) {
-		super.name = "accounts";
-		super.reload(configUtil);
+    @Override
+    public final void reload(final ConfigUtil configUtil) {
+        super.name = "accounts";
+        super.reload(configUtil);
 
-		final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
+        final Configuration configYml = configUtil.getConfiguration("%datafolder%/config.yml");
 
-		punishCommands.clear();
-		punishCommands.addAll(configYml.getStringList(name + ".commands"));
-		limit = configYml.getInt(name + ".limit", limit);
-	}
+        punishCommands.clear();
+        punishCommands.addAll(configYml.getStringList(name + ".commands"));
+        limit = configYml.getInt(name + ".limit", limit);
+    }
 
-	public boolean check(final Connection connection) {
-		if (connection instanceof PendingConnection) {
-			final PlayerModule playerModule = moduleManager.getPlayerModule();
-			final BotPlayer botPlayer = playerModule.get(connection.getAddress().getHostString());
+    public boolean check(final Connection connection) {
+        if (!(connection instanceof PendingConnection)) {
+            return false;
+        }
 
-			return botPlayer.getTotalAccounts() >= limit;
-		}
+        final PlayerModule playerModule = moduleManager.getPlayerModule();
+        final BotPlayer botPlayer = playerModule.get(((PendingConnection) connection).getVirtualHost().getHostString());
 
-		return false;
-	}
+        return botPlayer.getTotalAccounts() >= limit;
+    }
 }
