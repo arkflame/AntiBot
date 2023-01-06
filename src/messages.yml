@@ -236,3 +236,34 @@ pt-PT:
     settings: "%kick_blocked% &fAlgorítimo de bot detectado. [Settings]\n&7Discord: &b&n%discord%&r"
     password: "%kick_blocked% &fAlgorítimo de bot detectado. [Password]\n&7Discord: &b&n%discord%&r"
     reconnect: "&cAdiciona o server na lista de servidores e recarregua!\n&cRecarregua e reconecta mais %reconnect_times% vezes para entrares!\n\n&7Motivo: &fVerifica que  não és um bot.\n&7Discord: &b&n%discord%&r"
+# Credits: Cyanoure
+hu:
+  reload: "&c&lAB: &aFájlok sikeresen újratöltve!"
+  help: |-
+    &aAntiBot&b %version% LinsaFTW&a által.
+    &e /ab notify &7> &bAktiválja az AntiBot értesítéseket!
+    &e /ab stats &7> &bMegmutatja a plugin állapotát!
+    &e /ab reload &7> &bÚjratölti a plugin konfigurációját!
+    &e /ab blacklist <add/remove> <IP> &7> &bIP hozzáadása vagy törlése a feketelistáról!
+    &e /ab blacklist <save/load> &7> &bElmenti vagy betölti a feketelista fájlt!
+    &e /ab whitelist <add/remove> <IP> &7> &bIP hozzáadása vagy törlése a fehérlistáról!
+    &e /ab whitelist <save/load> &7> &bElmenti vagy betölti a fehérlista fájlt!
+  error:
+    command: "&cÉrvénytelen argumentum! Használd a /ab parancsot az elérhető parancsokért!"
+    console: "&cEzt a parancsot nem tudod futtatni a konzolban!"
+    permission: "&cHiányzó jogosultság!"
+  notification:
+    enabled: "&aEngedélyezted az értesítéseket!"
+    disabled: "&cLetiltottad az értesítéseket!"
+    error: "&cAz értesítések le vannak tiltva a konfigurációs fájlban!"
+  kick:
+    blocked: "&cIdeiglenesen ki lettél tiltva a szerverről!\n\n&7Indok:"
+    accounts: "%kick_blocked% &fTúl sok fiók. [Accounts]\n&7Discord: &b&n%discord%&r"
+    whitelist: "%kick_blocked% &fA szerver támadás alatt van. [Whitelist]\n&7Discord: &b&n%discord%&r"
+    blacklist: "%kick_blocked% &fBot algoritmus észlelve. [Blacklist]\n&7Discord: &b&n%discord%&r"
+    fastchat: "%kick_blocked% &fBot algoritmus észlelve. [FastChat]\n&7Discord: &b&n%discord%&r"
+    ratelimit: "%kick_blocked% &fTúl sok kapcsolódás. [RateLimit]\n&7Discord: &b&n%discord%&r"
+    nickname: "%kick_blocked% &fBot algoritmus észlelve. [NickName]\n&7Discord: &b&n%discord%&r"
+    settings: "%kick_blocked% &fBot algoritmus észlelve. [Settings]\n&7Discord: &b&n%discord%&r"
+    password: "%kick_blocked% &fBot algoritmus észlelve. [Password]\n&7Discord: &b&n%discord%&r"
+    reconnect: "&cAdd hozzá a szervert a szerverlistához és frissítsd!\n&cFrissítsd és csatlakozz újra még %reconnect_times% alkalommal a csatlakozáshoz!\n\n&7Indok: &fIgazolod, hogy nem vagy bot.\n&7Discord: &b&n%discord%&r"
